@@ -1,0 +1,194 @@
+main: com.massivecraft.factions.Factions
+name: Factions
+version: 2.13.6
+website: https://www.massivecraft.com/factions
+description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov10
+authors: [Cayorion, Madus, Ulumulu1510, MarkehMe, Brettflan]
+depend: [MassiveCore]
+softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]
+permissions:
+# -------------------------------------------- #
+# THE REAL NODES
+# -------------------------------------------- #
+  factions.admin: {description: "entrar no modo admin", default: false}
+  factions.basecommand: {description: comando geral do plugin, default: false}
+  factions.chataliados: {description: mandar mensagem no chat dos aliados, default: false}
+  factions.chatfaccao: {description: mandar mensagem no chat da faccao, default: false}
+  factions.claim.one: {description: "§6 claim um §8-§7 Conquista um único chunk.", default: false}
+  factions.claim.auto: {description: "§6 claim auto §e[on/off] §8-§7 Conquista as terras automaticamente enquanto você anda.", default: false}
+  factions.claim: {description: "§6 claim §8-§7 Conquista territórios para sua facção.", default: false}
+  factions.convite.add: {description: "§6 convite add §e<player> §8-§7 Envia um convite para um player.", default: false}
+  factions.convite.del: {description: "§6 convite del §e<player> §8-§7 Deleta um convite enviado.", default: false}
+  factions.convite.listar: {description: "§6 convite listar §8-§7 Mostra a lista de convites enviados.", default: false}
+  factions.convite: {description: "§6 convite §8-§7 Gerencia os convites da facção.", default: false}
+  factions.criar: {description: "§6 criar §e<nome> §8-§7 Cria uma nova facção.", default: false}
+  factions.delhome: {description: "§6 delhome §8-§7 Delete a home da facção.", default: false}
+  factions.desc: {description: "§6 desc §e<desc> §8-§7 Altera a descrição da facção.", default: false}
+  factions.desfazer: {description: "§6 desfazer §8-§7 Desfaz a sua facção.", default: false}
+  factions.entrar: {description: "§6 entrar §e<facção> §8-§7 Entra em uma facção.", default: false}
+  factions.escapar: {description: "§6 escapar §8-§7 Teleporta para a zona livre mais próxima.", default: false}
+  factions.home: {description: "§6 home §e[facção] §8-§7 Teleporta para a home da facção.", default: false}
+  factions.info: {description: "§6 f,info §e<facção> §8-§7 Mostra as informações da facção.", default: false}
+  factions.kick: {description: "§6 kick §e<player> §8-§7 Expulsa um player da facção.", default: false}
+  factions.listar: {description: "§6 l,listar §e[página] §8-§7 Mostra a lista de facções.", default: false}
+  factions.mapa: {description: "§6 mapa §e[on/off] §8-§7 Mostra o mapa dos territórios.", default: false}
+  factions.membros: {description: "§6 membros §e<facção> §8-§7 Mostra a lista de membros de uma facção.", default: false}
+  factions.motd: {description: "§6 motd §e[mensagem] §8-§7 Altera ou mostra a mensagem da facção.", default: false}
+  factions.nome: {description: "§6 nome §e<nome> §8-§7 Altera o nome da facção.", default: false}
+  factions.open: {description: entra em uma faccao sem precisar de convite, default: false}
+  factions.perfil: {description: "§6 p,perfil §e<player> §8-§7 Mostra os status do player.", information}
+  factions.permissoes: {description: "§6 perm §8-§7 Gerencia as permissões da facção.", default: false}
+  factions.poder.faction: {description: "§6 poder f §e<facção> <quantia> §8-§7 Adiciona poder a um facção.", default: false}
+  factions.poder.player: {description: "§6 poder p §e<player> <quantia> §8-§7 Adiciona poder a um player.", default: false}
+  factions.poder.set: {description: adicionar poder para um player/facção, default: false}
+  factions.poder: {description: "§6 poder §8-§7 Adiciona ou remove poder de um player ou facção.", default: false}
+  factions.promover: {description: "§6 promover §e<player> §8-§7 Promove um player de cargo.", default: false}
+  factions.rebaixar: {description: "§6 rebaixar §e<player> §8-§7 Rebaixa um player de cargo.", default: false}
+  factions.relacao.definir: {description: "§6 relacao definir §e<facção> <relação> §8-§7 Define uma relação.", default: false}
+  factions.relacao.listar: {description: "§6 relacao listar §e<facção> §8-§7 Mostra a lista de relações.", default: false}
+  factions.relacao: {description: "§6 relacao §8-§7 Gerencia as relações da facção.", default: false}
+  factions.sair: {description: "§6 sair §8-§7 Abandona a sua facção atual.", default: false}  
+  factions.sethome: {description: "§6 sethome §8-§7 Define a home da facção.", default: false}
+  factions.sobataque: {description: "§6 sobataque §8-§7 Mostra mais informações sobre o ataque.", default: false}
+  factions.titulos: {description: "§6 tt,titulos §8-§7 Mostra os titulos dos território.", default: false}
+  factions.top: {description: "§6 top §8-§7 Abre o menu do Rank das facções.", default: false}
+  factions.transferir: {description: "§6 transferir §e<player> §8-§7 Transfere a liderança da facção.", default: false}
+  factions.unclaim.all: {description: "§6 unclaim all §8-§7 Abandona todos os territórios da facção.", default: false}
+  factions.unclaim.one: {description: "§6 unclaim um §8-§7 Abandona um único chunk.", default: false}
+  factions.unclaim: {description: "§6 unclaim §8-§7 Abandona territórios da sua facção.", default: false}
+  factions.version: {description: "§6 v,versao §8-§7 Mostra a versão do plugin.", default: false}
+  factions.verterras: {description: "§6 sc,verterras §8-§7 Mostra as delimitações das terras.", default: false}
+# -------------------------------------------- #
+# STAR NOTATION
+# -------------------------------------------- #
+  factions.*:
+    children:
+      factions.admin: true
+      factions.basecommand: true
+      factions.chataliados: true
+      factions.chatfaccao: true
+      factions.claim.one: true
+      factions.claim.auto: true
+      factions.claim: true
+      factions.convite.add: true
+      factions.convite.del: true
+      factions.convite.listar: true
+      factions.convite: true
+      factions.criar: true
+      factions.delhome: true
+      factions.demote: true
+      factions.desc: true
+      factions.desfazer: true
+      factions.entrar: true
+      factions.escapar: true
+      factions.home: true
+      factions.info: true
+      factions.kick: true
+      factions.leader.any: true
+      factions.leader: true
+      factions.listar: true
+      factions.mapa: true
+      factions.membros: true
+      factions.motd: true
+      factions.nome: true
+      factions.officer.any: true
+      factions.officer: true
+      factions.open: true
+      factions.perfil: true
+      factions.permissoes: true
+      factions.poder.faction: true
+      factions.poder.player: true
+      factions.poder.set: true
+      factions.poder: true
+      factions.promover: true
+      factions.rebaixar: true
+      factions.relacao.definir: true
+      factions.relacao.listar: true
+      factions.relacao: true
+      factions.sair: true
+      factions.sethome: true
+      factions.sobataque: true
+      factions.titulos: true
+      factions.top: true
+      factions.transferir: true
+      factions.unclaim.all: true
+      factions.unclaim.one: true
+      factions.unclaim: true
+      factions.version: true
+      factions.verterras: true
+# -------------------------------------------- #
+# KITS
+# -------------------------------------------- #
+  factions.kit.op:
+    default: op
+    children:
+      factions.*: true
+  factions.kit.rank3:
+    default: false
+    children:
+      factions.kit.rank2: true
+  factions.kit.rank2:
+    default: false
+    children:
+      factions.access.any: true
+      factions.kit.rank1: true
+      factions.leader.any: true
+      factions.officer.any: true
+      factions.poder.set: true
+  factions.kit.rank1:
+    default: false
+    children:
+      factions.kit.rank0: true
+      factions.admin: true
+  factions.kit.rank0:
+    default: false
+    children:
+      factions.basecommand: true
+      factions.chataliados: true
+      factions.chatfaccao: true
+      factions.claim.auto: true
+      factions.claim.one: true
+      factions.claim: true
+      factions.convite.add: true
+      factions.convite.del: true
+      factions.convite.listar: true
+      factions.convite: true
+      factions.criar: true
+      factions.delhome: true
+      factions.demote: true
+      factions.desc: true
+      factions.desfazer: true
+      factions.entrar: true
+      factions.escapar: true
+      factions.home: true
+      factions.info: true
+      factions.kick: true
+      factions.leader: true
+      factions.listar: true
+      factions.mapa: true
+      factions.membros: true
+      factions.motd: true
+      factions.nome: true
+      factions.officer: true
+      factions.open: true
+      factions.perfil: true
+      factions.permissoes: true
+      factions.promover: true
+      factions.rebaixar: true
+      factions.relacao.definir: true
+      factions.relacao.listar: true
+      factions.relacao: true
+      factions.sair: true
+      factions.sethome: true
+      factions.sobataque: true
+      factions.titulos: true
+      factions.top: true
+      factions.transferir: true
+      factions.unclaim.all: true
+      factions.unclaim.one: true
+      factions.unclaim: true
+      factions.verterras: true
+  factions.kit.default:
+    default: true
+    children:
+      factions.kit.rank0: true
