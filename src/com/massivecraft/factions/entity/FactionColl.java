@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.massivecore.store.Coll;
 import com.massivecraft.massivecore.util.Txt;
 
@@ -135,6 +136,24 @@ public class FactionColl extends Coll<Faction>
 		faction.setPermittedRelations(MPerm.getPermLever(), Rel.LEADER, Rel.OFFICER, Rel.MEMBER, Rel.RECRUIT);
 		
 		return faction;
+	}
+	
+	// -------------------------------------------- //
+	// GET FACTION BY NAME
+	// -------------------------------------------- //
+	
+	@Override
+	public Faction getByName(String name)
+	{
+		String compStr = MiscUtil.getComparisonString(name);
+		for (Faction faction : this.getAll())
+		{
+			if (faction.getComparisonName().equals(compStr))
+			{
+				return faction;
+			}
+		}
+		return null;
 	}
 
 	// -------------------------------------------- //

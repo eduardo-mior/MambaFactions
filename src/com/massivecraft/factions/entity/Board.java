@@ -3,7 +3,6 @@ package com.massivecraft.factions.entity;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -375,11 +374,6 @@ public class Board extends Entity<Board> implements BoardInterface
 		
 		// Make room for the list of names
 		//height--;
-
-
-		Map<Faction, Character> fList = new HashMap<>();
-		//int chrIdx = 0;
-		boolean overflown = false;
 		
 		// For each row
 		for (int dz = 0; dz < height; dz++)
@@ -396,8 +390,6 @@ public class Board extends Entity<Board> implements BoardInterface
 				
 				PS herePs = topLeftPs.plusChunkCoords(dx, dz);
 				Faction hereFaction = this.getFactionAt(herePs);
-				boolean contains = fList.containsKey(hereFaction);
-
 				PS borda = herePs;
 				if(borda.getChunkCoords().getChunkX() > MConf.get().bordaXpositivo/16) {
 					row.add(Mson.mson(ChatColor.BLACK + blacklargesquare));
@@ -422,10 +414,6 @@ public class Board extends Entity<Board> implements BoardInterface
 				if (hereFaction.isNone())
 				{
 					row.add(Mson.mson(ChatColor.GRAY + blacklargesquare));
-				}
-				else if ( ! contains && overflown)
-				{
-					row.add(Mson.mson(ChatColor.DARK_PURPLE + blacklargesquare));
 				}
 				else if (getSobAtaque(p, herePs, p.getWorld().getName())) {
 					row.add(Mson.mson(ChatColor.LIGHT_PURPLE 

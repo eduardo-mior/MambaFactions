@@ -62,7 +62,7 @@ public class CmdFactionsRelacaoDefinir extends FactionsCommand
 		{
 			Player p = msender.getPlayer();
 			String factionNome = otherFaction.getName();
-			Inventory inv = Bukkit.createInventory(null, 27, "§8Definir relação -> " + factionNome);
+			Inventory inv = Bukkit.createInventory(null, 27, "§8Relação com " + factionNome);
 			
 			if (msenderFaction.getRelationTo(otherFaction) == Rel.ALLY) {
 			inv.setItem(11, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§bDefinir aliança com " + factionNome).setLore("§cSua a facção já é §caliada da " + factionNome + "§c.").setLeatherArmorColor(Color.AQUA).toItemStack());

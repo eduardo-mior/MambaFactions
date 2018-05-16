@@ -79,7 +79,7 @@ public class CmdFactionsMembros extends FactionsCommand
 			tamanhodomenu = 54;
 		}
 		
-		Inventory inv = Bukkit.createInventory(null, tamanhodomenu, "§8Membros da " + faction.getName() + " (" + faction.getMPlayers().size() + ")");
+		Inventory inv = Bukkit.createInventory(null, tamanhodomenu, "§8Membros da " + faction.getName());
 		
 		if (tamanhodomenu == 36) {
 			inv.setItem(11, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());

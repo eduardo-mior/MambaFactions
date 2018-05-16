@@ -111,7 +111,9 @@ public class EngineCanCombatHappen extends Engine
 
 		if (eattacker instanceof Player) {
 		MPlayer mplayerx = MPlayer.get(eattacker);
-		if (mplayerx.getFaction().getRelationTo(mdefender.getFaction()).equals(Rel.ALLY) && defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == false) return false; }
+		if (mplayerx.getFaction().getRelationTo(mdefender.getFaction()).equals(Rel.ALLY) && defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == false) return false; 
+		if (mplayerx.getFaction().getMPlayers().contains(mdefender)) return false;
+		}
 		
 		// ... fast evaluate if the attacker is overriding ...
 		MPlayer mplayer = MPlayer.get(eattacker);
@@ -183,21 +185,6 @@ public class EngineCanCombatHappen extends Engine
 			if (!ret && notify);
 			return ret;
 		}
-
-		// You can not hurt neutrals in their own territory.
-		boolean ownTerritory = mdefender.isInOwnTerritory();
-		
-		if (mdefender.hasFaction() && ownTerritory && relation == Rel.NEUTRAL)
-		{
-			ret = falseUnlessDisallowedPvpEventCancelled(attacker, defender, DisallowCause.OWN_TERRITORY, event);
-			if (!ret && notify)
-			{
-				uattacker.msg("§eVocê não pode atacar §e%s§e em seu próprio território, a menos que você os declare como §cinimigos§e.", mdefender.describeTo(uattacker));
-				mdefender.msg("%s§e tentou lhe atacar.", uattacker.describeTo(mdefender, true));
-			}
-			return ret;
-		}
-
 		return true;
 	}
 

@@ -164,7 +164,7 @@ public class EngineMenuGui  extends Engine{
 		final String playerpoder1f = String.format("%.1f", playerpoder);
 		final String factionpoder1f = String.format("%.1f", factionpoder);
 	
-			Inventory inv = Bukkit.createInventory(null, 54, "§1§2§3§8Facção - " + factionNome);
+			Inventory inv = Bukkit.createInventory(null, 54, "§r§8Facção - " + factionNome);
 					
 			/*
 			 * ITEMS NORMAIS
@@ -527,7 +527,7 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (inventarioNome.startsWith("§1§2§3§8Facção - ")) {
+		else if (inventarioNome.startsWith("§r§8Facção - ")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 		
@@ -836,7 +836,7 @@ public class EngineMenuGui  extends Engine{
 			e.setResult(Result.DENY);
 		}
 		
-		else if (inventarioNome.startsWith("§8Definir relação -> ")) {
+		else if (inventarioNome.startsWith("§8Relação com ")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			
