@@ -3,7 +3,6 @@ package com.massivecraft.factions.engine;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MFlag;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsPvpDisallowed;
@@ -89,10 +88,8 @@ public class EngineCanCombatHappen extends Engine
 	}
 	
 	public boolean canCombatDamageHappen(EntityDamageByEntityEvent event, boolean notify)
-	{
-		boolean ret = true;
-		
-		// If the defender is a player ...
+	{		
+		// Verificando se o defensor é 1 player
 		Entity edefender = event.getEntity();
 		if (MUtil.isntPlayer(edefender)) return true;
 		Player defender = (Player)edefender;
@@ -105,86 +102,29 @@ public class EngineCanCombatHappen extends Engine
 		// (lack of attacker situations can be caused by other bukkit plugins)
 		if (eattacker != null && eattacker.equals(edefender)) return true;
 		
-		// ... gather defender PS and faction information ...
-		PS defenderPs = PS.valueOf(defender.getLocation());
-		Faction defenderPsFaction = BoardColl.get().getFactionAt(defenderPs);
-
-		if (eattacker instanceof Player) {
-		MPlayer mplayerx = MPlayer.get(eattacker);
-		if (mplayerx.getFaction().getRelationTo(mdefender.getFaction()).equals(Rel.ALLY) && defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == false) return false; 
-		if (mplayerx.getFaction().getMPlayers().contains(mdefender)) return false;
-		}
-		
-		// ... fast evaluate if the attacker is overriding ...
-		MPlayer mplayer = MPlayer.get(eattacker);
-		if (mplayer != null && mplayer.isOverriding()) return true;
-		
-		
-		// ... PVP flag may cause a damage block ...
-		if (defenderPsFaction.getFlag(MFlag.getFlagPvp()) == false)
-		{
-			if (eattacker == null)
-			{
-				// No attacker?
-				// Let's behave as if it were a player
-				return falseUnlessDisallowedPvpEventCancelled(null, defender, DisallowCause.PEACEFUL_LAND, event);
-			}
-			if (MUtil.isPlayer(eattacker))
-			{
-				ret = falseUnlessDisallowedPvpEventCancelled((Player)eattacker, defender, DisallowCause.PEACEFUL_LAND, event);
-				if (!ret && notify)
-				{
-					MPlayer attacker = MPlayer.get(eattacker);
-					attacker.msg("§eO pvp esta desabilitado nos territórios da %s.", defenderPsFaction.describeTo(attacker));
-				}
-				return ret;
-			}
-			return true;
-		}
-
-		// ... and if the attacker is a player ...
+		// Verificando se o atacante é 1 player
 		if (MUtil.isntPlayer(eattacker)) return true;
 		Player attacker = (Player)eattacker;
-		MPlayer uattacker = MPlayer.get(attacker);
-
-		// ... gather attacker PS and faction information ...
-		PS attackerPs = PS.valueOf(attacker.getLocation());
-		Faction attackerPsFaction = BoardColl.get().getFactionAt(attackerPs);
-
-		// ... PVP flag may cause a damage block ...
-		// (just checking the defender as above isn't enough. What about the attacker? It could be in a no-pvp area)
-		// NOTE: This check is probably not that important but we could keep it anyways.
-		if (attackerPsFaction.getFlag(MFlag.getFlagPvp()) == false)
-		{
-			ret = falseUnlessDisallowedPvpEventCancelled(attacker, defender, DisallowCause.PEACEFUL_LAND, event);
-			if (!ret && notify) uattacker.msg("§eO pvp esta desabilitado nos territórios da facção %s.", attackerPsFaction.getName());
-			return ret;
-		}
+		MPlayer mattacker = MPlayer.get(attacker);
 		
-		// ... are PVP rules completely ignored in this world? ...
-		if (!MConf.get().worldsPvpRulesEnabled.contains(defenderPs.getWorld())) return true;
-
-		Faction defendFaction = mdefender.getFaction();
-		Faction attackFaction = uattacker.getFaction();
-
-		if (defendFaction.isNone())
-		{
-			if (defenderPsFaction == attackFaction && MConf.get().enablePVPAgainstFactionlessInAttackersLand)
-			{
-				// Allow PVP vs. Factionless in attacker's faction territory
-				return true;
-			}
-		}
-
-		Rel relation = defendFaction.getRelationTo(attackFaction);
-
-		// Check the relation
-		if (relation.isFriend() && defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == false && mplayer.hasFaction() == true)
-		{
-			ret = falseUnlessDisallowedPvpEventCancelled(attacker, defender, DisallowCause.FRIENDLYFIRE, event);
-			if (!ret && notify);
-			return ret;
-		}
+		// Pegando a facção onde o PvP esta ocorrendo
+		PS defenderPs = PS.valueOf(defender.getLocation());
+		Faction defenderPsFaction = BoardColl.get().getFactionAt(defenderPs);
+		
+		// ... fast evaluate if the attacker is overriding ...
+		if (mattacker != null && mattacker.isOverriding()) return true;
+		
+		// Verificando se o PvP amigo esta ativado
+		if (defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == true) return true;
+		// Verificando se o PvP esta tivado
+		if (defenderPsFaction.getFlag(MFlag.getFlagPvp()) == false) return false;
+		// Verificando se algum deles esta na zona livre
+		if (mattacker.hasFaction() == false || mdefender.hasFaction() == false) return true;
+		// Verificando se as facções são aliadas
+		if (mattacker.getFaction().getRelationTo(mdefender.getFaction()).equals(Rel.ALLY)) return false; 
+		// Verificando se os players são da mesma facção
+		if (mattacker.getFaction().getMPlayers().contains(mdefender)) return false;
+		
 		return true;
 	}
 

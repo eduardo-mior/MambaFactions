@@ -320,6 +320,8 @@ public class EnginePermBuild extends Engine
 		PS toPs = PS.valueOf(chunkToX, chunkToZ);
 		TerritoryAccess fromTa = map.get(fromPs);
 		TerritoryAccess toTa = map.get(toPs);
+			
+		// Null checks are needed here since automatic board cleaning can be undesired sometimes
 		String fromId = fromTa != null ? fromTa.getHostFactionId() : Factions.ID_NONE;
 		String toId = toTa != null ? toTa.getHostFactionId() : Factions.ID_NONE;
 		
@@ -328,7 +330,9 @@ public class EnginePermBuild extends Engine
 		
 		// ... and the faction "from" can not build at "to" ...
 		Faction fromFac = FactionColl.get().getFixed(fromId);
+		if (fromFac == null) fromFac = FactionColl.get().getNone();
 		Faction toFac = FactionColl.get().getFixed(toId);
+		if (toFac == null) toFac = FactionColl.get().getNone();
 		if (MPerm.getPermBuild().has(fromFac, toFac)) return;
 		
 		// ... cancel the event!

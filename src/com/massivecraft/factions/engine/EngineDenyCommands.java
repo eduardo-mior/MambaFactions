@@ -34,7 +34,6 @@ public class EngineDenyCommands extends Engine
 	{
 		// If a player is trying to run a command ...
 		Player player = event.getPlayer();
-		if (MUtil.isntPlayer(player)) return;
 		MPlayer mplayer = MPlayer.get(player);
 		
 		// ... and the player is not overriding ...

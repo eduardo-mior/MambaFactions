@@ -7,7 +7,6 @@ import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.mixin.MixinActual;
 import com.massivecraft.massivecore.mixin.MixinMessage;
-import com.massivecraft.massivecore.util.MUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +32,6 @@ public class EngineMotd extends Engine
 	{
 		// Gather info ...
 		final Player player = event.getPlayer();
-		if (MUtil.isntPlayer(player)) return;
 		final MPlayer mplayer = MPlayer.get(player);
 		final Faction faction = mplayer.getFaction();
 

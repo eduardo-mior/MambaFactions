@@ -127,7 +127,7 @@ public class FactionColl extends Coll<Faction>
 		faction.setFlag(MFlag.getFlagPeaceful(), true);
 		faction.setFlag(MFlag.getFlagPowerloss(), true);
 		faction.setFlag(MFlag.getFlagPvp(), true);
-		faction.setFlag(MFlag.getFlagFriendlyire(), true);
+		faction.setFlag(MFlag.getFlagFriendlyire(), false);
 		
 		faction.setPermittedRelations(MPerm.getPermBuild(), Rel.LEADER, Rel.OFFICER, Rel.MEMBER, Rel.RECRUIT);
 		faction.setPermittedRelations(MPerm.getPermDoor(), Rel.LEADER, Rel.OFFICER, Rel.MEMBER, Rel.RECRUIT, Rel.ALLY, Rel.TRUCE, Rel.NEUTRAL, Rel.ENEMY);

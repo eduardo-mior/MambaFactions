@@ -93,7 +93,7 @@ public class EngineSobAtaque extends Engine{
 	
 	@EventHandler
 	public void abandonarTerras(InventoryOpenEvent e) {
-		if (e.getInventory().getName().equals("񗉲񗱐Abandonar todas as terras")) {
+		if (e.getInventory().getName().equals("�8Abandonar todas as terras")) {
 			Player p = (Player) e.getPlayer();
 			MPlayer mp = MPlayer.get(p);
 			Faction fac = mp.getFaction();

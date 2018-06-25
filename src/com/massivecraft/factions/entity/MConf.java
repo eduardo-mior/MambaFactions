@@ -263,11 +263,6 @@ public class MConf extends Entity<MConf>
 	// I don't really understand the user case for this option.
 	public boolean permanentFactionsDisableLeaderPromotion = false;
 	
-	// Set this option to true to create an exception to the rule above.
-	// Players inside their own faction territory can then hurt facitonless players.
-	// This way you may "evict" factionless trolls messing around in your home base.
-	public boolean enablePVPAgainstFactionlessInAttackersLand = false;
-	
 	// Protects the faction land from piston extending/retracting
 	// through the denying of MPerm build
 	public boolean handlePistonProtectionThroughDenyBuild = true;

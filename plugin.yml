@@ -2,7 +2,7 @@ main: com.massivecraft.factions.Factions
 name: Factions
 version: 2.13.6
 website: https://www.massivecraft.com/factions
-description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov10
+description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov12
 authors: [Cayorion, Madus, Ulumulu1510, MarkehMe, Brettflan]
 depend: [MassiveCore]
 softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]

@@ -273,7 +273,7 @@ public class EngineMenuGui  extends Engine{
 		
         MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();		
-		Inventory inv = Bukkit.createInventory(null, 54, "§1§2§3§8Terrenos sob ataque");
+		Inventory inv = Bukkit.createInventory(null, 54, "§8Terrenos sob ataque");
 		
 		Set<Chunk> chunks = EngineSobAtaque.underattack.keySet();
 
@@ -315,7 +315,7 @@ public class EngineMenuGui  extends Engine{
         Faction faction = mplayer.getFaction();
         int terras = faction.getLandCount();
 		
-		Inventory inv = Bukkit.createInventory(null, 36, "§1§2§3§8Abandonar todas as terras");
+		Inventory inv = Bukkit.createInventory(null, 36, "§8Abandonar todas as terras");
 		
 		inv.setItem(13, new ItemBuilder(Material.PAPER).setName("§fInformações").setLore("§7Você esta prestes a abandonar §2" + terras + " §7terras.").toItemStack());
 		inv.setItem(20, new ItemBuilder(Material.WOOL, 1, DyeColor.LIME.getWoolData()).setName("§aConfirmar ação").setLore("§7Clique para confirmar.").toItemStack());
@@ -347,7 +347,7 @@ public class EngineMenuGui  extends Engine{
         Faction faction = mplayer.getFaction();
         int nrelations = faction.getRelationWishes().size() - EngineEditSource.getAliadosPendentesEnviados(faction).size();
         
-		Inventory inv = Bukkit.createInventory(null, 27, "§1§2§3§8Gerenciar relações");
+		Inventory inv = Bukkit.createInventory(null, 27, "§8Gerenciar relações");
 		
 		inv.setItem(11, new ItemBuilder(Heads.AZURE.clone()).setName("§aDefinir relação").setLore("§7Defina já uma relação com alguma facção usando" , "§7o comando '§f/f relação definir <facção>§7'").toItemStack());
 		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aAlianças pendentes").setLore("§fClique para ver todos os convites","§fde aliança pendentes recebidos ou", "§fenviados pela sua facção.").setLeatherArmorColor(Color.LIME).setAmount(EngineEditSource.getAliadosPendentesEnviados(faction).size() + EngineEditSource.getAliadosPendentesRecebidos(faction).size()).toItemStack());
@@ -369,7 +369,7 @@ public class EngineMenuGui  extends Engine{
         int recebidos = EngineEditSource.getAliadosPendentesRecebidos(faction).size();
         int npendentes = enviados + recebidos;
         
-		Inventory inv = Bukkit.createInventory(null, 36, "§1§2§3§8Alianças pendentes (" + npendentes + ")");
+		Inventory inv = Bukkit.createInventory(null, 36, "§8Alianças pendentes (" + npendentes + ")");
 		
 		if (recebidos > 0) {
 		inv.setItem(11, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§bConvites de aliança recebidos pendentes").setLore("§fSua facção possui §3" + recebidos + (recebidos == 1 ? " §fconvite" : " §fconvites") + (recebidos == 1 ? " recebido pendente." : " recebidos pendentes.")).setLeatherArmorColor(Color.AQUA).setAmount(recebidos).toItemStack());
@@ -406,7 +406,7 @@ public class EngineMenuGui  extends Engine{
 			flecha = 49;
 		}
 		
-		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites enviados pendentes (" + enviados + ")");
+		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites enviados pendentes");
 		inv.setItem(flecha, new ItemBuilder(Material.ARROW).setName("§1§2§cVoltar").toItemStack());
 		
 		List<Faction> facs = EngineEditSource.getAliadosPendentesEnviados(faction);
@@ -441,7 +441,7 @@ public class EngineMenuGui  extends Engine{
 			flecha = 49;
 		}
 		
-		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites recebidos pendentes (" + recebidos + ")");
+		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites recebidos pendentes");
 		inv.setItem(flecha, new ItemBuilder(Material.ARROW).setName("§1§2§cVoltar").toItemStack());
 		
 		List<Faction> facs = EngineEditSource.getAliadosPendentesRecebidos(faction);
@@ -463,15 +463,13 @@ public class EngineMenuGui  extends Engine{
 			return;
 
 		Player p = (Player)e.getWhoClicked();
-		MPlayer mp = MPlayer.get(p);
-		Faction f = mp.getFaction();
-    	String factionNome = f.getName();
     	String inventarioNome = e.getInventory().getName();
     	int slot = e.getSlot();
 		
 		if (inventarioNome.equalsIgnoreCase("§8Sem facção§1§2§3")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			MPlayer mp = MPlayer.get(p);
 			
 			if (slot == 14) {
 				p.chat("/f top");
@@ -530,7 +528,8 @@ public class EngineMenuGui  extends Engine{
 		else if (inventarioNome.startsWith("§r§8Facção - ")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
-		
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
 			
 			if (slot == 34) {
 				if (EngineSobAtaque.factionattack.containsKey(f)) {
@@ -624,7 +623,7 @@ public class EngineMenuGui  extends Engine{
 			
 			else if (slot == 40) {
 				if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
-				abrirMenuRelacoes(p);
+					abrirMenuRelacoes(p);
 				} else {
 					p.sendMessage("§cVocê precisar ser capitão ou superior para poder gerenciar as relações da facção.");
 				}
@@ -633,7 +632,7 @@ public class EngineMenuGui  extends Engine{
 			else if (slot == 43) {
 				if (mp.getRole() == Rel.LEADER || mp.isOverriding()) {
 					abrirMenuDesfazerFaccao(p);
-					} else { 
+				} else { 
 					p.performCommand("f sair");
 				}
 			}
@@ -654,9 +653,12 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§1§2§3§8Abandonar todas as terras")) {
+		else if (inventarioNome.equalsIgnoreCase("§8Abandonar todas as terras")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
+	    	String factionNome = f.getName();
 		
 			if (slot == 24) {
 				p.sendMessage("§cAção cancelada com sucesso.");
@@ -672,6 +674,8 @@ public class EngineMenuGui  extends Engine{
 		else if (inventarioNome.equalsIgnoreCase("§1§2§3§8Gerenciar convites")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
 		
 			if (slot == 11) {
 				p.sendMessage("§f");
@@ -682,9 +686,9 @@ public class EngineMenuGui  extends Engine{
 			
 			else if (slot == 15) {
 				if (f.getInvitations().size() > 0) {
-				p.performCommand("f convite listar");
+					p.performCommand("f convite listar");
 				} else {
-				p.chat("/f convite");
+					p.chat("/f convite");
 				}
 			}
 		}
@@ -716,10 +720,12 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§1§2§3§8Gerenciar relações")) {
+		else if (inventarioNome.equalsIgnoreCase("§8Gerenciar relações")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
-		
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
+	    	
 			if (slot == 11) {
 				p.sendMessage("§f");
 				p.sendMessage("§eDefina já uma relação com alguma facção usando o comando '§f/f relação definir <facção>§e'");
@@ -733,18 +739,20 @@ public class EngineMenuGui  extends Engine{
 			
 			else if (slot == 15) {
 				if ((f.getRelationWishes().size() - EngineEditSource.getAliadosPendentesEnviados(f).size())  > 0) {
-				p.performCommand("f relacao listar");
-				p.closeInventory();
+					p.performCommand("f relacao listar");
+					p.closeInventory();
 				} else {
-				p.chat("/f relation");
+					p.chat("/f relation");
 				}
 			}
 		}
 		
-		else if (inventarioNome.startsWith("§1§2§3§8Alianças pendentes (")) {
+		else if (inventarioNome.startsWith("§8Alianças pendentes (")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
-		
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
+	    	
 			if (slot == 15) {
 				if (EngineEditSource.getAliadosPendentesEnviados(f).size() > 0) {
 					abrirMenuRelacoesPendentesEnviados(p);
@@ -766,9 +774,11 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (inventarioNome.startsWith("§8Convites enviados pendentes (")) {
+		else if (inventarioNome.startsWith("§8Convites enviados pendentes")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
 		
 			ItemStack item = e.getCurrentItem();
 			
@@ -780,7 +790,7 @@ public class EngineMenuGui  extends Engine{
 				if (e.getClick().isShiftClick()) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(22, nomeTamanho);
-					p.performCommand("f info " + nome);
+					p.performCommand("f info " + nome.replace(" ", ""));
 					p.closeInventory();
 				} else if (e.getClick().isRightClick()) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
@@ -792,10 +802,12 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (inventarioNome.startsWith("§8Convites recebidos pendentes (")) {
+		else if (inventarioNome.startsWith("§8Convites recebidos pendentes")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
-		
+			MPlayer mp = MPlayer.get(p);
+			Faction f = mp.getFaction();
+	    	String factionNome = f.getName();
 			ItemStack item = e.getCurrentItem();
 			
 			if (item.getType() == Material.ARROW) {
@@ -806,13 +818,13 @@ public class EngineMenuGui  extends Engine{
 				if (e.getClick().isShiftClick()) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(20, nomeTamanho);
-					p.performCommand("f info " + nome);
+					p.performCommand("f info " + nome.replace(" ", ""));
 					p.closeInventory();
 				} else if (e.getClick().isLeftClick()) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(20, nomeTamanho);
-					p.performCommand("f relacao definir ally " + nome);
-					abrirMenuRelacoesPendentesEnviados(p);
+					p.performCommand("f relacao definir ally " + nome.replace(" ", ""));
+					abrirMenuRelacoesPendentesRecebidos(p);
 				} else if (e.getClick().isRightClick()) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(20, nomeTamanho);
@@ -831,7 +843,7 @@ public class EngineMenuGui  extends Engine{
 			e.setResult(Result.DENY);
 		}
 		
-		else if (inventarioNome.startsWith("§1§2§3§8Terrenos sob ataque")) {
+		else if (inventarioNome.startsWith("§8Terrenos sob ataque")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 		}
@@ -846,7 +858,7 @@ public class EngineMenuGui  extends Engine{
 				if (item.getItemMeta().getLore().size() == 2) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(22, nomeTamanho);
-					p.performCommand("f relacao definir " + nome + " ally");
+					p.performCommand("f relacao definir " + nome.replace(" ", "") + " ally");
 					p.closeInventory();
 				} else if (item.getItemMeta().getLore().size() > 2) {
 					abrirMenuRelacoesPendentes(p);
@@ -859,7 +871,7 @@ public class EngineMenuGui  extends Engine{
 				if (item.getItemMeta().getLore().size() == 2) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(27, nomeTamanho);
-					p.performCommand("f relacao definir " + nome + " neutral");
+					p.performCommand("f relacao definir " + nome.replace(" ", "") + " neutral");
 					p.closeInventory();
 				} else {
 					e.setCancelled(true);
@@ -870,7 +882,7 @@ public class EngineMenuGui  extends Engine{
 				if (item.getItemMeta().getLore().size() == 2) {
 					int nomeTamanho = item.getItemMeta().getDisplayName().length();
 					String nome = item.getItemMeta().getDisplayName().substring(25, nomeTamanho);
-					p.performCommand("f relacao definir " + nome + " enemy");
+					p.performCommand("f relacao definir " + nome.replace(" ", "") + " enemy");
 					p.closeInventory();
 				} else {
 					e.setCancelled(true);

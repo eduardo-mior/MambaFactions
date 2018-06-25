@@ -38,7 +38,7 @@ public class EngineEditSource  extends Engine{
 	
 	@EventHandler
 	public void comandoClaim(PlayerCommandPreprocessEvent e) {
-        final String cmd = e.getMessage().toLowerCase();
+        String cmd = e.getMessage().toLowerCase();
 		if (cmd.equalsIgnoreCase("/f claim") || cmd.equalsIgnoreCase("/f proteger") || cmd.equalsIgnoreCase("/f conquistar") || cmd.equalsIgnoreCase("/f dominar")) { 
 			e.setMessage("/f claim one");
 		}
@@ -76,9 +76,6 @@ public class EngineEditSource  extends Engine{
 	public void onCommandEvent(PlayerCommandPreprocessEvent e) {
 	
 	  Player p = e.getPlayer();
-      MPlayer mp = MPlayer.get(p);
-      BoardColl coll = BoardColl.get();
-      Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));
 	  String cmd = e.getMessage().toLowerCase();
       String[] arg1 = null;
 	  arg1 = cmd.split(" ");
@@ -98,6 +95,9 @@ public class EngineEditSource  extends Engine{
 		}
 
 	    else if (arg1[0].contains("sethome") || arg1[0].contains("setcasa") || arg1[0].contains("createhome")) {
+	        MPlayer mp = MPlayer.get(p);
+	        BoardColl coll = BoardColl.get();
+	        Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));
 			if (faction != null) {
 				if (!(faction.isNone() || faction.getMPlayers().contains(mp))) {
 					e.setCancelled(true);
@@ -107,6 +107,9 @@ public class EngineEditSource  extends Engine{
 		} 
 	    
 	    else if (cmd.startsWith("/f sethome") || cmd.startsWith("/f definirhome") || cmd.startsWith("/f definirbase")) {
+	        MPlayer mp = MPlayer.get(p);
+	        BoardColl coll = BoardColl.get();
+	        Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));
 			if (faction != null) {
 				if (!(faction.getMPlayers().contains(mp))) {
 					e.setCancelled(true);
@@ -121,10 +124,10 @@ public class EngineEditSource  extends Engine{
 				
 		Player p = e.getPlayer();
         MPlayer mp = MPlayer.get(p);
-        BoardColl coll = BoardColl.get();
-        Faction faction = coll.getFactionAt(PS.valueOf(e.getTo()));
             
 		if (e.getCause() == TeleportCause.COMMAND || e.getCause() == TeleportCause.UNKNOWN  || e.getCause() == TeleportCause.PLUGIN ) {
+	        BoardColl coll = BoardColl.get();
+	        Faction faction = coll.getFactionAt(PS.valueOf(e.getTo()));
 			if (!(faction.isNone() || faction.getMPlayers().contains(mp)) && faction != null) {
 				if (lista.containsKey(p)) {
 					lista.remove(p);
@@ -140,9 +143,11 @@ public class EngineEditSource  extends Engine{
         Map<String, Rel> relations = f.getRelationWishes();
 		for(Entry<String, Rel> relation : relations.entrySet()){
 			Faction ally = Faction.get(relation.getKey());
-			if (relation.getValue() == Rel.ALLY) {
-				if (ally.getRelationWish(f) != Rel.ALLY) {
-					aliadosPendentesEnviados.add(ally);
+			if (ally != null) {
+				if (relation.getValue() == Rel.ALLY) {
+					if (ally.getRelationWish(f) != Rel.ALLY) {
+						aliadosPendentesEnviados.add(ally);
+					}
 				}
 			}
 		}
@@ -155,10 +160,12 @@ public class EngineEditSource  extends Engine{
 		for(Faction faction : factions) {
 	        Map<String, Rel> relations = faction.getRelationWishes();
 			for(Entry<String, Rel> relation : relations.entrySet()) {
-				Faction ally = Faction.get(relation.getKey());
 				if (relation.getValue() == Rel.ALLY) {
+					Faction ally = Faction.get(relation.getKey());
 					if (ally == f) {
-						aliadosPendentesRecebidos.add(faction);
+						if (!(f.getRelationWishes().containsKey(faction.getId()))) {
+							aliadosPendentesRecebidos.add(faction);
+						}
 					}
 				}
 			}
