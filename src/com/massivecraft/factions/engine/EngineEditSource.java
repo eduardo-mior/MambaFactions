@@ -276,6 +276,20 @@ public class EngineEditSource  extends Engine{
 		}
 	}
 	
+	public static List<Faction> getAliados(Faction f) {
+		List<Faction> aliados = new ArrayList<>();
+		
+		for(Faction faction : FactionColl.get().getAll()) {
+			if (f.getRelationTo(faction).equals(Rel.ALLY)) {
+				if (faction.getRelationTo(f).equals(Rel.ALLY)) {
+					aliados.add(faction);
+				}
+			}
+		}
+		
+		return aliados;
+	}
+	
 	public static Faction getFactionByName(String name)
 	{
 		String compStr = MiscUtil.getComparisonString(name);

@@ -32,7 +32,7 @@ public class EngineKdr  extends Engine{
 		if (kdr2f == null) {
 			return "0.00";
 		} else {
-		return kdr2f;
+			return kdr2f;
 		}
 	}
 	
@@ -62,8 +62,8 @@ public class EngineKdr  extends Engine{
 		if (fdeaths == 0) {
 			return fkills;
 		} else {
-		double fkdr = fkills/fdeaths;
-		return fkdr;
+			double fkdr = fkills/fdeaths;
+			return fkdr;
 		}
 	}
 

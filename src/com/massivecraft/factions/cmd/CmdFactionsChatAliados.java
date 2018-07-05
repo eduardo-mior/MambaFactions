@@ -1,12 +1,10 @@
 package com.massivecraft.factions.cmd;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
+import com.massivecraft.factions.engine.EngineEditSource;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.command.Visibility;
@@ -47,42 +45,36 @@ public class CmdFactionsChatAliados extends FactionsCommand
 	{
 		// Transformando todos os argumentos em 1 string
 		for (String msg: this.getArgs()) {
+				
+			Faction f = msender.getFaction();
+							
+			// Verficiando se os argumentos são validos
+			if (!this.argIsSet(0))
+			{
+				msender.message("§cArgumentos insuficientes, use /a <mensagem>");
+				return;
+			}
 			
-		Faction f = msender.getFaction();
-						
-		// Verficiando se os argumentos são validos
-		if (!this.argIsSet(0))
-		{
-			msender.message("§cArgumentos insuficientes, use /a <mensagem>");
-			return;
-		}
-		
-		// Obter lista de aliados
-		List<Faction> aliados = new ArrayList<>();
-		
-		for(Faction faction : FactionColl.get().getAll()) {
-			if (f.getRelationTo(faction).equals(Rel.ALLY)) {
-				aliados.add(faction);
+			// Obter lista de aliados
+			List<Faction> aliados = EngineEditSource.getAliados(f);
+			
+			// Verificar se a facção possui aliados
+			if (aliados.size() == 0) {
+				msender.msg("§cSua facção não possui aliados!");
+				return;
 			}
-		}
-		
-		// Verificar se a facção possui aliados
-		if (aliados.size() == 0) {
-			msender.msg("§cSua facção não possui aliados!");
-			return;
-		}
-		
-		// Mensagem para os aliados
-		for(Faction fa : aliados) {
-			for(MPlayer mp : fa.getMPlayersWhereOnline(true)) {
-				mp.message(("§b[a] §7["  + f.getName() + "§7] §f" + msender.getRole().getPrefix() + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
+			
+			// Mensagem para os aliados
+			for(Faction fa : aliados) {
+				for(MPlayer mp : fa.getMPlayersWhereOnline(true)) {
+					mp.message(("§b[a] §7["  + f.getName() + "§7] §f" + msender.getRole().getPrefix() + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
+				}
 			}
-		}
-
-		// Mensagem para os membros da facção
-        for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
-        	mp.message(("§b[a] §7["+ f.getName() + "§7] §f" + msender.getRole().getPrefix()  + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
-		}
+	
+			// Mensagem para os membros da facção
+	        for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
+	        	mp.message(("§b[a] §7["+ f.getName() + "§7] §f" + msender.getRole().getPrefix()  + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
+			}
 		}
 	}
 }

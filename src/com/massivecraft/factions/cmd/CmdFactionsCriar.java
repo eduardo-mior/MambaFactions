@@ -64,10 +64,10 @@ public class CmdFactionsCriar extends FactionsCommand
 		
 		// Informando o sender
 		msg("§aFacção §f%s§a criada com sucesso!", newName);
-		arrumarPerms(faction);
+		setDefaultPermissions(faction);
 	}
 	
-	public void arrumarPerms(Faction faction) {
+	private void setDefaultPermissions(Faction faction) {
 		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.ALLY);
 		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.ENEMY);
 		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.TRUCE);

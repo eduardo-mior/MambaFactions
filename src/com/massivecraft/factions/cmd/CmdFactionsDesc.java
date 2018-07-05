@@ -38,35 +38,34 @@ public class CmdFactionsDesc extends FactionsCommand
 	{	
 		// Argumentos
 		for (String newDescription: this.getArgs()) {
-		
+				
+			// Verificando se o player possui permissão
+			if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
+				msender.message("§cVocê precisar ser capitão ou superior para poder alterar a descrição da facção.");
+				return;
+			}
+				
+			// Verificando se os argumentos não são nulos
+			if (!this.argIsSet(0)) 
+			{
+				msender.msg("§cArgumentos insuficientes, use /f desc <descrição>");
+				return;
+			}
 			
-		// Verificando se o player possui permissão
-		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
-			msender.message("§cVocê precisar ser capitão ou superior para poder alterar a descrição da facção.");
-			return;
-		}
+			// Evento
+			EventFactionsDescriptionChange event = new EventFactionsDescriptionChange(sender, msenderFaction, newDescription);
+			event.run();
+			if (event.isCancelled()) return;
+			newDescription = event.getNewDescription().replace("&", "§");
+	
+			// Aplicando evento
+			msenderFaction.setDescription(newDescription);
 			
-		// Verificando se os argumentos não são nulos
-		if (!this.argIsSet(0)) 
-		{
-			msender.msg("§cArgumentos insuficientes, use /f desc <descrição>");
-			return;
+			// Informando a facção
+			for (MPlayer follower : msenderFaction.getMPlayers())
+			{
+				follower.msg("§e%s §edefiniu a descrição da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), msenderFaction.getDescriptionDesc());
+			}
 		}
-		
-		// Evento
-		EventFactionsDescriptionChange event = new EventFactionsDescriptionChange(sender, msenderFaction, newDescription);
-		event.run();
-		if (event.isCancelled()) return;
-		newDescription = event.getNewDescription().replace("&", "§");
-
-		// Aplicando evento
-		msenderFaction.setDescription(newDescription);
-		
-		// Informando a facção
-		for (MPlayer follower : msenderFaction.getMPlayers())
-		{
-			follower.msg("§e%s §edefiniu a descrição da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), msenderFaction.getDescriptionDesc());
-		}
-	}
 	}
 }

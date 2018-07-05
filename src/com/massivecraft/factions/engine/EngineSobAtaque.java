@@ -41,28 +41,14 @@ public class EngineSobAtaque extends Engine{
 		
 		Chunk c = e.getLocation().getChunk();
 		
-		if (underattack.containsKey(c)){
-			return;
-		}
+		if (underattack.containsKey(c)) return;
+		else if (faction.getId().equals("zonalivre")) return;
+		else if (faction.getId().equals("zonadeguerra")) return;
+		else if (faction.getId().equals("zonaprotegida")) return;
+		else if (faction.getId().equals("safezone")) return;
+		else if (faction.getId().equals("warzone")) return;
+		else if (faction.getId().equals("none")) return;
 		
-		if (faction.getId().equals("zonalivre")){
-			return;
-		}
-		else if (faction.getId().equals("zonadeguerra")){
-			return;
-		}
-		else if (faction.getId().equals("zonaprotegida")){
-			return;
-		}
-		else if (faction.getId().equals("safezone")){
-			return;
-		}
-		else if (faction.getId().equals("warzone")){
-			return;
-		}
-		else if (faction.getId().equals("none")){
-			return;
-		}
 		underattack.put(c, System.currentTimeMillis());
 		factionattack.put(faction, 0);
 		infoattack.put(c, e.getLocation());
@@ -107,36 +93,31 @@ public class EngineSobAtaque extends Engine{
 	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
 		
 		Player p = e.getPlayer();
-        final String cmd = e.getMessage().toLowerCase();
 		MPlayer mp = MPlayer.get(p);
 		Faction fac = mp.getFaction();
 		
 		if(factionattack.containsKey(fac)) {
+	        String cmd = e.getMessage().toLowerCase();
 			if (cmd.startsWith("/f unclaim") || cmd.startsWith("/f desproteger") ||cmd.startsWith("/f abandonar")) { 
-			e.setCancelled(true);
-			p.sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
-			return;
-			}
-		}
-		
-		if(factionattack.containsKey(fac)) {
-			if (cmd.startsWith("/f nome") || cmd.startsWith("/f name") || cmd.startsWith("/f renomear") || cmd.startsWith("/f rename")) { 
-			e.setCancelled(true);
-			p.sendMessage("§cVocê não pode alterar o nome da facção enquanto estiver sobre ataque!");
-			return;
-			}
-		}
-		
-		if(factionattack.containsKey(fac)) {
-			if (cmd.startsWith("/f sair") || cmd.startsWith("/f leave") || cmd.startsWith("/f deixar") || cmd.startsWith("/f abandonar")) { 
-				if (mp.getFaction().getMPlayers().size() == 1) {
 				e.setCancelled(true);
-				p.sendMessage("§cVocê não pode sair da sua facção pois você é o ultimo membro da facção e a facção esta sobre ataque!");
+				p.sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
 				return;
+			}
+			
+			else if (cmd.startsWith("/f nome") || cmd.startsWith("/f name") || cmd.startsWith("/f renomear") || cmd.startsWith("/f rename")) { 
+				e.setCancelled(true);
+				p.sendMessage("§cVocê não pode alterar o nome da facção enquanto estiver sobre ataque!");
+				return;
+			}
+			
+			else if (cmd.startsWith("/f sair") || cmd.startsWith("/f leave") || cmd.startsWith("/f deixar") || cmd.startsWith("/f abandonar")) { 
+				if (mp.getFaction().getMPlayers().size() == 1) {
+					e.setCancelled(true);
+					p.sendMessage("§cVocê não pode sair da sua facção pois você é o ultimo membro da facção e a facção esta sobre ataque!");
+					return;
 				}
 			}
 		}
-		
 	}
 	
 	public void terras(EventFactionsChunksChange e) {
@@ -158,6 +139,7 @@ public class EngineSobAtaque extends Engine{
 		if(!mp.hasFaction()) {
 			return;
 		}
+		
 		Faction fac = BoardColl.get().getFactionAt(PS.valueOf(e.getBlock()));
 		
 		if(factionattack.get(fac) != null) {

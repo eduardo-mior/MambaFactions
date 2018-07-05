@@ -666,7 +666,7 @@ public class EngineMenuGui  extends Engine{
 			}
 			
 			else if (slot == 20) {
-				p.performCommand("f unclaim all all " + factionNome);
+				p.performCommand("f unclaim all all " + factionNome.replaceAll(" ", ""));
 				p.closeInventory();
 			}
 		}
@@ -833,7 +833,7 @@ public class EngineMenuGui  extends Engine{
 					if (target.getOnlinePlayers().size() > 0) {
 						target.msg("§eA facção §f" + factionNome + "§e recusou seu convite de aliança.");
 					}
-					abrirMenuRelacoesPendentesEnviados(p);
+					abrirMenuRelacoesPendentesRecebidos(p);
 				}
 			}
 		}

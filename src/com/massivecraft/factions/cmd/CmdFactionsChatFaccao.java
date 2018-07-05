@@ -44,21 +44,21 @@ public class CmdFactionsChatFaccao extends FactionsCommand
 	{
 		// Transformando todos os argumentos em 1 string
 		for (String msg: this.getArgs()) {
+				
+			Faction f = msender.getFaction();
+							
+			// Verficiando se os argumentos são validos
+			if (!this.argIsSet(0))
+			{
+				msender.message("§cArgumentos insuficientes, use /. <mensagem>");
+				return;
+			}
 			
-		Faction f = msender.getFaction();
-						
-		// Verficiando se os argumentos são validos
-		if (!this.argIsSet(0))
-		{
-			msender.message("§cArgumentos insuficientes, use /. <mensagem>");
-			return;
-		}
-		
-		// Mensagem para os membros da facção
-		for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
-			mp.message(("§a[f] §f" + msender.getRole().getPrefix() + msender.getName() + "§a: " + msg).replaceAll("&", "§"));
-			
-		}
+			// Mensagem para os membros da facção
+			for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
+				mp.message(("§a[f] §f" + msender.getRole().getPrefix() + msender.getName() + "§a: " + msg).replaceAll("&", "§"));
+				
+			}
 		}
 	}
 }
