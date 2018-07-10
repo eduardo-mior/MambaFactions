@@ -67,7 +67,7 @@ public class CmdFactionsConviteListar extends FactionsCommand
 		inv.setItem(flecha, new ItemBuilder(Material.ARROW).setName("§1§2§cVoltar").toItemStack());
 		
 		//Fazendo um loop pelos convites;
-		int rodar = 1;
+		int n = 1;
 		int slot = 11;
 		for(Entry<String, Invitation> invitation : invitations.entrySet()){
 			
@@ -92,13 +92,12 @@ public class CmdFactionsConviteListar extends FactionsCommand
 			}
 
 		    //Criando o item no menu gui
-			inv.setItem(slot, new ItemBuilder(Material.PAPER).setName("§eConvite #"+rodar).setLore("§fPlayer que foi convidado: §7" + invitedName, "§fPlayer que convidou: §7" + inviter.getRole().getPrefix() + inviterName, "§fConvite enviado há " + inviteTime + "§f atrás.", "", "§fBotão direito: §7Remover convite", "§fBotão Esquerdo: §7Informações do player").toItemStack());
+			inv.setItem(slot, new ItemBuilder(Material.PAPER).setName("§eConvite #"+n).setLore("§fPlayer que foi convidado: §7" + invitedName, "§fPlayer que convidou: §7" + inviter.getRole().getPrefix() + inviterName, "§fConvite enviado há " + inviteTime + "§f atrás.", "", "§fBotão direito: §7Remover convite", "§fBotão Esquerdo: §7Informações do player").toItemStack());
 		    
 		    //Criando o loop no menu e no item do menu gui
 			slot+= slot == 15 || slot == 24 ? + 5 : + 1;
-			rodar++;
+			n++;
 		}
-			p.openInventory(inv);
-
+		p.openInventory(inv);
 	}
 }

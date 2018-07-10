@@ -60,7 +60,7 @@ public class CmdFactionsCriar extends FactionsCommand
 		
 		EventFactionsMembershipChange joinEvent = new EventFactionsMembershipChange(sender, msender, faction, MembershipChangeReason.CREATE);
 		joinEvent.run();
-		// NOTA: O factions cria uma facção por existe o JoinEvent, para colocar o sender dentro da facção.
+		// NOTA: O factions cria uma facção vazia por existe o JoinEvent, para colocar o sender dentro da facção.
 		
 		// Informando o sender
 		msg("§aFacção §f%s§a criada com sucesso!", newName);

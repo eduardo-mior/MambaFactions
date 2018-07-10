@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -107,11 +108,13 @@ public class EngineShow extends Engine
 			String aliados = "";
 			String rival = "";
 			Collection<Faction> facs = FactionColl.get().getAll();
-			for(Faction f : facs) {
-				if (faction.getRelationTo(f).equals(Rel.ALLY)) {
-					aliados += "§8, " + f.getName(faction);
-				}
+			Set<String> relations = faction.getRelationWishes().keySet();
+			
+			for (String id : relations) {
+				Faction fac = Faction.get(id);
+				if (fac != null && fac.getRelationTo(faction).equals(Rel.ALLY)) aliados += "§8, " + fac.getName(faction);
 			}
+			
 			for(Faction f : facs) {
 				if (faction.getRelationTo(f).equals(Rel.ENEMY)) {
 					rival +=  "§8, " + f.getName(faction);
@@ -124,7 +127,9 @@ public class EngineShow extends Engine
 			if (rival.equals("")) {
 				rival = "....§7§oNenhum";
 			}
-			rival = rival.length() > 250 ? ("§7§oMuitos inimigos! Use /f relação listar " + faction.getName()) : rival;
+			if (rival.length() > 250) {
+				rival = "§7§oMuitos inimigos! Use /f relação listar " + faction.getName();
+			}
 
 			
 			show(idPriorityLiness, SHOW_ID_FACTION_ALIADOS, SHOW_PRIORITY_FACTION_ALIADOS, "Aliados", aliados.substring(4,aliados.length()));

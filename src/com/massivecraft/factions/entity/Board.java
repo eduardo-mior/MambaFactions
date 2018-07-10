@@ -360,7 +360,7 @@ public class Board extends Entity<Board> implements BoardInterface
 		//ret.add(Txt.titleize("(" + centerPs.getChunkX() + "," + centerPs.getChunkZ() + ") " + centerFaction.getName(observer)));
 		ret.add(Mson.mson("   "));
 
-		String blacklargesquare = "█";
+		String blacklargesquare = "\u2588";
 		
 		int halfWidth = width / 2;
 		int halfHeight = height / 2;
@@ -417,7 +417,7 @@ public class Board extends Entity<Board> implements BoardInterface
 				}
 				else if (getSobAtaque(p, herePs, p.getWorld().getName())) {
 					row.add(Mson.mson(ChatColor.LIGHT_PURPLE 
-						+ blacklargesquare).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+					+ blacklargesquare).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
 				}
 				else
 				{
@@ -452,6 +452,6 @@ public class Board extends Entity<Board> implements BoardInterface
 		if(EngineSobAtaque.underattack.containsKey(chunk)) {
 			return true;
 		} 
-	return false;
+		return false;
 	}
 }

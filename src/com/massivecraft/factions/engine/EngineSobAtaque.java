@@ -42,9 +42,6 @@ public class EngineSobAtaque extends Engine{
 		Chunk c = e.getLocation().getChunk();
 		
 		if (underattack.containsKey(c)) return;
-		else if (faction.getId().equals("zonalivre")) return;
-		else if (faction.getId().equals("zonadeguerra")) return;
-		else if (faction.getId().equals("zonaprotegida")) return;
 		else if (faction.getId().equals("safezone")) return;
 		else if (faction.getId().equals("warzone")) return;
 		else if (faction.getId().equals("none")) return;

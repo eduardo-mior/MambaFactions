@@ -36,8 +36,8 @@ public class Factions extends MassivePlugin
 	public final static String ID_WARZONE = "warzone";
 	
 	public final static String NAME_NONE_DEFAULT = ChatColor.DARK_GREEN.toString() + "Zona Livre";
-	public final static String NAME_SAFEZONE_DEFAULT = "Zona Protegida";
-	public final static String NAME_WARZONE_DEFAULT = "Zona de Guerra";
+	public final static String NAME_SAFEZONE_DEFAULT = ChatColor.GOLD.toString() + "Zona Protegida";
+	public final static String NAME_WARZONE_DEFAULT = ChatColor.DARK_RED.toString() + "Zona de Guerra";
 	
 	// -------------------------------------------- //
 	// INSTANCE & CONSTRUCT

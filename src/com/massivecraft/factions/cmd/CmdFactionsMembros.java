@@ -75,8 +75,6 @@ public class CmdFactionsMembros extends FactionsCommand
 			tamanhodomenu = 36;
 		} else if (limitemembros > 10 && limitemembros < 20) {
 			tamanhodomenu = 45;
-		} else if (limitemembros >= 20) {
-			tamanhodomenu = 54;
 		}
 		
 		Inventory inv = Bukkit.createInventory(null, tamanhodomenu, "§8Membros da " + faction.getName());
@@ -110,7 +108,7 @@ public class CmdFactionsMembros extends FactionsCommand
 			inv.setItem(32, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
 			inv.setItem(33, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
 			
-		} else if (tamanhodomenu == 54) {
+		} else {
 			inv.setItem(11, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
 			inv.setItem(12, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
 			inv.setItem(13, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
@@ -133,26 +131,26 @@ public class CmdFactionsMembros extends FactionsCommand
 			inv.setItem(42, new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack());
 		}
 		
-	        MPlayer mplayer = msender;
-	        Player p = mplayer.getPlayer();
-			int slot = 11;
-			for (int i = 0; i < faction.getMPlayers().size(); i++) {
-				MPlayer mp = mps.get(i);
-				Rel cargo = mp.getRole();
-				String nome = mp.getName();
-				boolean isOnline = mp.isOnline();
-				double poderMax = mp.getPowerMax();
-				double poderAtual = mp.getPower();
-				int kills = EngineKdr.getPlayerKills(mp);
-				int deaths = EngineKdr.getPlayerDeaths(mp);
-				String kdr2f = EngineKdr.getPlayerKdr(mp);
-				String poderAtual1f = String.format("%.1f", poderAtual);
-				long ultimoLoginMillis = mp.getLastActivityMillis() - System.currentTimeMillis();
-				LinkedHashMap<TimeUnit, Long> ageUnitcounts = TimeDiffUtil.limit(TimeDiffUtil.unitcounts(ultimoLoginMillis, TimeUnit.getAllButMillis()), 3);
-				String ultimoLogin = TimeDiffUtil.formatedMinimal(ageUnitcounts, "§e");
+		MPlayer mplayer = msender;
+		Player p = mplayer.getPlayer();
+		int slot = 11;
+		for (int i = 0; i < faction.getMPlayers().size(); i++) {
+			MPlayer mp = mps.get(i);
+			Rel cargo = mp.getRole();
+			String nome = mp.getName();
+			boolean isOnline = mp.isOnline();
+			double poderMax = mp.getPowerMax();
+			double poderAtual = mp.getPower();
+			int kills = EngineKdr.getPlayerKills(mp);
+			int deaths = EngineKdr.getPlayerDeaths(mp);
+			String kdr2f = EngineKdr.getPlayerKdr(mp);
+			String poderAtual1f = String.format("%.1f", poderAtual);
+			long ultimoLoginMillis = mp.getLastActivityMillis() - System.currentTimeMillis();
+			LinkedHashMap<TimeUnit, Long> ageUnitcounts = TimeDiffUtil.limit(TimeDiffUtil.unitcounts(ultimoLoginMillis, TimeUnit.getAllButMillis()), 3);
+			String ultimoLogin = TimeDiffUtil.formatedMinimal(ageUnitcounts, "§e");
 			inv.setItem(slot, new ItemBuilder(Material.SKULL_ITEM,1,3).setSkullOwner(nome).setName("§7"+nome).setLore("§fPoder: §7" +  poderAtual1f + "/" + poderMax,"§fCargo: §7" + cargo.getPrefix() + cargo.getName(),"§fAbates: §7" + kills,"§fMortes: §7" + deaths, "§fKdr: §7" + kdr2f, "§fStats: " + (isOnline ? "§aOnline" : "§cOffline"), "§fÚltimo login: §7" + ultimoLogin + "§e atrás").toItemStack());
 			slot+= slot == 15 || slot == 24 || slot == 33 ? + 5 : + 1;
-			}
-			p.openInventory(inv);
+		}
+		p.openInventory(inv);
 	}
 }

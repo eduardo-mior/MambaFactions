@@ -1,9 +1,11 @@
 package com.massivecraft.factions.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
-import com.massivecraft.factions.engine.EngineEditSource;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MPlayer;
@@ -55,8 +57,16 @@ public class CmdFactionsChatAliados extends FactionsCommand
 				return;
 			}
 			
+			// Lista de aliados
+			List<Faction> aliados = new ArrayList<>();
+			
 			// Obter lista de aliados
-			List<Faction> aliados = EngineEditSource.getAliados(f);
+			Set<String> relations = f.getRelationWishes().keySet();;
+			
+			for (String id : relations) {
+				Faction fac = Faction.get(id);
+				if (fac != null && fac.getRelationTo(f).equals(Rel.ALLY)) aliados.add(fac);
+			}
 			
 			// Verificar se a facção possui aliados
 			if (aliados.size() == 0) {
@@ -65,8 +75,8 @@ public class CmdFactionsChatAliados extends FactionsCommand
 			}
 			
 			// Mensagem para os aliados
-			for(Faction fa : aliados) {
-				for(MPlayer mp : fa.getMPlayersWhereOnline(true)) {
+			for(Faction ally : aliados) {
+				for(MPlayer mp : ally.getMPlayersWhereOnline(true)) {
 					mp.message(("§b[a] §7["  + f.getName() + "§7] §f" + msender.getRole().getPrefix() + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
 				}
 			}

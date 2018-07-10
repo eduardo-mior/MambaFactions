@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
@@ -174,6 +175,17 @@ public class EngineEditSource  extends Engine{
 	}
 	
 	
+	public static List<Faction> getAliados(Faction f) {
+		List<Faction> aliados = new ArrayList<>();
+		Set<String> relations = f.getRelationWishes().keySet();
+		
+		for (String id : relations) {
+			Faction fac = Faction.get(id);
+			if (fac != null && fac.getRelationTo(f).equals(Rel.ALLY)) aliados.add(fac);
+		}
+		return aliados;
+	}
+	
 	public static List<String> fplayers(Faction f) {
 		
 		List<String> players = new ArrayList<>();
@@ -246,7 +258,7 @@ public class EngineEditSource  extends Engine{
 	
 	public static List<String> fmotd(Faction f) {
 		
-		final String factionmotd = f.getMotdDesc();
+		String factionmotd = f.getMotdDesc();
 		int factionmotdtamanho = factionmotd.length();
 		List<String> motd = new ArrayList<>();
 		
@@ -274,20 +286,6 @@ public class EngineEditSource  extends Engine{
 			motd.add("§7Para visualiza-la use '§f/f motd§7'");
 			return motd; 
 		}
-	}
-	
-	public static List<Faction> getAliados(Faction f) {
-		List<Faction> aliados = new ArrayList<>();
-		
-		for(Faction faction : FactionColl.get().getAll()) {
-			if (f.getRelationTo(faction).equals(Rel.ALLY)) {
-				if (faction.getRelationTo(f).equals(Rel.ALLY)) {
-					aliados.add(faction);
-				}
-			}
-		}
-		
-		return aliados;
 	}
 	
 	public static Faction getFactionByName(String name)

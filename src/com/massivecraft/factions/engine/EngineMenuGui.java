@@ -39,11 +39,10 @@ public class EngineMenuGui  extends Engine{
 	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
 		
 		final String cmd = e.getMessage().toLowerCase();
-		final Player p = e.getPlayer();
-		final MPlayer mplayer = MPlayer.get(p);
-        int terras = mplayer.getFaction().getLandCount();
 
 		if (cmd.equalsIgnoreCase("/f")) {
+			final Player p = e.getPlayer();
+			final MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 			        if (mplayer.getFaction().getLeader() == null ) {
@@ -64,6 +63,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.startsWith("/f desfazer") || cmd.startsWith("/f disband") || cmd.startsWith("/f deletar")) {
+			final Player p = e.getPlayer();
+			final MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -80,6 +81,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.equalsIgnoreCase("/f convite") || cmd.equalsIgnoreCase("/f invite") || cmd.equalsIgnoreCase("/f convidar") || cmd.equalsIgnoreCase("/f adicionar")  || cmd.equalsIgnoreCase("/f i")) {
+			final Player p = e.getPlayer();
+			final MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.OFFICER ||mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -96,9 +99,12 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.startsWith("/f desproteger all") || cmd.startsWith("/f abandonar all") || cmd.startsWith("/f unclaim all")) {
+			final Player p = e.getPlayer();
+			final MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.LEADER || mplayer.getRole() == Rel.OFFICER || mplayer.isOverriding()) {
+				        int terras = mplayer.getFaction().getLandCount();
 						if (terras >= 1) {
 							abrirMenuAbandonarTerras(p);
 							e.setCancelled(true);
@@ -118,6 +124,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.equalsIgnoreCase("/f relacao") || cmd.equalsIgnoreCase("/f relação") || cmd.equalsIgnoreCase("/f relation") || cmd.equalsIgnoreCase("/f rel")) {
+			final Player p = e.getPlayer();
+			final MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.OFFICER ||mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -401,9 +409,6 @@ public class EngineMenuGui  extends Engine{
 		} else if (enviados > 5 && enviados <= 10) {
 			tamanho = 45;
 			flecha = 40;
-		} else { 
-			tamanho = 54;
-			flecha = 49;
 		}
 		
 		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites enviados pendentes");
@@ -436,9 +441,6 @@ public class EngineMenuGui  extends Engine{
 		} else if (recebidos > 5 && recebidos <= 10) {
 			tamanho = 45;
 			flecha = 40;
-		} else { 
-			tamanho = 54;
-			flecha = 49;
 		}
 		
 		Inventory inv = Bukkit.createInventory(null, tamanho, "§8Convites recebidos pendentes");
