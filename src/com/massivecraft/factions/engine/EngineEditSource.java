@@ -131,9 +131,13 @@ public class EngineEditSource  extends Engine{
 	        Faction faction = coll.getFactionAt(PS.valueOf(e.getTo()));
 			if (!(faction.isNone() || faction.getMPlayers().contains(mp)) && faction != null) {
 				if (lista.containsKey(p)) {
-					lista.remove(p);
-					e.setCancelled(true);
-					p.sendMessage("§cVocê não pode se teleportar para este local pois ele esta protegido pela facção §f" + faction.getName() + "§c.");
+					if (faction.getId().equals("safezone") || faction.getId().equals("warzone") || faction.getId().equals("none")) {
+						return;
+					} else {
+						lista.remove(p);
+						e.setCancelled(true);
+						p.sendMessage("§cVocê não pode se teleportar para este local pois ele esta protegido pela facção §f" + faction.getName() + "§c.");
+					}
 				}
 			}
 		}
