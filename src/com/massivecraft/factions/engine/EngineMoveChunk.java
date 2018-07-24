@@ -34,7 +34,6 @@ public class EngineMoveChunk extends Engine
 		// If the player is moving from one chunk to another ...
 		if (MUtil.isSameChunk(event)) return;
 		Player player = event.getPlayer();
-		if (MUtil.isntPlayer(player)) return;
 
 		// ... gather info on the player and the move ...
 		MPlayer mplayer = MPlayer.get(player);

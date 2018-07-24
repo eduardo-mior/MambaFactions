@@ -34,9 +34,6 @@ public class CmdFactionsPromover extends FactionsCommand {
 
 	@Override
 	public void perform() throws MassiveException {
-		MPlayer mp = this.readArg(msender);
-		Faction msf = msender.getFaction();
-		Faction mpf = mp.getFaction();
 		
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
@@ -44,31 +41,36 @@ public class CmdFactionsPromover extends FactionsCommand {
 			return;
 		}
 		
+		// Argumentos
+		MPlayer target = this.readArg(msender);
+		Faction facSender = msender.getFaction();
+		Faction facTarget = target.getFaction();
+		
 		// Verificando se o sender e o target são a mesma pessoa
-		if (msender == mp) {
+		if (msender == target) {
 			msender.message("§cVocê não pode promover você mesmo.");
 			return;
 		}
 
 		// Verificando se o target é da mesma facão que o sender
-		if (msf != mpf) {
+		if (facSender != facTarget) {
 			msender.message("§cEste jogador não esta na sua facção.");
 			return;
 		}
 
 		Rel cargoms = msender.getRole();
-		Rel cargomp = mp.getRole();
+		Rel cargomp = target.getRole();
 
 		// Verificando se o target ja é líder
 		if (cargomp == Rel.LEADER) {
-			msender.message("§c"+ mp.getName() + "§c já é o líder da facção.");
+			msender.message("§c"+ target.getName() + "§c já é o líder da facção.");
 			return;
 		}
 
 		// Se o targe for recruit = sucesso
 		if (cargomp == Rel.RECRUIT) {
-			msf.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e promoveu \"§e" + mp.getName() + "§e\" para o cargo de membro da facção.");
-			mp.setRole(Rel.MEMBER);
+			facSender.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e promoveu \"§e" + target.getName() + "§e\" para o cargo de membro da facção.");
+			target.setRole(Rel.MEMBER);
 			return;
 		}
 
@@ -78,8 +80,8 @@ public class CmdFactionsPromover extends FactionsCommand {
 				msender.message("§cApenas o líder da facção pode promover um membro para capitão.");
 				return;
 			}
-			msf.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e promoveu \"§e" + mp.getName() + "§e\"§e para o cargo de capitão da facção.");
-			mp.setRole(Rel.OFFICER);
+			facSender.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e promoveu \"§e" + target.getName() + "§e\"§e para o cargo de capitão da facção.");
+			target.setRole(Rel.OFFICER);
 			return;
 		}
 
@@ -87,7 +89,7 @@ public class CmdFactionsPromover extends FactionsCommand {
 		if (cargomp == Rel.OFFICER) {
 			if (cargoms == Rel.LEADER) {
 				msender.message(
-						"§cEste jogador já é capitão da facção, caso queira transferir a liderança da facção use /f transferir §c" +  mp.getName() + "§c");
+						"§cEste jogador já é capitão da facção, caso queira transferir a liderança da facção use /f transferir §c" +  target.getName() + "§c");
 				return;
 			}
 			msender.message("§cApenas o líder da facção pode promover um capitão para líder.");

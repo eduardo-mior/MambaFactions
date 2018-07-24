@@ -2,17 +2,19 @@ package com.massivecraft.factions.engine;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,6 +27,7 @@ import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
+import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.massivecore.Engine;
@@ -35,7 +38,7 @@ public class EngineEditSource  extends Engine{
 	private static EngineEditSource i = new EngineEditSource();
 	public static EngineEditSource get() { return i; }
 	
-	public HashMap<Player, Integer> lista = new HashMap<Player, Integer>();
+	private List<String> lista = new ArrayList<>();
 	
 	@EventHandler
 	public void comandoClaim(PlayerCommandPreprocessEvent e) {
@@ -54,12 +57,41 @@ public class EngineEditSource  extends Engine{
 	}
 	
 	@EventHandler
+	public void aoMorrerAnunciarMorte(PlayerDeathEvent e) {
+	    if (MConf.get().anunciarMorteAoMorrer) {
+	    	Player p = e.getEntity();
+	    	Entity en = p.getKiller();
+	    	if (en instanceof Player) {
+	    		Player k = p.getKiller().getPlayer();
+	    		MPlayer mp = MPlayer.get(p);
+	    		MPlayer mk = MPlayer.get(k);
+	    		String facp = mp.getFaction().isNone() ? "" : "§3[" + mp.getRole().getPrefix() + mp.getFaction().getName() + "§3] ";
+	    		String fack = mk.getFaction().isNone() ? "" : "§3[" + mk.getRole().getPrefix() + mk.getFaction().getName() + "§3] ";
+	    		for (Player target : getPlayersNearby(p)) {
+	    			target.sendMessage("§3" + facp + p.getName() + "§c foi morto por §3" + fack + k.getName());
+	    		}
+	    	}
+		}
+	}
+	
+	private List<Player> getPlayersNearby(Player player) {
+		List<Player> players = new ArrayList<Player>();
+		int d2 = MConf.get().distanciaDoAnuncioEmBlocos * MConf.get().distanciaDoAnuncioEmBlocos;
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (p.getWorld() == player.getWorld() && p.getLocation().distanceSquared(player.getLocation()) <= d2) {
+				players.add(p);
+			}
+		}
+		return players;
+	}
+	
+	@EventHandler
 	public void aoLogar(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		MPlayer mp = MPlayer.get(p);
 		Faction f = mp.getFaction();
-		if (!f.isNone() && mp.hasFaction()) {
-			f.msg("§a"+mp.getRole().getPrefix()+mp.getName()+"§a entrou no servidor.");
+		if (!f.isNone()) {
+			f.msg("§a" + mp.getRole().getPrefix() + mp.getName() + "§a entrou no servidor.");
 		}
 	}
 	
@@ -68,56 +100,44 @@ public class EngineEditSource  extends Engine{
 		Player p = e.getPlayer();
 		MPlayer mp = MPlayer.get(p);
 		Faction f = mp.getFaction();
-		if (!f.isNone() && mp.hasFaction()) {
-			f.msg("§c"+mp.getRole().getPrefix()+mp.getName()+"§c saiu do servidor.");
+		if (!f.isNone()) {
+			f.msg("§c" + mp.getRole().getPrefix() + mp.getName() + "§c saiu do servidor.");
 		}
 	}
 		
 	@EventHandler
 	public void onCommandEvent(PlayerCommandPreprocessEvent e) {
 	
-	  Player p = e.getPlayer();
-	  String cmd = e.getMessage().toLowerCase();
-      String[] arg1 = null;
-	  arg1 = cmd.split(" ");
-	  
-	  if (arg1[0].contains("voltar") || arg1[0].contains("casa") || arg1[0].contains("return") || arg1[0].contains("home") || arg1[0].contains("back")) {
-		 if(!lista.containsKey(p)) {
-			lista.put(p, 0);
-	        new BukkitRunnable() {
-	            @Override
-	            public void run() {
-	            	if (lista.containsKey(p)) {
-	            		lista.remove(p); }
-	            }
-	        }.runTaskLater(Factions.get(), 20 * 20);
-	        return;
+		Player p = e.getPlayer();
+		String cmd = e.getMessage().toLowerCase();
+		String[] args = cmd.split(" ");	  
+	  		
+		if (args[0].contains("sethome") || args[0].contains("setcasa") || args[0].contains("createhome")) {
+			MPlayer mp = MPlayer.get(p);
+			BoardColl coll = BoardColl.get();
+			Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));	        
+			if (!faction.isNone() && !faction.getMPlayers().contains(mp) && !faction.getRelationTo(mp.getFaction()).equals(Rel.ALLY)) {
+				e.setCancelled(true);
+				p.sendMessage("§cVocê não tem permissão para definir uma home neste local.");		
 			}
 		}
-
-	    else if (arg1[0].contains("sethome") || arg1[0].contains("setcasa") || arg1[0].contains("createhome")) {
-	        MPlayer mp = MPlayer.get(p);
-	        BoardColl coll = BoardColl.get();
-	        Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));
-			if (faction != null) {
-				if (!(faction.isNone() || faction.getMPlayers().contains(mp))) {
-					e.setCancelled(true);
-					p.sendMessage("§cVocê não tem permissão para definir uma home neste local.");
+		
+		if (args[0].contains("voltar") || args[0].contains("casa") || args[0].contains("return") || args[0].contains("home") || args[0].contains("back")) {
+			lista.add(p.getName());
+			lista.add(p.getName());
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (lista.contains(p.getName())) {
+						lista.remove(p.getName()); 
+						if (lista.contains(p.getName())) {
+							lista.remove(p.getName()); 
+						}
+					}
 				}
-			} 
-		} 
-	    
-	    else if (cmd.startsWith("/f sethome") || cmd.startsWith("/f definirhome") || cmd.startsWith("/f definirbase")) {
-	        MPlayer mp = MPlayer.get(p);
-	        BoardColl coll = BoardColl.get();
-	        Faction faction = coll.getFactionAt(PS.valueOf(e.getPlayer().getLocation()));
-			if (faction != null) {
-				if (!(faction.getMPlayers().contains(mp))) {
-					e.setCancelled(true);
-					p.sendMessage("§cVocê só pode definir a home da facção dentro dos territórios da sua facção.");
-				}
-			}
-		}
+			}.runTaskLater(Factions.get(), 20 * 8);
+			return;
+		}	
 	}
 	
 	@EventHandler (priority=EventPriority.LOW)
@@ -129,13 +149,13 @@ public class EngineEditSource  extends Engine{
 		if (e.getCause() == TeleportCause.COMMAND || e.getCause() == TeleportCause.UNKNOWN  || e.getCause() == TeleportCause.PLUGIN ) {
 	        BoardColl coll = BoardColl.get();
 	        Faction faction = coll.getFactionAt(PS.valueOf(e.getTo()));
-			if (!(faction.isNone() || faction.getMPlayers().contains(mp)) && faction != null) {
-				if (lista.containsKey(p)) {
-					if (faction.getId().equals("safezone") || faction.getId().equals("warzone") || faction.getId().equals("none")) {
+			if (!faction.getMPlayers().contains(mp) && !faction.getRelationTo(mp.getFaction()).equals(Rel.ALLY)) {
+				if (lista.contains(p.getName())) {
+					if (faction.getId().equals(Factions.ID_SAFEZONE) || faction.getId().equals(Factions.ID_WARZONE) || faction.getId().equals(Factions.ID_NONE)) {
 						return;
 					} else {
-						lista.remove(p);
 						e.setCancelled(true);
+						lista.remove(p.getName());
 						p.sendMessage("§cVocê não pode se teleportar para este local pois ele esta protegido pela facção §f" + faction.getName() + "§c.");
 					}
 				}
@@ -194,68 +214,55 @@ public class EngineEditSource  extends Engine{
 		
 		List<String> players = new ArrayList<>();
 		String pon = "";
-		int tamanho = pon.length();
 
-		if (f.getOnlinePlayers().size() > 0) {
-			for (final Player todos : f.getOnlinePlayers()) {
-				final MPlayer mps = MPlayer.get(todos);
-				pon += pon + "§7" + mps.getRole().getPrefix() + mps.getName();
-			}
-			players.add(pon);
+		for (int i = 0; i < f.getOnlinePlayers().size(); i++) {
+			Player p = f.getOnlinePlayers().get(i);
+			MPlayer mp = MPlayer.get(p);
+			pon += "§7 " + mp.getRole().getPrefix() + mp.getName();
 		}
 		
-		
-		if (f.getOnlinePlayers().size() != 0 && tamanho < 35) {
+		int tamanho = pon.length();
+		if (tamanho < 40) {
 			players.add("§7"+ pon.substring(0, tamanho)); 
 			return players; }
 		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 70 && tamanho >= 35 ) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35, tamanho));
+		else if (tamanho < 80) {
+			players.add("§7"+pon.substring(0,40));
+			players.add("§7"+pon.substring(40, tamanho));
 			return players; }
 		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 105 && tamanho >= 70 && tamanho >= 35) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35,70));
-			players.add("§7"+pon.substring(70, tamanho)); 
+		else if (tamanho < 120) {
+			players.add("§7"+pon.substring(0,40));
+			players.add("§7"+pon.substring(40,80));
+			players.add("§7"+pon.substring(80, tamanho)); 
 			return players; }
 		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 140 && tamanho >= 105 && tamanho >= 70 && tamanho >= 35) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35,70));
-			players.add("§7"+pon.substring(70, 105)); 
-			players.add("§7"+pon.substring(105, tamanho)); 
+		else if (tamanho < 160) {
+			players.add("§7"+pon.substring(0,40));
+			players.add("§7"+pon.substring(40,80));
+			players.add("§7"+pon.substring(80, 120)); 
+			players.add("§7"+pon.substring(120, tamanho)); 
 			return players; }
 		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 175 && tamanho >= 140 && tamanho >= 105 && tamanho >= 70 && tamanho >= 35) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35,70));
-			players.add("§7"+pon.substring(70, 105)); 
-			players.add("§7"+pon.substring(105, 140)); 
-			players.add("§7"+pon.substring(140, tamanho)); 
+		else if (tamanho < 200) {
+			players.add("§7"+pon.substring(0,40));
+			players.add("§7"+pon.substring(40,80));
+			players.add("§7"+pon.substring(80, 120)); 
+			players.add("§7"+pon.substring(120, 160)); 
+			players.add("§7"+pon.substring(160, tamanho)); 
 			return players; }
 		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 210 && tamanho >= 175 && tamanho >= 140 && tamanho >= 105 && tamanho >= 70 && tamanho >= 35) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35,70));
-			players.add("§7"+pon.substring(70, 105)); 
-			players.add("§7"+pon.substring(105, 140)); 
-			players.add("§7"+pon.substring(140, 175));
-			players.add("§7"+pon.substring(175, tamanho)); 
-			return players; }
-		
-		else if (f.getOnlinePlayers().size() != 0 && tamanho < 245 && tamanho >= 175 && tamanho >= 140 && tamanho >= 105 && tamanho >= 70 && tamanho >= 35) {
-			players.add("§7"+pon.substring(0,35));
-			players.add("§7"+pon.substring(35,70));
-			players.add("§7"+pon.substring(70, 105)); 
-			players.add("§7"+pon.substring(105, 140)); 
-			players.add("§7"+pon.substring(140, 175)); 
-			players.add("§7"+pon.substring(175, 210)); 
-			players.add("§7"+pon.substring(210, tamanho)); 
+		else if (tamanho < 240) {
+			players.add("§7"+pon.substring(0,40));
+			players.add("§7"+pon.substring(40,80));
+			players.add("§7"+pon.substring(80, 120)); 
+			players.add("§7"+pon.substring(120, 160)); 
+			players.add("§7"+pon.substring(160, 200));
+			players.add("§7"+pon.substring(200, tamanho)); 
 			return players; }
 		
 		else {
-			players.add("§7§oNinguém.");
+			players.add("§7§oMuitos players online.");
 			return players; 
 		}
 	}
@@ -270,19 +277,13 @@ public class EngineEditSource  extends Engine{
 			motd.add("§7§o'Mensagem do dia indefinida.'");
 			return motd; }
 		
-		else if (f.hasMotd() == true && factionmotdtamanho < 35) {
+		else if (f.hasMotd() && factionmotdtamanho < 40) {
 			motd.add("§7'§b"+ factionmotd.substring(0, factionmotdtamanho) + "§7'"); 
 			return motd; }
 		
-		else if (f.hasMotd() == true && factionmotdtamanho < 70 && factionmotdtamanho >= 35 ) {
-			motd.add("§7'§b"+factionmotd.substring(0,35));
-			motd.add("§b"+factionmotd.substring(35, factionmotdtamanho) + "§7'");
-			return motd; }
-		
-		else if (f.hasMotd() == true && factionmotdtamanho < 100 && factionmotdtamanho >= 70 && factionmotdtamanho >= 35) {
-			motd.add("§7'§b"+factionmotd.substring(0,35));
-			motd.add("§b"+factionmotd.substring(35,70));
-			motd.add("§b"+factionmotd.substring(70, factionmotdtamanho) + "§7'"); 
+		else if (f.hasMotd() && factionmotdtamanho < 110) {
+			motd.add("§7'§b"+factionmotd.substring(0,40));
+			motd.add("§b"+factionmotd.substring(50, factionmotdtamanho) + "§7'");
 			return motd; }
 		
 		else {

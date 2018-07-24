@@ -2,7 +2,6 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
-import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MFlag;
 import com.massivecraft.factions.entity.MPlayer;
@@ -42,38 +41,35 @@ public class CmdFactionsDesfazer extends FactionsCommand
 			msender.message("§cApenas o líder da facção pode desfazer a facção.");
 			return;
 		}
-		
-		// Argumentos
-		Faction faction = msenderFaction;
-		
+				
 		// Verificando se a facção é uma facção permanente (zonalivre, zonadeguerra ou zonaprotegida)
-		if (faction.getFlag(MFlag.getFlagPermanent()))
+		if (msenderFaction.getFlag(MFlag.getFlagPermanent()))
 		{
 			msg("§cEsta facção é uma facção permanente portanto não pode ser desfeita.");
 			return;
 		}
 
 		// Evento
-		EventFactionsDisband event = new EventFactionsDisband(me, faction);
+		EventFactionsDisband event = new EventFactionsDisband(me, msenderFaction);
 		event.run();
 		if (event.isCancelled()) return;
 
 		
 		// Eviando todos os jogadores para a zona livre e informandos os mesmo que a facção foi desfeita
-		for (MPlayer mplayer : faction.getMPlayers())
+		for (MPlayer mplayer : msenderFaction.getMPlayers())
 		{
 			EventFactionsMembershipChange membershipChangeEvent = new EventFactionsMembershipChange(sender, mplayer, FactionColl.get().getNone(), MembershipChangeReason.DISBAND);
 			membershipChangeEvent.run();
 		}
 
 		// Informando os players da facção
-		for (MPlayer mplayer : faction.getMPlayersWhereOnline(true))
+		for (MPlayer mplayer : msenderFaction.getMPlayersWhereOnline(true))
 		{
 			mplayer.msg("§e%s§e desfez a sua facção!", msender.describeTo(mplayer).replace("você", "§eVocê"));
 		}
 		
 		// Aplicando o evento.
-		faction.detach();
+		msenderFaction.detach();
 	}
 	
 }

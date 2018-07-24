@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.event.EventFactionsHomeChange;
 import com.massivecraft.massivecore.MassiveException;
@@ -32,9 +33,8 @@ public class CmdFactionsSethome extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		// Args
+		// Argumentos
 		Faction faction = msenderFaction;
-		
 		PS newHome = PS.valueOf(me.getLocation());
 		
 		// Verificando se o player possui permissão
@@ -44,10 +44,16 @@ public class CmdFactionsSethome extends FactionsCommand
 		}
 		
 		// Por algum motivo esta verificação não funciona direito
-		// No entando criamos nossa própria verificação na classe EngimeEditSource
 		if (!faction.isValidHome(newHome))
 		{
-			msender.msg("§cVocê só pode definir a home da facção dentro dos territórios da sua facção.");
+			msender.msg("§cVocê só pode definir a home da facção dentro dos territórios da facção.");
+			return;
+		}
+		
+        BoardColl coll = BoardColl.get();
+        Faction factionC = coll.getFactionAt(PS.valueOf(msender.getPlayer().getLocation()));
+        if (!(factionC.getMPlayers().contains(msender))) {
+        	msender.msg("§cVocê só pode definir a home da facção dentro dos territórios da facção.");
 			return;
 		}
 		

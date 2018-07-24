@@ -1,19 +1,5 @@
 package com.massivecraft.factions.engine;
 
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.TerritoryAccess;
-import com.massivecraft.factions.entity.Board;
-import com.massivecraft.factions.entity.BoardColl;
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColl;
-import com.massivecraft.factions.entity.MConf;
-import com.massivecraft.factions.entity.MPerm;
-import com.massivecraft.factions.entity.MPlayer;
-import com.massivecraft.factions.integration.spigot.IntegrationSpigot;
-import com.massivecraft.factions.util.EnumerationUtil;
-import com.massivecraft.massivecore.Engine;
-import com.massivecraft.massivecore.ps.PS;
-import com.massivecraft.massivecore.util.MUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -39,7 +24,16 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Map;
+import com.massivecraft.factions.entity.BoardColl;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MConf;
+import com.massivecraft.factions.entity.MPerm;
+import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.factions.integration.spigot.IntegrationSpigot;
+import com.massivecraft.factions.util.EnumerationUtil;
+import com.massivecraft.massivecore.Engine;
+import com.massivecraft.massivecore.ps.PS;
+import com.massivecraft.massivecore.util.MUtil;
 
 public class EnginePermBuild extends Engine
 {
@@ -244,12 +238,12 @@ public class EnginePermBuild extends Engine
 		
 		@SuppressWarnings("deprecation")
 		Block retractBlock = event.getRetractLocation().getBlock();
-		PS retractPs = PS.valueOf(retractBlock);
 		
 		// if potentially retracted block is just air/water/lava, no worries
 		if (retractBlock.isEmpty() || retractBlock.isLiquid()) return;
 		
 		// Factions involved
+		PS retractPs = PS.valueOf(retractBlock);
 		Faction pistonFaction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock()));
 		Faction targetFaction = BoardColl.get().getFactionAt(retractPs);
 		
@@ -285,58 +279,6 @@ public class EnginePermBuild extends Engine
 		
 		// ... and compensate for client side prediction
 		event.getPlayer().sendBlockChange(potentialBlock.getLocation(), blockType, potentialBlock.getState().getRawData());
-	}
-	
-	// -------------------------------------------- //
-	// BUILD > MOVE
-	// -------------------------------------------- //
-	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void buildMove(BlockFromToEvent event)
-	{
-		if ( ! MConf.get().protectionLiquidFlowEnabled) return;
-		
-		// Prepare fields
-		Block fromBlock = event.getBlock();
-		int chunkFromX = fromBlock.getX() >> 4;
-		int chunkFromZ = fromBlock.getZ() >> 4;
-		BlockFace face = event.getFace();
-		int chunkToX = (fromBlock.getX() + face.getModX()) >> 4;
-		int chunkToZ = (fromBlock.getZ() + face.getModZ()) >> 4;
-		
-		// If a liquid (or dragon egg) moves from one chunk to another ...
-		if (chunkToX == chunkFromX && chunkToZ == chunkFromZ) return;
-		
-		// ... get the correct board for this block ...
-		Board board = BoardColl.get().getFixed(fromBlock.getWorld().getName().toLowerCase(), false);
-		if (board == null) return;
-		
-		// ... get the access map ...
-		Map<PS, TerritoryAccess> map = board.getMapRaw();
-		if (map.isEmpty()) return;
-		
-		// ... get the faction ids from and to ...
-		PS fromPs = PS.valueOf(chunkFromX, chunkFromZ);
-		PS toPs = PS.valueOf(chunkToX, chunkToZ);
-		TerritoryAccess fromTa = map.get(fromPs);
-		TerritoryAccess toTa = map.get(toPs);
-			
-		// Null checks are needed here since automatic board cleaning can be undesired sometimes
-		String fromId = fromTa != null ? fromTa.getHostFactionId() : Factions.ID_NONE;
-		String toId = toTa != null ? toTa.getHostFactionId() : Factions.ID_NONE;
-		
-		// ... and the chunks belong to different factions ...
-		if (toId.equals(fromId)) return;
-		
-		// ... and the faction "from" can not build at "to" ...
-		Faction fromFac = FactionColl.get().getFixed(fromId);
-		if (fromFac == null) fromFac = FactionColl.get().getNone();
-		Faction toFac = FactionColl.get().getFixed(toId);
-		if (toFac == null) toFac = FactionColl.get().getNone();
-		if (MPerm.getPermBuild().has(fromFac, toFac)) return;
-		
-		// ... cancel the event!
-		event.setCancelled(true);
 	}
 	
 }

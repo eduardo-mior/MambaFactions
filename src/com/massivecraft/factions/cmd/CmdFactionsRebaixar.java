@@ -34,9 +34,6 @@ public class CmdFactionsRebaixar extends FactionsCommand {
 
 	@Override
 	public void perform() throws MassiveException {
-		MPlayer mp = this.readArg(msender);
-		Faction msf = msender.getFaction();
-		Faction mpf = mp.getFaction();
 		
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
@@ -44,20 +41,25 @@ public class CmdFactionsRebaixar extends FactionsCommand {
 			return;
 		}
 		
+		// Argumentos
+		MPlayer target = this.readArg(msender);
+		Faction facSender = msender.getFaction();
+		Faction facTarget = target.getFaction();
+		
 		// Verificando se o target é da mesma facão que o sender
-		if (msf != mpf) {
+		if (facSender != facTarget) {
 			msender.message("§cEste jogador não esta na sua facção.");
 			return;
 		}
 
 		// Verificando se o sender e o target são a mesma pessoa
-		if (msender == mp) {
+		if (msender == target) {
 			msender.message("§cVocê não pode rebaixar você mesmo.");
 			return;
 		}
 		
 		Rel cargoms = msender.getRole();
-		Rel cargomp = mp.getRole();
+		Rel cargomp = target.getRole();
 
 		// Verificando se o target é o líder da facção
 		if (cargomp == Rel.LEADER) {
@@ -67,14 +69,14 @@ public class CmdFactionsRebaixar extends FactionsCommand {
 
 		// Verificando se o target já é o cargo mais baixo (recruit)
 		if (cargomp == Rel.RECRUIT) {
-			msender.message("§cEste jogador já esta no cargo mais baixo da facção caso queira expulsa-lo use /f expulsar §c" + mp.getName() + "§c" );
+			msender.message("§cEste jogador já esta no cargo mais baixo da facção caso queira expulsa-lo use /f expulsar §c" + target.getName() + "§c" );
 			return;
 		}
 
 		// Se o targe for member = sucesso
 		if (cargomp == Rel.MEMBER) {
-			msf.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e rebaixou \"§e" + mp.getName() + "§e\" para o cargo de recruta da facção.");
-			mp.setRole(Rel.RECRUIT);
+			facSender.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e rebaixou \"§e" + target.getName() + "§e\" para o cargo de recruta da facção.");
+			target.setRole(Rel.RECRUIT);
 			return;
 		}
 
@@ -84,8 +86,8 @@ public class CmdFactionsRebaixar extends FactionsCommand {
 				msender.message("§cApenas o líder da facção pode rebaixar um capitão.");
 				return;
 			}
-			msf.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e rebaixou \"§e" + mp.getName() + "§e\" para o cargo de membro da facção.");
-			mp.setRole(Rel.MEMBER);
+			facSender.msg("§e" + msender.getRole().getPrefix() + msender.getName() + "§e rebaixou \"§e" + target.getName() + "§e\" para o cargo de membro da facção.");
+			target.setRole(Rel.MEMBER);
 			return;
 		}
 	}

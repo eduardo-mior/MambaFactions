@@ -191,37 +191,37 @@ public class EngineMenuGui  extends Engine{
 			 * ITENS QUE USAM SUBSTRING
 			 */
 			if (!EngineSobAtaque.factionattack.containsKey(faction)) {
-			inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e" + factionNome).setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f,"§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, faction.getOnlinePlayers().size() == 1 ? ("§7  " + EngineEditSource.fplayers(faction).toString().replace("[", "").replace("]", "").replace(",", "")) : ("§7  " + EngineEditSource.fplayers(faction).toString().replace("[", "").replace("]", "")),"§7","§fDescrição:","§7'"+factiondesc+"§7'","§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack());
+			inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e" + factionNome).setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, EngineEditSource.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack());
 			} else {
-			inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e" + factionNome).setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f,"§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, faction.getOnlinePlayers().size() == 1 ? ("§7  " + EngineEditSource.fplayers(faction).toString().replace("[", "").replace("]", "").replace(",", "")) : ("§7  " + EngineEditSource.fplayers(faction).toString().replace("[", "").replace("]", "")),"§7","§fDescrição:","§7'"+factiondesc+"§7'","§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack()); }
+			inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e" + factionNome).setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, EngineEditSource.fplayers(faction),"§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack()); }
 			
 			if (mplayer.getRole() == Rel.LEADER) {
 			inv.setItem(43, new ItemBuilder(Material.DARK_OAK_DOOR_ITEM).setName("§cDesfazer facção").setLore("§7Clique para desfazer a sua facção.").toItemStack());
 			} else {
 			inv.setItem(43, new ItemBuilder(Material.DARK_OAK_DOOR_ITEM).setName("§cSair da facção").setLore("§7Clique para abandonar a sua facção.").toItemStack()); }	
 			
-			if (mplayer.isTerritoryInfoTitles() == true) {
+			if (mplayer.isTerritoryInfoTitles()) {
 			inv.setItem(37, new ItemBuilder(Material.PAINTING).setName("§eTitulos dos Territórios").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 			} else {
 			inv.setItem(37, new ItemBuilder(Material.PAINTING).setName("§eTitulos dos Territórios").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack()); }
 			
-			if (mplayer.isMapAutoUpdating() == true) {
+			if (mplayer.isMapAutoUpdating()) {
 			inv.setItem(38, new ItemBuilder(Material.MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Desliga o mapa automático.", "", "§fMapa automático: §aLigado").addItemFlag(ItemFlag.HIDE_POTION_EFFECTS).toItemStack());
 			} else {
 			inv.setItem(38, new ItemBuilder(Material.EMPTY_MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Liga o mapa automático.", "", "§fMapa automático: §cDesligado").toItemStack()); }
 			
-			if (mplayer.isSeeingChunk() == true) {
+			if (mplayer.isSeeingChunk()) {
 			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 			} else {
 			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	}
 			
-			if (faction.hasHome() == true && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
+			if (faction.hasHome() && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção possui uma base!","","§fBotão esquerdo: §7Ir para base.","§fBotão direito: §7Definir base.","§fShift + Botão direito: §7Remover base.").toItemStack());
-			} else if (faction.hasHome() == true && (!(cargo == Rel.LEADER || cargo == Rel.OFFICER))) {
+			} else if (faction.hasHome()  && (!(cargo == Rel.LEADER || cargo == Rel.OFFICER))) {
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção possui uma base!","","§fBotão esquerdo: §7Ir para base.").toItemStack());
-			} else if (faction.hasHome() == false && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
+			} else if (!faction.hasHome() && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção ainda não definiu uma base.","","§fBotão direito: §7Definir base.").toItemStack());
-			} else if (faction.hasHome() == false && (!(cargo == Rel.LEADER || cargo == Rel.OFFICER))) { 	
+			} else if (!faction.hasHome() && (!(cargo == Rel.LEADER || cargo == Rel.OFFICER))) { 	
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção ainda não definiu uma base.").toItemStack()); }
 
 			p.openInventory(inv);
@@ -259,17 +259,17 @@ public class EngineMenuGui  extends Engine{
 		 * ITENS QUE USAM VERIFICAÇÕES
 		 */
 		
-		if (mplayer.isMapAutoUpdating() == true) {
+		if (mplayer.isMapAutoUpdating()) {
 		inv.setItem(31, new ItemBuilder(Material.MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Desliga o mapa automático.", "", "§fMapa automático: §aLigado").addItemFlag(ItemFlag.HIDE_POTION_EFFECTS).toItemStack());
 		} else {
 		inv.setItem(31, new ItemBuilder(Material.EMPTY_MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Liga o mapa automático.", "", "§fMapa automático: §cDesligado").toItemStack()); }
 		
-		if (mplayer.isTerritoryInfoTitles() == true) {
+		if (mplayer.isTerritoryInfoTitles()) {
 		inv.setItem(32, new ItemBuilder(Material.PAINTING).setName("§eTitulos dos Territórios").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 		} else {
 		inv.setItem(32, new ItemBuilder(Material.PAINTING).setName("§eTitulos dos Territórios").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack()); }
 			
-		if (mplayer.isSeeingChunk() == true) {
+		if (mplayer.isSeeingChunk()) {
 		inv.setItem(33, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 		} else {
 		inv.setItem(33, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	}
@@ -506,7 +506,7 @@ public class EngineMenuGui  extends Engine{
 					p.performCommand("f mapa");
 				}
 				else if (e.getClick().isLeftClick()) {
-					if (mp.isMapAutoUpdating() == true) {
+					if (mp.isMapAutoUpdating()) {
 						mp.setMapAutoUpdating(false);
 						abrirMenuPlayerSemFaccao(p);
 					} else { 
@@ -609,7 +609,7 @@ public class EngineMenuGui  extends Engine{
 					p.performCommand("f mapa");
 				}
 				else if (e.getClick().isLeftClick()) {
-					if (mp.isMapAutoUpdating() == true) {
+					if (mp.isMapAutoUpdating()) {
 						mp.setMapAutoUpdating(false);
 						abrirMenuPlayerComFaccao(p);
 					} else { 
@@ -833,8 +833,9 @@ public class EngineMenuGui  extends Engine{
 					Faction target = EngineEditSource.getFactionByName(nome);
 					target.setRelationWish(f, Rel.NEUTRAL);
 					if (target.getOnlinePlayers().size() > 0) {
-						target.msg("§eA facção §f" + factionNome + "§e recusou seu convite de aliança.");
+						target.msg("§eA facção §f" + factionNome + "§e recusou seu pedido de aliança.");
 					}
+					f.msg("§ePedido de aliança da facção §f" + target.getName() + "§e recusado.");
 					abrirMenuRelacoesPendentesRecebidos(p);
 				}
 			}
@@ -864,8 +865,6 @@ public class EngineMenuGui  extends Engine{
 					p.closeInventory();
 				} else if (item.getItemMeta().getLore().size() > 2) {
 					abrirMenuRelacoesPendentes(p);
-				} else {
-					e.setCancelled(true);
 				}
 			}
 			
@@ -875,8 +874,6 @@ public class EngineMenuGui  extends Engine{
 					String nome = item.getItemMeta().getDisplayName().substring(27, nomeTamanho);
 					p.performCommand("f relacao definir " + nome.replace(" ", "") + " neutral");
 					p.closeInventory();
-				} else {
-					e.setCancelled(true);
 				}
 			}
 			
@@ -886,8 +883,6 @@ public class EngineMenuGui  extends Engine{
 					String nome = item.getItemMeta().getDisplayName().substring(25, nomeTamanho);
 					p.performCommand("f relacao definir " + nome.replace(" ", "") + " enemy");
 					p.closeInventory();
-				} else {
-					e.setCancelled(true);
 				}
 			}	
 		}

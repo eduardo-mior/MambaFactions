@@ -35,7 +35,6 @@ public class CmdFactionsNome extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.isOverriding())) {
 			msender.message("§cApenas o líder da facção pode alterar o nome da facção.");

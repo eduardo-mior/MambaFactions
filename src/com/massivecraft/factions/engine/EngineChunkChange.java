@@ -56,13 +56,11 @@ public class EngineChunkChange extends Engine
 	{
 		// Args
 		final MPlayer mplayer = event.getMPlayer();
-		final Faction newFaction = event.getNewFaction();
-		final Map<Faction, Set<PS>> currentFactionChunks = event.getOldFactionChunks();
-		final Set<Faction> currentFactions = currentFactionChunks.keySet();
-		final Set<PS> chunks = event.getChunks();
 
 		// Override Mode? Sure!
 		if (mplayer.isOverriding()) return;
+		final Map<Faction, Set<PS>> currentFactionChunks = event.getOldFactionChunks();
+		final Set<Faction> currentFactions = currentFactionChunks.keySet();
 
 		// CALC: Is there at least one normal faction among the current ones?
 		boolean currentFactionsContainsAtLeastOneNormal = false;
@@ -75,6 +73,8 @@ public class EngineChunkChange extends Engine
 			}
 		}
 
+		final Set<PS> chunks = event.getChunks();
+		final Faction newFaction = event.getNewFaction();
 		// If the new faction is normal (not wilderness/none), meaning if we are claiming for a faction ...
 		if (newFaction.isNormal())
 		{

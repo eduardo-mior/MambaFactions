@@ -4,7 +4,7 @@ Fork do plugin Factions da MassiveCraft.
 
 Dependências necessarias para poder compilar: MassiveCore & Spigot-1.12.2
 Para mais informações acesse: http://gamersboard.com.br/topic/55559-free-mambafactions-o-seu-plugin-de-fac%C3%A7%C3%B5es-100-completo/
-Download da ultima versão estável: https://github.com/RUSHyoutuber/MambaFactions/releases/download/2.13.6/MambaFactions.Completo.1.13.rar
+Download da ultima versão estável: https://github.com/RUSHyoutuber/MambaFactions/releases/download/2.13.6/MambaFactions.Completo.1.14.rar
 
 Contacts:
 Skype: live:eduardo-mior            

@@ -9,7 +9,9 @@ import org.bukkit.inventory.Inventory;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.type.TypeFaction;
 import com.massivecraft.factions.cmd.type.TypeRelation;
+import com.massivecraft.factions.engine.EngineEditSource;
 import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.event.EventFactionsRelationChange;
 import com.massivecraft.factions.util.ItemBuilder;
 import com.massivecraft.massivecore.MassiveException;
@@ -49,7 +51,6 @@ public class CmdFactionsRelacaoDefinir extends FactionsCommand
 		// Argumentos
 		Faction otherFaction = this.readArg();
 		Rel newRelation = this.readArg();
-		
 		
 		// Verificando se a facção target é a mesma facção do msender
 		if (otherFaction == msenderFaction)
@@ -106,6 +107,16 @@ public class CmdFactionsRelacaoDefinir extends FactionsCommand
 		if (msenderFaction.getRelationWish(otherFaction) == newRelation)
 		{
 			throw new MassiveException().setMsg("§eA sua facção já é %s§e da §f%s§e.", newRelation.getDescFactionOne(), otherFaction.getName());
+		}
+		
+		if (EngineEditSource.getAliados(msenderFaction).size() >= MConf.get().factionAllyLimit)
+		{
+			throw new MassiveException().setMsg("§eA sua facção já antingiu o limite máximo de aliados permitidos por facção (%s).", MConf.get().factionAllyLimit);
+		}
+		
+		if (EngineEditSource.getAliados(otherFaction).size() >= MConf.get().factionAllyLimit)
+		{
+			throw new MassiveException().setMsg("§eA a facção %s§e já antingiu o limite máximo de aliados permitidos por facção (%s).", otherFaction.getName(), MConf.get().factionAllyLimit);
 		}
 		
 		// Evento

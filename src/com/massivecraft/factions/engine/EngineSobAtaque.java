@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
@@ -36,15 +37,13 @@ public class EngineSobAtaque extends Engine{
 	@EventHandler
 	public void onExplode(EntityExplodeEvent e){
 		Faction faction = BoardColl.get().getFactionAt(PS.valueOf(e.getLocation()));
-		//String fac = faction.getName();
-		//PS terra = PS.valueOf(e.getLocation());
 		
 		Chunk c = e.getLocation().getChunk();
 		
 		if (underattack.containsKey(c)) return;
-		else if (faction.getId().equals("safezone")) return;
-		else if (faction.getId().equals("warzone")) return;
-		else if (faction.getId().equals("none")) return;
+		else if (faction.getId().equals(Factions.ID_SAFEZONE)) return;
+		else if (faction.getId().equals(Factions.ID_WARZONE)) return;
+		else if (faction.getId().equals(Factions.ID_NONE)) return;
 		
 		underattack.put(c, System.currentTimeMillis());
 		factionattack.put(faction, 0);

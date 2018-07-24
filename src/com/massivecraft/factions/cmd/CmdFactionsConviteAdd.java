@@ -36,13 +36,6 @@ public class CmdFactionsConviteAdd extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		// Argumentos
-		Collection<MPlayer> mplayers = this.readArg();
-		
-		// Variaveis
-		String senderId = IdUtil.getId(sender);
-		long creationMillis = System.currentTimeMillis();
-		
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
 			msender.message("§cVocê precisar ser capitão ou superior para poder gerenciar os convites da facção.");
@@ -54,6 +47,13 @@ public class CmdFactionsConviteAdd extends FactionsCommand
 			msender.message("§cLimite máximo de convites pendentes atingido (10)! Apague alguns convites inúteis para poder enviar novos convites.");
 			return;
 		}
+		
+		// Argumentos
+		Collection<MPlayer> mplayers = this.readArg();
+		
+		// Variaveis
+		String senderId = IdUtil.getId(sender);
+		long creationMillis = System.currentTimeMillis();
 		
 		for (MPlayer mplayer : mplayers)
 		{	

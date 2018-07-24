@@ -38,17 +38,14 @@ public class CmdFactionsKick extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		// Argumentos
-		MPlayer mplayer = this.readArg();
-		
-		Faction mplayerFaction = mplayer.getFaction();
-		
-		
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
 			msender.message("§cVocê precisar ser capitão ou superior para poder expulsar membros da facção.");
 			return;
 		}
+		
+		// Argumentos
+		MPlayer mplayer = this.readArg();
 		
 		// Verificando se o target é da mesma facão que o sender
 		if (mplayer.getFaction() != msenderFaction) {
@@ -80,6 +77,7 @@ public class CmdFactionsKick extends FactionsCommand
 		event.run();
 		if (event.isCancelled()) return;
 
+		Faction mplayerFaction = mplayer.getFaction();
 		// Aplicando o evento e informando o player e facção
 		if (mplayer.getRole() == Rel.LEADER)
 		{

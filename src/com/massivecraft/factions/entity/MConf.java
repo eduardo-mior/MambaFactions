@@ -60,6 +60,13 @@ public class MConf extends Entity<MConf>
 	public int version = 3;
 	
 	// -------------------------------------------- //
+	// OTHERS
+	// -------------------------------------------- //
+	
+	public boolean anunciarMorteAoMorrer = true;
+	public int distanciaDoAnuncioEmBlocos = 16;
+	
+	// -------------------------------------------- //
 	// COMMAND ALIASES
 	// -------------------------------------------- //
 	
@@ -189,6 +196,9 @@ public class MConf extends Entity<MConf>
 	// You probably don't want this feature.
 	// It's a remnant from old faction versions.
 	public boolean factionNameForceUpperCase = false;
+	
+	// Limit of allys per faction
+	public int factionAllyLimit = 2;
 	
 	// -------------------------------------------- //
 	// CLAIMS

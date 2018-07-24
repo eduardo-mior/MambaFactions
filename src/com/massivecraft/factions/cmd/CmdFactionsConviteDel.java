@@ -33,15 +33,15 @@ public class CmdFactionsConviteDel extends FactionsCommand
 	
 	@Override
 	public void perform() throws MassiveException
-	{
-		Set<MPlayer> mplayers = new HashSet<>();
-		mplayers = this.readArgAt(0);
-		
+	{	
 		// Verificando se o player possui permissão
 		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
 			msender.message("§cVocê precisar ser capitão ou superior para poder deletar convites enviados.");
 			return;
 		}
+		
+		Set<MPlayer> mplayers = new HashSet<>();
+		mplayers = this.readArgAt(0);
 		
 		for (MPlayer mplayer : mplayers)
 		{

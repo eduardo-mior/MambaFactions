@@ -89,7 +89,7 @@ public class ItemBuilder {
 		   return this;
 	   }
 
-	   public ItemBuilder setLore(String string, String string2, String string3, String string4, String string5, String string6, String string7, String string8, String string9, String string10, String string11, String string12, String string13, String string14, String string15, String string16, List<String> lore) {
+	   public ItemBuilder setLore(String string, String string2, String string3, String string4, String string5, String string6, String string7, String string8, String string9, String string10, List<String> lore2, String string12, String string13, String string14, String string15, String string16, List<String> lore3) {
 		   ItemMeta im = is.getItemMeta();
 		   List<String> l = new ArrayList<>();
 		   l.add(string);
@@ -102,13 +102,13 @@ public class ItemBuilder {
 		   l.add(string8);
 		   l.add(string9);
 		   l.add(string10);
-		   l.add(string11);
+		   l.addAll(lore2);
 		   l.add(string12);
 		   l.add(string13);
 		   l.add(string14);
 		   l.add(string15);
 		   l.add(string16);
-		   l.addAll(lore);
+		   l.addAll(lore3);
 		   im.setLore(l);
 		   is.setItemMeta(im);
 		   return this;

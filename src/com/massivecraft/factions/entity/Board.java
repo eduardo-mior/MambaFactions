@@ -437,8 +437,8 @@ public class Board extends Entity<Board> implements BoardInterface
 			if (dz == 12) row.add(Mson.mson(" " + ChatColor.GRAY + blacklargesquare + " " + ChatColor.WHITE + "Zona Livre"));
 			if (dz == 13) row.add(Mson.mson(" " + MConf.get().colorNoPVP + blacklargesquare + " " + ChatColor.WHITE + "Zona Protegida"));
 			if (dz == 14) row.add(Mson.mson(" " + MConf.get().colorFriendlyFire + blacklargesquare + " " + ChatColor.WHITE + "Zona de Guerra"));
-			if (dz == 15) row.add(Mson.mson(" " + ChatColor.YELLOW + blacklargesquare + " " + ChatColor.WHITE + "Sua posiÃ§Ã£o"));
-			if (dz == 16) row.add(Mson.mson(" " + MConf.get().colorMember + blacklargesquare + " " + ChatColor.WHITE + "Sua facÃ§Ã£o"));
+			if (dz == 15) row.add(Mson.mson(" " + ChatColor.YELLOW + blacklargesquare + " " + ChatColor.WHITE + "Sua posição"));
+			if (dz == 16) row.add(Mson.mson(" " + MConf.get().colorMember + blacklargesquare + " " + ChatColor.WHITE + "Sua facção"));
 			if (dz == 17) row.add(Mson.mson(" " + ChatColor.LIGHT_PURPLE + blacklargesquare + " " + ChatColor.WHITE + "Sob ataque"));
 			
 			ret.add(Mson.mson(row));

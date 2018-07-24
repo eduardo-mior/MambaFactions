@@ -54,9 +54,6 @@ public class CmdFactionsMembros extends FactionsCommand
 		// Lista de membros da facção
 		List<MPlayer> mps = faction.getMPlayers();
 		
-		// Limite de membros por facção
-		int limitemembros = MConf.get().factionMemberLimit;
-		
 		// Verificando se a facção tem muitos membros
 		if (faction.isNone() || mps.size() > 43) {
 			msender.msg("§cA facção §f"+ faction.getName() +"§c possui muitos membros portanto o Menu GUI não sera aberto.");
@@ -68,6 +65,9 @@ public class CmdFactionsMembros extends FactionsCommand
 			msender.msg("§cA facção §f" + faction.getName() + "§c não possui membros!");
 			return;
 		}
+		
+		// Limite de membros por facção
+		int limitemembros = MConf.get().factionMemberLimit;
 		
 		// Definindo o tamanho do menu com base no limite de membros por facção
 		int tamanhodomenu = 54;
