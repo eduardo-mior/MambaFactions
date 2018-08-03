@@ -109,12 +109,12 @@ public class CmdFactionsRelacaoDefinir extends FactionsCommand
 			throw new MassiveException().setMsg("§eA sua facção já é %s§e da §f%s§e.", newRelation.getDescFactionOne(), otherFaction.getName());
 		}
 		
-		if (EngineEditSource.getAliados(msenderFaction).size() >= MConf.get().factionAllyLimit)
+		if (EngineEditSource.getAliados(msenderFaction).size() >= MConf.get().factionAllyLimit && newRelation == Rel.ALLY)
 		{
 			throw new MassiveException().setMsg("§eA sua facção já antingiu o limite máximo de aliados permitidos por facção (%s).", MConf.get().factionAllyLimit);
 		}
 		
-		if (EngineEditSource.getAliados(otherFaction).size() >= MConf.get().factionAllyLimit)
+		if (EngineEditSource.getAliados(otherFaction).size() >= MConf.get().factionAllyLimit && newRelation == Rel.ALLY)
 		{
 			throw new MassiveException().setMsg("§eA a facção %s§e já antingiu o limite máximo de aliados permitidos por facção (%s).", otherFaction.getName(), MConf.get().factionAllyLimit);
 		}

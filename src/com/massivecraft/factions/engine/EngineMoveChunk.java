@@ -9,6 +9,7 @@ import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.util.MUtil;
 import com.massivecraft.massivecore.util.Txt;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,7 +24,7 @@ public class EngineMoveChunk extends Engine
 
 	private static EngineMoveChunk i = new EngineMoveChunk();
 	public static EngineMoveChunk get() { return i; }
-
+	
 	// -------------------------------------------- //
 	// MOVE CHUNK: DETECT
 	// -------------------------------------------- //

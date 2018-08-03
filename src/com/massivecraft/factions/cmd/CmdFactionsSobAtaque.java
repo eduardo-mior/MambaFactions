@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.engine.EngineMenuGui;
 import com.massivecraft.factions.engine.EngineSobAtaque;
-import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 
@@ -36,8 +35,7 @@ public class CmdFactionsSobAtaque extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		Player p = msender.getPlayer();
-		Faction f = msenderFaction;
-		if (!EngineSobAtaque.factionattack.containsKey(f)) {
+		if (!EngineSobAtaque.factionattack.containsKey(msenderFaction.getName())) {
 			msender.message("§cSua facção não esta sob ataque!");
 		} else {
 			EngineMenuGui.abrirMenuFaccaoSobAtaque(p);

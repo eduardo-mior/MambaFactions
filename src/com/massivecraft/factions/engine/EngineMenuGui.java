@@ -41,19 +41,13 @@ public class EngineMenuGui  extends Engine{
 		final String cmd = e.getMessage().toLowerCase();
 
 		if (cmd.equalsIgnoreCase("/f")) {
-			final Player p = e.getPlayer();
-			final MPlayer mplayer = MPlayer.get(p);
+			Player p = e.getPlayer();
+			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
-			        if (mplayer.getFaction().getLeader() == null ) {
-			        	mplayer.message("§cA sua facção não possui um líder portanto o Menu GUI não sera aberto.");
-			        	e.setCancelled(false);
-			        	return;
-			        } else {
 					e.setCancelled(true);
 					abrirMenuPlayerComFaccao(p);
-					return;
-			        }
+					return;  
 				} else {
 					e.setCancelled(true);
 					abrirMenuPlayerSemFaccao(p);
@@ -63,8 +57,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.startsWith("/f desfazer") || cmd.startsWith("/f disband") || cmd.startsWith("/f deletar")) {
-			final Player p = e.getPlayer();
-			final MPlayer mplayer = MPlayer.get(p);
+			Player p = e.getPlayer();
+			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -81,8 +75,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.equalsIgnoreCase("/f convite") || cmd.equalsIgnoreCase("/f invite") || cmd.equalsIgnoreCase("/f convidar") || cmd.equalsIgnoreCase("/f adicionar")  || cmd.equalsIgnoreCase("/f i")) {
-			final Player p = e.getPlayer();
-			final MPlayer mplayer = MPlayer.get(p);
+			Player p = e.getPlayer();
+			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.OFFICER ||mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -99,21 +93,25 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.startsWith("/f desproteger all") || cmd.startsWith("/f abandonar all") || cmd.startsWith("/f unclaim all")) {
-			final Player p = e.getPlayer();
-			final MPlayer mplayer = MPlayer.get(p);
+			Player p = e.getPlayer();
+			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.LEADER || mplayer.getRole() == Rel.OFFICER || mplayer.isOverriding()) {
 				        int terras = mplayer.getFaction().getLandCount();
 						if (terras >= 1) {
-							abrirMenuAbandonarTerras(p);
-							e.setCancelled(true);
-							return;
-						} else {
-							p.sendMessage("§cA sua facção não possui terras para abandonar.");
-							e.setCancelled(true);
-							return; 
+							if (EngineSobAtaque.factionattack.containsKey(mplayer.getFaction().getName())) {
+								p.sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
+								return;
+							} else {
+								abrirMenuAbandonarTerras(p);
+								e.setCancelled(true);
+								return;
+							}
 						}
+						p.sendMessage("§cA sua facção não possui terras para abandonar.");
+						e.setCancelled(true);
+						return; 		
 					}
 					p.sendMessage("§cSua facção não deixa você administrar os territórios.");
 					e.setCancelled(true);
@@ -124,8 +122,8 @@ public class EngineMenuGui  extends Engine{
 		}
 		
 		else if (cmd.equalsIgnoreCase("/f relacao") || cmd.equalsIgnoreCase("/f relação") || cmd.equalsIgnoreCase("/f relation") || cmd.equalsIgnoreCase("/f rel")) {
-			final Player p = e.getPlayer();
-			final MPlayer mplayer = MPlayer.get(p);
+			Player p = e.getPlayer();
+			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
 				if (mplayer.hasFaction()) {
 					if (mplayer.getRole() == Rel.OFFICER ||mplayer.getRole() == Rel.LEADER || mplayer.isOverriding()) {
@@ -153,7 +151,7 @@ public class EngineMenuGui  extends Engine{
 		final Faction factionclaim = BoardColl.get().getFactionAt(PS.valueOf(p.getLocation()));
 		final Faction faction = mplayer.getFaction();
 		final String factionNome = faction.getName();
-		final String lider = faction.getLeader().getName();
+		final String lider = faction.getLeader() == null ? "Indefinido" : faction.getLeader().getName() ;
 		final String factiondesc = faction.getDescriptionDesc();
 		int fackills = EngineKdr.getFacKills(faction);
 		int facmortes = EngineKdr.getFacDeaths(faction);
@@ -188,9 +186,9 @@ public class EngineMenuGui  extends Engine{
 			inv.setItem(40, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aRelações").setLore("§fClique para gerenciar todas","§fas relações da sua facção.").setLeatherArmorColor(Color.LIME).toItemStack());
 			
 			/*
-			 * ITENS QUE USAM SUBSTRING
+			 * ITENS QUE USAM VERIFICAÇÕES
 			 */
-			if (!EngineSobAtaque.factionattack.containsKey(faction)) {
+			if (!EngineSobAtaque.factionattack.containsKey(factionNome)) {
 			inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e" + factionNome).setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, EngineEditSource.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack());
 			} else {
 			inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e" + factionNome).setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder1f, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr2f, "§fLíder: §7" + lider,"§fMembros: §7" + membrosnafac + "/" + MConf.get().factionMemberLimit, "§fMembros online: §7" + membrosonline, EngineEditSource.fplayers(faction),"§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", EngineEditSource.fmotd(faction)).toItemStack()); }
@@ -210,10 +208,22 @@ public class EngineMenuGui  extends Engine{
 			} else {
 			inv.setItem(38, new ItemBuilder(Material.EMPTY_MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Liga o mapa automático.", "", "§fMapa automático: §cDesligado").toItemStack()); }
 			
+			if (MConf.get().colocarIconeDoFBauNoMenuGUI) {
+			inv.setItem(41, new ItemBuilder(Material.CHEST).setName("§aBaú da facção").setLore("§fClique para abir o baú", "§fvirtual da sua facção.").toItemStack());}
+			
+			if (MConf.get().colocarIconeDoFGeradoresNoMenuGUI) {
+			inv.setItem(41, new ItemBuilder(Material.MOB_SPAWNER).setName("§aGeradores").setLore("§fClique para gerenciar os", "§fgeradores da sua facção.").toItemStack());}
+			
 			if (mplayer.isSeeingChunk()) {
 			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 			} else {
 			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	}
+			
+			if (MConf.get().sistemaDeVoarNoClaim) {
+			if (p.getAllowFlight()) {
+			inv.setItem(32, new ItemBuilder(Material.FEATHER).setName("§aModo voar").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
+			} else {
+			inv.setItem(32, new ItemBuilder(Material.FEATHER).setName("§aModo voar").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	} }
 			
 			if (faction.hasHome() && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção possui uma base!","","§fBotão esquerdo: §7Ir para base.","§fBotão direito: §7Definir base.","§fShift + Botão direito: §7Remover base.").toItemStack());
@@ -292,7 +302,7 @@ public class EngineMenuGui  extends Engine{
 			Faction fac = BoardColl.get().getFactionAt(PS.valueOf(c));
 			if (fac.equals(faction)) {
 				Location l = EngineSobAtaque.infoattack.get(c);
-				inv.setItem(slot, new ItemBuilder(Material.GRASS).setName("§e§l#"+slot+"§e Território sob ataque!").setLore("§7Chunk: §fX:"+ c.getX() + ", Z:" + c.getZ(),"§7Mundo: §f" + c.getWorld().getName(),"§7Coordenadas: §fX:" + l.getBlockX() + "§8, §fY:" + l.getBlockY() + "§8, §fZ:" + l.getBlockZ()).toItemStack());
+				inv.setItem(slot, new ItemBuilder(Material.GRASS).setName("§e§l#" + (slot+1) + "§e Território sob ataque!").setLore("§7Chunk: §fX:"+ c.getX() + ", Z:" + c.getZ(),"§7Mundo: §f" + c.getWorld().getName(),"§7Coordenadas: §fX:" + l.getBlockX() + "§8, §fY:" + l.getBlockY() + "§8, §fZ:" + l.getBlockZ()).toItemStack());
 			}
 			slot++;
 		}
@@ -468,23 +478,26 @@ public class EngineMenuGui  extends Engine{
     	String inventarioNome = e.getInventory().getName();
     	int slot = e.getSlot();
 		
-		if (inventarioNome.equalsIgnoreCase("§8Sem facção§1§2§3")) {
+		if (inventarioNome.equals("§8Sem facção§1§2§3")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			MPlayer mp = MPlayer.get(p);
 			
 			if (slot == 14) {
 				p.chat("/f top");
+				return;
 			}
 		
 			else if (slot == 15) {
 				p.performCommand("f listar");
 				p.closeInventory();
+				return;
 			}
 		
 			else if (slot == 16) {
 				p.performCommand("f ajuda");
 				p.closeInventory();
+				return;
 			}
 		
 			else if (slot == 29) {
@@ -492,6 +505,7 @@ public class EngineMenuGui  extends Engine{
 				p.sendMessage("§aCrie já a sua facção usando o comando '§f/f criar <nome>§a'");
 				p.sendMessage("§f");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 30) {
@@ -499,11 +513,13 @@ public class EngineMenuGui  extends Engine{
 				p.sendMessage("§aEntra já em uma facção usando o comando '§f/f entrar <nome>§a'");
 				p.sendMessage("§f");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 31) {
 				if (e.getClick().isRightClick()) {
 					p.performCommand("f mapa");
+					return;
 				}
 				else if (e.getClick().isLeftClick()) {
 					if (mp.isMapAutoUpdating()) {
@@ -513,17 +529,20 @@ public class EngineMenuGui  extends Engine{
 						mp.setMapAutoUpdating(true);
 						abrirMenuPlayerSemFaccao(p);
 					}
+					return;
 				}
 			}
 			
 			else if (slot == 32) {
 				p.performCommand("f tt");
 				abrirMenuPlayerSemFaccao(p);
+				return;
 			}
 			
 			else if (slot == 33) {
 				p.performCommand("f sc");
 				abrirMenuPlayerSemFaccao(p);
+				return;
 			}
 		}
 		
@@ -534,28 +553,33 @@ public class EngineMenuGui  extends Engine{
 			Faction f = mp.getFaction();
 			
 			if (slot == 34) {
-				if (EngineSobAtaque.factionattack.containsKey(f)) {
+				if (EngineSobAtaque.factionattack.containsKey(f.getName())) {
 					abrirMenuFaccaoSobAtaque(p);
+					return;
 				}
 			}
 			
 			else if (slot == 14) {
 				p.chat("/f top");
+				return;
 			}
 		
 			else if (slot == 15) {
 				p.performCommand("f listar");
 				p.closeInventory();
+				return;
 			}
 		
 			else if (slot == 16) {
 				p.performCommand("f ajuda");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 28) {
 				p.performCommand("f sc");
 				abrirMenuPlayerComFaccao(p);
+				return;
 			}
 			
 			else if (slot == 29) {
@@ -564,6 +588,7 @@ public class EngineMenuGui  extends Engine{
 						if (e.getClick().isRightClick()) {
 							p.performCommand("f sethome");
 							abrirMenuPlayerComFaccao(p);
+							return;
 						}
 					}
 				} else {
@@ -593,20 +618,32 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					p.sendMessage("§cVocê precisar ser capitão ou superior para poder gerenciar os convites da facção.");
 				}
+				return;
 			}
 			
 			else if (slot == 31) {
 				p.performCommand("f perm");
+				return;
+			}
+			
+			else if (slot == 32) {
+				if (MConf.get().sistemaDeVoarNoClaim) {
+					p.performCommand("f voar");
+					abrirMenuPlayerComFaccao(p);
+				}
+				return;
 			}
 			
 			else if (slot == 37) {
 				p.performCommand("f tt");
 				abrirMenuPlayerComFaccao(p);
+				return;
 			}
 			
 			else if (slot == 38) {
 				if (e.getClick().isRightClick()) {
 					p.performCommand("f mapa");
+					return;
 				}
 				else if (e.getClick().isLeftClick()) {
 					if (mp.isMapAutoUpdating()) {
@@ -616,11 +653,13 @@ public class EngineMenuGui  extends Engine{
 						mp.setMapAutoUpdating(true);
 						abrirMenuPlayerComFaccao(p);
 					}
+					return;
 				}
 			}
 			
 			else if (slot == 39) {
 				p.performCommand("f membros");
+				return;
 			}
 			
 			else if (slot == 40) {
@@ -629,6 +668,16 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					p.sendMessage("§cVocê precisar ser capitão ou superior para poder gerenciar as relações da facção.");
 				}
+				return;
+			}
+			
+			else if (slot == 41) {
+				if (MConf.get().colocarIconeDoFBauNoMenuGUI) {
+					p.chat("/f bau");
+				} else if (MConf.get().colocarIconeDoFGeradoresNoMenuGUI) {
+					p.chat("/f geradores");
+				}
+				return;
 			}
 			
 			else if (slot == 43) {
@@ -637,25 +686,28 @@ public class EngineMenuGui  extends Engine{
 				} else { 
 					p.performCommand("f sair");
 				}
+				return;
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§1§2§3§8Desfazer facção")) {
+		else if (inventarioNome.equals("§1§2§3§8Desfazer facção")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 		
 			if (slot == 24) {
 				p.sendMessage("§cAção cancelada com sucesso.");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 20) {
 				p.performCommand("f desfazer");
 				p.closeInventory();
+				return;
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§8Abandonar todas as terras")) {
+		else if (inventarioNome.equals("§8Abandonar todas as terras")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			MPlayer mp = MPlayer.get(p);
@@ -665,15 +717,17 @@ public class EngineMenuGui  extends Engine{
 			if (slot == 24) {
 				p.sendMessage("§cAção cancelada com sucesso.");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 20) {
 				p.performCommand("f unclaim all all " + factionNome.replaceAll(" ", ""));
 				p.closeInventory();
+				return;
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§1§2§3§8Gerenciar convites")) {
+		else if (inventarioNome.equals("§1§2§3§8Gerenciar convites")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			MPlayer mp = MPlayer.get(p);
@@ -684,6 +738,7 @@ public class EngineMenuGui  extends Engine{
 				p.sendMessage("§aEnvie já um convite de facção para um player usando o comando '§f/f convite enviar <nome>§a'");
 				p.sendMessage("§f");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 15) {
@@ -692,6 +747,7 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					p.chat("/f convite");
 				}
+				return;
 			}
 		}
 		
@@ -703,6 +759,7 @@ public class EngineMenuGui  extends Engine{
 			
 			if (item.getType() == Material.ARROW) {
 				p.chat("/f convite");
+				return;
 			}
 			
 			else if (item.getType() == Material.PAPER) {
@@ -719,10 +776,11 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					p.performCommand("f convite listar");
 				}
+				return;
 			}
 		}
 		
-		else if (inventarioNome.equalsIgnoreCase("§8Gerenciar relações")) {
+		else if (inventarioNome.equals("§8Gerenciar relações")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
 			MPlayer mp = MPlayer.get(p);
@@ -733,10 +791,12 @@ public class EngineMenuGui  extends Engine{
 				p.sendMessage("§eDefina já uma relação com alguma facção usando o comando '§f/f relação definir <facção>§e'");
 				p.sendMessage("§f");
 				p.closeInventory();
+				return;
 			}
 			
 			else if (slot == 13) {
 				abrirMenuRelacoesPendentes(p);
+				return;
 			}
 			
 			else if (slot == 15) {
@@ -746,6 +806,7 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					p.chat("/f relation");
 				}
+				return;
 			}
 		}
 		
@@ -761,6 +822,7 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					abrirMenuRelacoesPendentes(p);
 				} 
+				return;
 			}
 			
 			else if (slot == 11) {
@@ -769,11 +831,13 @@ public class EngineMenuGui  extends Engine{
 				} else {
 					abrirMenuRelacoesPendentes(p);
 				} 
+				return;
 			}
 			
 			else if (slot == 31) {
 				abrirMenuRelacoes(p);
 			}
+			return;
 		}
 		
 		else if (inventarioNome.startsWith("§8Convites enviados pendentes")) {
@@ -786,6 +850,7 @@ public class EngineMenuGui  extends Engine{
 			
 			if (item.getType() == Material.ARROW) {
 				abrirMenuRelacoesPendentes(p);
+				return;
 			}
 			
 			else if (item.getType() == Material.PAPER) {
@@ -801,6 +866,7 @@ public class EngineMenuGui  extends Engine{
 					f.setRelationWish(target, Rel.NEUTRAL);
 					abrirMenuRelacoesPendentesEnviados(p);
 				}
+				return;
 			}
 		}
 		
@@ -814,6 +880,7 @@ public class EngineMenuGui  extends Engine{
 			
 			if (item.getType() == Material.ARROW) {
 				abrirMenuRelacoesPendentes(p);
+				return;
 			}
 			
 			else if (item.getType() == Material.PAPER) {
@@ -838,17 +905,20 @@ public class EngineMenuGui  extends Engine{
 					f.msg("§ePedido de aliança da facção §f" + target.getName() + "§e recusado.");
 					abrirMenuRelacoesPendentesRecebidos(p);
 				}
+				return;
 			}
 		}
 		
 		else if (inventarioNome.startsWith("§8Membros da ")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			return;
 		}
 		
 		else if (inventarioNome.startsWith("§8Terrenos sob ataque")) {
 			e.setCancelled(true);
 			e.setResult(Result.DENY);
+			return;
 		}
 		
 		else if (inventarioNome.startsWith("§8Relação com ")) {
@@ -866,6 +936,7 @@ public class EngineMenuGui  extends Engine{
 				} else if (item.getItemMeta().getLore().size() > 2) {
 					abrirMenuRelacoesPendentes(p);
 				}
+				return;
 			}
 			
 			else if (slot == 13) {
@@ -875,6 +946,7 @@ public class EngineMenuGui  extends Engine{
 					p.performCommand("f relacao definir " + nome.replace(" ", "") + " neutral");
 					p.closeInventory();
 				}
+				return;
 			}
 			
 			else if (slot == 15) {
@@ -884,6 +956,7 @@ public class EngineMenuGui  extends Engine{
 					p.performCommand("f relacao definir " + nome.replace(" ", "") + " enemy");
 					p.closeInventory();
 				}
+				return;
 			}	
 		}
 	}

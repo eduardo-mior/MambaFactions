@@ -11,7 +11,8 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.Engine;
 
-public class EngineKdr  extends Engine{
+public class EngineKdr extends Engine
+{
 	
 	private static EngineKdr i = new EngineKdr();
 	public static EngineKdr get() { return i; }

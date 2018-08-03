@@ -12,6 +12,7 @@ public enum Perm implements Identified
 	
 	ADMIN,
 	BASECOMMAND,
+	BAU,
 	CHATALIADOS,
 	CHATFACCAO,
 	CLAIM,
@@ -28,6 +29,7 @@ public enum Perm implements Identified
 	DESFAZER,
 	ENTRAR,
 	ESCAPAR,
+	GERADORES,
 	HOME,
 	INFO,
 	KICK,
@@ -60,6 +62,7 @@ public enum Perm implements Identified
 	UNCLAIM_ONE,
 	VERSION,
 	VERTERRAS,
+	VOAR
 	
 	// END OF LIST
 	;

@@ -14,6 +14,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -83,6 +86,34 @@ public class EngineEditSource  extends Engine{
 			}
 		}
 		return players;
+	}
+	
+	@EventHandler
+	public void aoColocarSpawner(BlockPlaceEvent e) {
+		if (MConf.get().bloquearSpawnersForaDoClaim) {
+			Player p = e.getPlayer();
+			if (e.getBlockPlaced().getType() == Material.MOB_SPAWNER) {
+				PS ps = PS.valueOf(e.getBlockPlaced());
+				Faction f = BoardColl.get().getFactionAt(ps);
+				if (f.isNone()) {
+					e.setCancelled(Boolean.valueOf("true"));
+					p.sendMessage("§cHey! Os geradores só podem ser usados em locais protegidos por sua facção.");
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void naoSpawnar(CreatureSpawnEvent e) {
+		if (MConf.get().bloquearSpawnersForaDoClaim) {
+			if (e.getSpawnReason() == SpawnReason.SPAWNER) {
+				PS ps = PS.valueOf(e.getLocation());
+				Faction f = BoardColl.get().getFactionAt(ps);
+				if (f.isNone()) {
+					e.setCancelled(true);
+				}
+			}
+		}
 	}
 	
 	@EventHandler

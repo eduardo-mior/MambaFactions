@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
+import com.massivecraft.factions.engine.EngineSobAtaque;
 
 public class CmdFactionsSair extends FactionsCommand
 {
@@ -27,6 +28,14 @@ public class CmdFactionsSair extends FactionsCommand
 	@Override
 	public void perform()
 	{
+		
+		// Verificando se a facção não esta sob ataque
+		if (EngineSobAtaque.factionattack.containsKey(msenderFaction.getName())) {
+			msender.message("§cVocê não pode abandonar a sua facção enquanto ela estiver sobre ataque!");
+			return;
+		}
+		
+		// Saindo da facção
 		msender.leave();
 	}
 	

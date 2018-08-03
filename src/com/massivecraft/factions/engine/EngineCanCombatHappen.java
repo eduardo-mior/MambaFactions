@@ -37,7 +37,10 @@ public class EngineCanCombatHappen extends Engine
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void canCombatDamageHappen(EntityDamageByEntityEvent event)
 	{
-		if (this.canCombatDamageHappen(event, true)) return;
+		if (this.canCombatDamageHappen(event, true)) {
+			EngineFly.disableFly(event);
+			return;
+		}
 		event.setCancelled(true);
 
 		Entity damager = event.getDamager();
@@ -115,7 +118,7 @@ public class EngineCanCombatHappen extends Engine
 		if (mattacker != null && mattacker.isOverriding()) return true;
 		
 		// Verificando se o PvP amigo esta ativado
-		if (defenderPsFaction.getFlag(MFlag.getFlagFriendlyire()) == true) return true;
+		if (defenderPsFaction.getFlag(MFlag.getFlagFriendlyire())) return true;
 		// Verificando se o PvP esta tivado
 		if (defenderPsFaction.getFlag(MFlag.getFlagPvp()) == false) return false;
 		// Verificando se algum deles esta na zona livre

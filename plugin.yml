@@ -2,7 +2,7 @@ main: com.massivecraft.factions.Factions
 name: Factions
 version: 2.13.6
 website: https://www.massivecraft.com/factions
-description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov14
+description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov15
 authors: [Cayorion, Madus, Ulumulu1510, MarkehMe, Brettflan]
 depend: [MassiveCore]
 softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]
@@ -12,6 +12,7 @@ permissions:
 # -------------------------------------------- #
   factions.admin: {description: "entrar no modo admin", default: false}
   factions.basecommand: {description: "comando geral do plugin", default: true}
+  factions.bau: {description: "comando geral do plugin", default: true}
   factions.chataliados: {description: "mandar mensagem no chat dos aliados", default: true}
   factions.chatfaccao: {description: "mandar mensagem no chat da faccao", default: true}
   factions.claim.one: {description: "§6 claim um §8-§7 Conquista um único chunk.", default: true}
@@ -27,6 +28,7 @@ permissions:
   factions.desfazer: {description: "§6 desfazer §8-§7 Desfaz a sua facção.", default: true}
   factions.entrar: {description: "§6 entrar §e<facção> §8-§7 Entra em uma facção.", default: true}
   factions.escapar: {description: "§6 escapar §8-§7 Teleporta para a zona livre mais próxima.", default: true}
+  factions.geradores: {description: "§6 geradores §8-§7 Administra os geradores da facção.", default: true}
   factions.home: {description: "§6 home §e[facção] §8-§7 Teleporta para a home da facção.", default: true}
   factions.info: {description: "§6 f,info §e<facção> §8-§7 Mostra as informações da facção.", default: true}
   factions.kick: {description: "§6 kick §e<player> §8-§7 Expulsa um player da facção.", default: true}
@@ -58,6 +60,8 @@ permissions:
   factions.unclaim: {description: "§6 unclaim §8-§7 Abandona territórios da sua facção.", default: true}
   factions.version: {description: "§6 v,versao §8-§7 Mostra a versão do plugin.", default: false}
   factions.verterras: {description: "§6 sc,verterras §8-§7 Mostra as delimitações das terras.", default: true}
+  factions.voar: {description: "§6 voar §e[on/off] §8-§7 Habilita o fly nos territórios da facção.", default: true}
+  factions.voar.bypass: {description: "permite voar em qualquer lugar", default: false}
 # -------------------------------------------- #
 # STAR NOTATION
 # -------------------------------------------- #
@@ -65,6 +69,7 @@ permissions:
     children:
       factions.admin: true
       factions.basecommand: true
+      factions.bau: true
       factions.chataliados: true
       factions.chatfaccao: true
       factions.claim.one: true
@@ -81,6 +86,7 @@ permissions:
       factions.desfazer: true
       factions.entrar: true
       factions.escapar: true
+      factions.geradores: true
       factions.home: true
       factions.info: true
       factions.kick: true
@@ -116,6 +122,8 @@ permissions:
       factions.unclaim: true
       factions.version: true
       factions.verterras: true
+      factions.voar: true
+      factions.voar.bypass: true
 # -------------------------------------------- #
 # KITS
 # -------------------------------------------- #
@@ -144,6 +152,7 @@ permissions:
     default: true
     children:
       factions.basecommand: true
+      factions.bau: true
       factions.chataliados: true
       factions.chatfaccao: true
       factions.claim.auto: true
@@ -160,6 +169,7 @@ permissions:
       factions.desfazer: true
       factions.entrar: true
       factions.escapar: true
+      factions.geradores: true
       factions.home: true
       factions.info: true
       factions.kick: true
@@ -188,6 +198,7 @@ permissions:
       factions.unclaim.one: true
       factions.unclaim: true
       factions.verterras: true
+      factions.voar: true
   factions.kit.default:
     default: true
     children:

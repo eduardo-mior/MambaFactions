@@ -41,6 +41,8 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsMotd cmdFactionsMotd = new CmdFactionsMotd();
 	public CmdFactionsSethome cmdFactionsSethome = new CmdFactionsSethome();
 	public CmdFactionsDelhome cmdFactionsDelhome = new CmdFactionsDelhome();
+	public CmdFactionsBau cmdFactionsBau = new CmdFactionsBau();
+	public CmdFactionsGeradores cmdFactionsGeradores = new CmdFactionsGeradores();
 	public CmdFactionsPermissoes cmdFactionsPermissoes = new CmdFactionsPermissoes();
 	public CmdFactionsRelacao cmdFactionsRelacao = new CmdFactionsRelacao();
 	public CmdFactionsRelacaoOld cmdFactionsRelacaoOldAlly = new CmdFactionsRelacaoOld("aliado").setAliases("ally", "aliado");
@@ -52,6 +54,7 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsDesfazer cmdFactionsDesfazer = new CmdFactionsDesfazer();
 	public CmdFactionsSair cmdFactionsSair = new CmdFactionsSair();
 	public CmdFactionsEscapar cmdFactionsEscapar = new CmdFactionsEscapar();
+	public CmdFactionsVoar cmdFactionsVoar = new CmdFactionsVoar();
 	public CmdFactionsSobAtaque cmdFactionsSobAtaque = new CmdFactionsSobAtaque();
 	public CmdFactionsTop cmdFactionsTop = new CmdFactionsTop();
 	public CmdFactionsVerTerras cmdFactionsVerTerras = new CmdFactionsVerTerras();

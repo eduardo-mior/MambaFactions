@@ -28,7 +28,7 @@ public class ChatTagFaction extends ChatTag
 		Faction faction = usender.getFaction();
 		if (faction.isNone()) return "";
 		
-		return "§7["+usender.getRole().getPrefix()+faction.getName()+"§7] §f";
+		return "§7[" + usender.getRole().getPrefix() + faction.getName() + "§7] §f";
 	}
 
 }

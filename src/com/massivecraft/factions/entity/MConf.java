@@ -63,8 +63,12 @@ public class MConf extends Entity<MConf>
 	// OTHERS
 	// -------------------------------------------- //
 	
+	public boolean bloquearSpawnersForaDoClaim = false;
 	public boolean anunciarMorteAoMorrer = true;
 	public int distanciaDoAnuncioEmBlocos = 16;
+	public boolean sistemaDeVoarNoClaim = false;
+	public boolean colocarIconeDoFBauNoMenuGUI = false;
+	public boolean colocarIconeDoFGeradoresNoMenuGUI = false;
 	
 	// -------------------------------------------- //
 	// COMMAND ALIASES
@@ -107,7 +111,7 @@ public class MConf extends Entity<MConf>
 	// -------------------------------------------- //
 	
 	// Should players be kicked from their faction and their data erased when banned?
-	public boolean removePlayerWhenBanned = true;
+	public boolean removePlayerWhenBanned = false;
 	
 	// After how many milliseconds should players be automatically kicked from their faction?
 	
