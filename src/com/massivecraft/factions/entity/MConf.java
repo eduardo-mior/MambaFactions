@@ -66,7 +66,7 @@ public class MConf extends Entity<MConf>
 	public boolean bloquearSpawnersForaDoClaim = false;
 	public boolean anunciarMorteAoMorrer = true;
 	public int distanciaDoAnuncioEmBlocos = 16;
-	public boolean sistemaDeVoarNoClaim = false;
+	public boolean sistemaDeVoarNoClaim = true;
 	public boolean colocarIconeDoFBauNoMenuGUI = false;
 	public boolean colocarIconeDoFGeradoresNoMenuGUI = false;
 	
@@ -237,12 +237,6 @@ public class MConf extends Entity<MConf>
 	public int claimedWorldsMax = -1;
 	
 	// -------------------------------------------- //
-	// PROTECTION
-	// -------------------------------------------- //
-	
-	public boolean protectionLiquidFlowEnabled = true;
-	
-	// -------------------------------------------- //
 	// HOMES
 	// -------------------------------------------- //
 	
@@ -331,15 +325,6 @@ public class MConf extends Entity<MConf>
 			"essentials:warp",
 			"essentials:warps",
 			"essentials:spawn",
-			// Other plugins
-			"wtp",
-			"uspawn",
-			"utp",
-			"mspawn",
-			"mtp",
-			"fspawn",
-			"ftp",
-			"jspawn",
 			"jtp"
 		),
 		Rel.NEUTRAL, new ArrayList<String>(),

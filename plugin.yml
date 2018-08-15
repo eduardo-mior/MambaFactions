@@ -60,7 +60,7 @@ permissions:
   factions.unclaim: {description: "§6 unclaim §8-§7 Abandona territórios da sua facção.", default: true}
   factions.version: {description: "§6 v,versao §8-§7 Mostra a versão do plugin.", default: false}
   factions.verterras: {description: "§6 sc,verterras §8-§7 Mostra as delimitações das terras.", default: true}
-  factions.voar: {description: "§6 voar §e[on/off] §8-§7 Habilita o fly nos territórios da facção.", default: true}
+  factions.voar: {description: "§6 voar §e[on/off] §8-§7 Habilita o fly nos territórios da facção.", default: false}
   factions.voar.bypass: {description: "permite voar em qualquer lugar", default: false}
 # -------------------------------------------- #
 # STAR NOTATION
@@ -198,7 +198,6 @@ permissions:
       factions.unclaim.one: true
       factions.unclaim: true
       factions.verterras: true
-      factions.voar: true
   factions.kit.default:
     default: true
     children:

@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -35,7 +36,7 @@ public class EngineMenuGui  extends Engine{
 	private static EngineMenuGui i = new EngineMenuGui();
 	public static EngineMenuGui get() { return i; }
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
 		
 		final String cmd = e.getMessage().toLowerCase();
@@ -468,7 +469,7 @@ public class EngineMenuGui  extends Engine{
 	}
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoClickar(InventoryClickEvent e) {
 		
 		if (e.getSlotType().equals(SlotType.OUTSIDE) || e.getCurrentItem() == null || e.getCurrentItem().getTypeId() == 0)

@@ -2,6 +2,7 @@ package com.massivecraft.factions.engine;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.massivecraft.factions.Rel;
@@ -20,7 +21,7 @@ public class EngineMenuPermissoes extends Engine
 	private static EngineMenuPermissoes i = new EngineMenuPermissoes();
 	public static EngineMenuPermissoes get() { return i; }
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onClick(InventoryClickEvent e) {
 		if(e.getInventory().getName().contains("§8Permissões")) {
 			e.setCancelled(true);

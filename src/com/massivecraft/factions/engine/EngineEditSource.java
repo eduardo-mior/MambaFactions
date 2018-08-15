@@ -43,7 +43,7 @@ public class EngineEditSource  extends Engine{
 	
 	private List<String> lista = new ArrayList<>();
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void comandoClaim(PlayerCommandPreprocessEvent e) {
         String cmd = e.getMessage().toLowerCase();
 		if (cmd.equalsIgnoreCase("/f claim") || cmd.equalsIgnoreCase("/f proteger") || cmd.equalsIgnoreCase("/f conquistar") || cmd.equalsIgnoreCase("/f dominar")) { 
@@ -88,7 +88,7 @@ public class EngineEditSource  extends Engine{
 		return players;
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void aoColocarSpawner(BlockPlaceEvent e) {
 		if (MConf.get().bloquearSpawnersForaDoClaim) {
 			Player p = e.getPlayer();
@@ -96,14 +96,14 @@ public class EngineEditSource  extends Engine{
 				PS ps = PS.valueOf(e.getBlockPlaced());
 				Faction f = BoardColl.get().getFactionAt(ps);
 				if (f.isNone()) {
-					e.setCancelled(Boolean.valueOf("true"));
+					e.setCancelled(true);
 					p.sendMessage("§cHey! Os geradores só podem ser usados em locais protegidos por sua facção.");
 				}
 			}
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void naoSpawnar(CreatureSpawnEvent e) {
 		if (MConf.get().bloquearSpawnersForaDoClaim) {
 			if (e.getSpawnReason() == SpawnReason.SPAWNER) {
@@ -136,7 +136,7 @@ public class EngineEditSource  extends Engine{
 		}
 	}
 		
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onCommandEvent(PlayerCommandPreprocessEvent e) {
 	
 		Player p = e.getPlayer();
@@ -171,7 +171,7 @@ public class EngineEditSource  extends Engine{
 		}	
 	}
 	
-	@EventHandler (priority=EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void aoTeleportarComComandoBackOuHome(PlayerTeleportEvent e) {
 				
 		Player p = e.getPlayer();
@@ -182,7 +182,7 @@ public class EngineEditSource  extends Engine{
 	        Faction faction = coll.getFactionAt(PS.valueOf(e.getTo()));
 			if (!faction.getMPlayers().contains(mp) && !faction.getRelationTo(mp.getFaction()).equals(Rel.ALLY)) {
 				if (lista.contains(p.getName())) {
-					if (faction.getId().equals(Factions.ID_SAFEZONE) || faction.getId().equals(Factions.ID_WARZONE) || faction.getId().equals(Factions.ID_NONE)) {
+					if (faction.getId().equals(Factions.ID_NONE) || faction.getId().equals(Factions.ID_WARZONE) || faction.getId().equals(Factions.ID_SAFEZONE)) {
 						return;
 					} else {
 						e.setCancelled(true);

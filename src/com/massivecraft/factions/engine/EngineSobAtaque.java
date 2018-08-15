@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -78,7 +79,7 @@ public class EngineSobAtaque extends Engine{
 		return EngineSobAtaque.underattack.get(c);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void desfazer(EventFactionsDisband e) {
 		if (factionattack.containsKey(e.getFaction().getName())) {
 			e.setCancelled(true);
@@ -87,7 +88,7 @@ public class EngineSobAtaque extends Engine{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
 		
 		Player p = e.getPlayer();
@@ -104,6 +105,7 @@ public class EngineSobAtaque extends Engine{
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void terras(EventFactionsChunksChange e) {
 		if (factionattack.containsKey(e.getNewFaction().getName())) {
 			e.setCancelled(true);
@@ -118,7 +120,7 @@ public class EngineSobAtaque extends Engine{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreakSpawner(BlockBreakEvent e) {
 		
 		if (e.getBlock().getType() == Material.MOB_SPAWNER) {
