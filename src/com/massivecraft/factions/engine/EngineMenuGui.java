@@ -496,7 +496,7 @@ public class EngineMenuGui  extends Engine{
 			}
 		
 			else if (slot == 16) {
-				p.performCommand("f ajuda");
+				p.chat("/f ajuda");
 				p.closeInventory();
 				return;
 			}
@@ -572,7 +572,7 @@ public class EngineMenuGui  extends Engine{
 			}
 		
 			else if (slot == 16) {
-				p.performCommand("f ajuda");
+				p.chat("/f ajuda");
 				p.closeInventory();
 				return;
 			}

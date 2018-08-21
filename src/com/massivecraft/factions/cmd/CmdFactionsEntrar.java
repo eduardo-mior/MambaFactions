@@ -17,7 +17,7 @@ public class CmdFactionsEntrar extends FactionsCommand
 	public CmdFactionsEntrar()
 	{
 		// Aliases
-        this.addAliases("join");
+        this.addAliases("join", "aceitar");
         
 		// Parametros (necessario)
 		this.addParameter(TypeFaction.get(), "facção");
