@@ -110,9 +110,6 @@ public class MConf extends Entity<MConf>
 	// REMOVE DATA
 	// -------------------------------------------- //
 	
-	// Should players be kicked from their faction and their data erased when banned?
-	public boolean removePlayerWhenBanned = false;
-	
 	// After how many milliseconds should players be automatically kicked from their faction?
 	
 	// The Default
@@ -395,15 +392,15 @@ public class MConf extends Entity<MConf>
 	// They are fine as is but feel free to experiment with them if you want to.
 	
 	// Use 1 or multiple of 3, 4 or 5.
-	public int seeChunkSteps = 2;
+	public int seeChunkSteps = 3;
 	
 	// White/Black List for creating sparse patterns.
-	public int seeChunkKeepEvery = 4;
+	public int seeChunkKeepEvery = 5;
 	public int seeChunkSkipEvery = 0;
 	
 	@EditorType(TypeMillisDiff.class)
 	public long seeChunkPeriodMillis = 400;
-	public int seeChunkParticleAmount = 15;
+	public int seeChunkParticleAmount = 10;
 	public float seeChunkParticleOffsetY = 2;
 	public float seeChunkParticleDeltaY = 2;
 	
