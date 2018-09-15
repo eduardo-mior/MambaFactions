@@ -5,7 +5,6 @@ import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MFlag;
 import com.massivecraft.factions.entity.MPlayer;
-import com.massivecraft.factions.event.EventFactionsPvpDisallowed;
 import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.util.MUtil;
@@ -80,14 +79,6 @@ public class EngineCanCombatHappen extends Engine
 			// affected entity list doesn't accept modification (iter.remove() is a no-go), but this works
 			event.setIntensity(affectedEntity, 0.0);
 		}
-	}
-
-	// Utility method used in "canCombatDamageHappen" below.
-	public static boolean falseUnlessDisallowedPvpEventCancelled(Player attacker, Player defender, DisallowCause reason, EntityDamageByEntityEvent event)
-	{
-		EventFactionsPvpDisallowed dpe = new EventFactionsPvpDisallowed(attacker, defender, reason, event);
-		dpe.run();
-		return dpe.isCancelled();
 	}
 	
 	public boolean canCombatDamageHappen(EntityDamageByEntityEvent event, boolean notify)

@@ -55,7 +55,7 @@ public class EngineSobAtaque extends Engine{
 		desligarFlyDosPlayers(faction);
 	}
 	
-	public void desligarFlyDosPlayers(Faction f) {
+	private void desligarFlyDosPlayers(Faction f) {
 		for (Player p : f.getOnlinePlayers()) {
 			if (!p.hasPermission("factions.voar.bypass") && p.getAllowFlight()) {
 				p.sendMessage("§cSua facção entrou em ataque portanto seu modo voar foi automaticamente desabilitado.");
@@ -105,18 +105,26 @@ public class EngineSobAtaque extends Engine{
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void terras(EventFactionsChunksChange e) {
-		if (factionattack.containsKey(e.getNewFaction().getName())) {
-			e.setCancelled(true);
+		MPlayer mp = e.getMPlayer();
+		if (factionattack.containsKey(mp.getFaction().getName())) {
 			e.getSender().sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
+			e.setCancelled(true);
 			return;
 		}
-		MPlayer mp = MPlayer.get(e.getSender().getName());
-		if (factionattack.containsKey(mp.getFaction().getName())) {
-			e.setCancelled(true);
-			e.getSender().sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
-			return;
+		for (PS ps : e.getChunks()) {
+			Chunk c = PS.asBukkitChunk(ps);
+			if (underattack.containsKey(c)) {
+				underattack.remove(c);
+				infoattack.remove(c);
+				Faction atual = BoardColl.get().getFactionAt(ps);
+				for (Chunk chunk : infoattack.keySet()) {
+					Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
+					if (at.equals(atual)) return;
+				}
+				factionattack.remove(atual.getName());
+			}
 		}
 	}
 	

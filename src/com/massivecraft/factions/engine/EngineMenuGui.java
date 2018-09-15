@@ -15,6 +15,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.Inventory;
@@ -39,7 +40,7 @@ public class EngineMenuGui  extends Engine{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
 		
-		final String cmd = e.getMessage().toLowerCase();
+		String cmd = e.getMessage().toLowerCase();
 
 		if (cmd.equalsIgnoreCase("/f")) {
 			Player p = e.getPlayer();
@@ -93,7 +94,7 @@ public class EngineMenuGui  extends Engine{
 			}
 		}
 		
-		else if (cmd.startsWith("/f desproteger all") || cmd.startsWith("/f abandonar all") || cmd.startsWith("/f unclaim all")) {
+		else if (cmd.startsWith("/f desproteger todas") || cmd.startsWith("/f abandonar todas") || cmd.startsWith("/f unclaim all")) {
 			Player p = e.getPlayer();
 			MPlayer mplayer = MPlayer.get(p);
 			if (p instanceof Player ) {
@@ -209,22 +210,21 @@ public class EngineMenuGui  extends Engine{
 			} else {
 			inv.setItem(38, new ItemBuilder(Material.EMPTY_MAP).setName("§aMapa dos Territórios").setLore("§7Você esta pisando em um território","§7protegido pela facção §e" + factionclaim.getName(),"","§fBotão direito: §7Mostra o mapa completo.","§fBotão esquerdo: §7Liga o mapa automático.", "", "§fMapa automático: §cDesligado").toItemStack()); }
 			
-			if (MConf.get().colocarIconeDoFBauNoMenuGUI) {
-			inv.setItem(41, new ItemBuilder(Material.CHEST).setName("§aBaú da facção").setLore("§fClique para abir o baú", "§fvirtual da sua facção.").toItemStack());}
-			
 			if (MConf.get().colocarIconeDoFGeradoresNoMenuGUI) {
 			inv.setItem(41, new ItemBuilder(Material.MOB_SPAWNER).setName("§aGeradores").setLore("§fClique para gerenciar os", "§fgeradores da sua facção.").toItemStack());}
+			
+			if (MConf.get().colocarIconeDoFBauNoMenuGUI) {
+			inv.setItem(41, new ItemBuilder(Material.CHEST).setName("§aBaú da facção").setLore("§fClique para abir o baú", "§fvirtual da sua facção.").toItemStack());}
 			
 			if (mplayer.isSeeingChunk()) {
 			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 			} else {
-			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	}
+			inv.setItem(28, new ItemBuilder(Material.GRASS).setName("§aDelimitações das Terras").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());}
 			
-			if (MConf.get().sistemaDeVoarNoClaim) {
 			if (p.getAllowFlight()) {
 			inv.setItem(32, new ItemBuilder(Material.FEATHER).setName("§aModo voar").setLore("§7Clique para alternar.","","§fStatus: §aAtivado").toItemStack());
 			} else {
-			inv.setItem(32, new ItemBuilder(Material.FEATHER).setName("§aModo voar").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());	} }
+			inv.setItem(32, new ItemBuilder(Material.FEATHER).setName("§aModo voar").setLore("§7Clique para alternar.","","§fStatus: §cDesativado").toItemStack());}
 			
 			if (faction.hasHome() && (cargo == Rel.LEADER || cargo == Rel.OFFICER)) {
 			inv.setItem(29, new ItemBuilder(Material.BEDROCK).setName("§aBase da Facção").setLore("§7Sua facção possui uma base!","","§fBotão esquerdo: §7Ir para base.","§fBotão direito: §7Definir base.","§fShift + Botão direito: §7Remover base.").toItemStack());
@@ -468,11 +468,10 @@ public class EngineMenuGui  extends Engine{
 		p.openInventory(inv);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoClickar(InventoryClickEvent e) {
 		
-		if (e.getSlotType().equals(SlotType.OUTSIDE) || e.getCurrentItem() == null || e.getCurrentItem().getTypeId() == 0)
+		if (e.getSlotType() == SlotType.OUTSIDE || e.getCurrentItem() == null || e.getInventory().getType() != InventoryType.CHEST)
 			return;
 
 		Player p = (Player)e.getWhoClicked();
@@ -628,10 +627,8 @@ public class EngineMenuGui  extends Engine{
 			}
 			
 			else if (slot == 32) {
-				if (MConf.get().sistemaDeVoarNoClaim) {
-					p.performCommand("f voar");
-					abrirMenuPlayerComFaccao(p);
-				}
+				p.performCommand("f voar");
+				abrirMenuPlayerComFaccao(p);
 				return;
 			}
 			
@@ -722,7 +719,7 @@ public class EngineMenuGui  extends Engine{
 			}
 			
 			else if (slot == 20) {
-				p.performCommand("f unclaim all all " + factionNome.replaceAll(" ", ""));
+				p.performCommand("f unclaim all all " + factionNome.replace(" ", ""));
 				p.closeInventory();
 				return;
 			}
@@ -789,7 +786,7 @@ public class EngineMenuGui  extends Engine{
 	    	
 			if (slot == 11) {
 				p.sendMessage("§f");
-				p.sendMessage("§eDefina já uma relação com alguma facção usando o comando '§f/f relação definir <facção>§e'");
+				p.sendMessage("§aDefina já alguma relação com alguma facção usando o comando '§f/f relação definir <facção>§e'");
 				p.sendMessage("§f");
 				p.closeInventory();
 				return;
@@ -804,8 +801,6 @@ public class EngineMenuGui  extends Engine{
 				if ((f.getRelationWishes().size() - EngineEditSource.getAliadosPendentesEnviados(f).size())  > 0) {
 					p.performCommand("f relacao listar");
 					p.closeInventory();
-				} else {
-					p.chat("/f relation");
 				}
 				return;
 			}
@@ -820,18 +815,14 @@ public class EngineMenuGui  extends Engine{
 			if (slot == 15) {
 				if (EngineEditSource.getAliadosPendentesEnviados(f).size() > 0) {
 					abrirMenuRelacoesPendentesEnviados(p);
-				} else {
-					abrirMenuRelacoesPendentes(p);
-				} 
+				}
 				return;
 			}
 			
 			else if (slot == 11) {
 				if (EngineEditSource.getAliadosPendentesRecebidos(f).size() > 0) {
 					abrirMenuRelacoesPendentesRecebidos(p);
-				} else {
-					abrirMenuRelacoesPendentes(p);
-				} 
+				}
 				return;
 			}
 			

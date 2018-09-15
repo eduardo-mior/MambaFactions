@@ -2,7 +2,6 @@ package com.massivecraft.factions.engine;
 
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MFlag;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsPowerChange;
@@ -48,12 +47,6 @@ public class EnginePower extends Engine
 		if (!faction.getFlag(MFlag.getFlagPowerloss()))
 		{
 			mplayer.msg("§eVocê não perdeu poder ao morrer pois a perda de poder está desabilitada naquele território.");
-			return;
-		}
-
-		if (!MConf.get().worldsPowerLossEnabled.contains(player.getWorld()))
-		{
-			mplayer.msg("§eVocê não perdeu poder ao morrer pois a perda de poder está desabilitada naquele mundo.");
 			return;
 		}
 

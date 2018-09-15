@@ -124,7 +124,7 @@ public class TerritoryAccess
 	
 	private TerritoryAccess(String hostFactionId, Boolean hostFactionAllowed, Collection<String> factionIds, Collection<String> playerIds)
 	{
-		if (hostFactionId == null) throw new IllegalArgumentException("§cO ID da facção que esta protegendo este território é nulo! Reporte isto a um administrador.");
+		if (hostFactionId == null) throw new IllegalArgumentException("O ID da faccao que esta protegendo este territorio eh nulo!");
 		this.hostFactionId = hostFactionId;
 		
 		Set<String> factionIdsInner = new MassiveSet<>();

@@ -205,7 +205,7 @@ public class MPerm extends Entity<MPerm> implements Prioritized, Registerable, N
 		if (mplayer == null) throw new NullPointerException("mplayer");
 		if (hostFaction == null) throw new NullPointerException("hostFaction");
 		
-		String ret = Txt.parse("%s§c não deixa você §c%s§c.", hostFaction.describeTo(mplayer, true), this.getDesc()).replaceAll("§a", "§c");
+		String ret = Txt.parse("%s§c não deixa você §c%s§c.", hostFaction.describeTo(mplayer, true), this.getDesc()).replace("§a", "§c");
 		
 		Player player = mplayer.getPlayer();
 		if (player != null && Perm.ADMIN.has(player))

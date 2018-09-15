@@ -2,7 +2,6 @@ package com.massivecraft.factions;
 
 
 import com.massivecraft.massivecore.Colorized;
-import com.massivecraft.massivecore.util.Txt;
 import org.bukkit.ChatColor;
 
 public enum AccessStatus implements Colorized
@@ -36,17 +35,6 @@ public enum AccessStatus implements Colorized
 	{
 		this.color = color;
 		this.access = access;
-	}
-	
-	// -------------------------------------------- //
-	// MESSAGE
-	// -------------------------------------------- //
-	
-	public String getStatusMessage()
-	{
-		ChatColor color = this.getColor();
-		String status = Txt.getNicedEnum(this).toLowerCase();
-		return Txt.parse("%sVocê possui acesso %s nesta area.", color.toString(), status);
 	}
 	
 }

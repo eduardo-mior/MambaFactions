@@ -16,6 +16,7 @@ public class CmdFactionsUnclaim extends FactionsCommand
 	this.addRequirements(ReqHasFaction.get());
     
 	}
+	
 	// -------------------------------------------- //
 	// FIELDS
 	// -------------------------------------------- //

@@ -77,13 +77,13 @@ public class CmdFactionsChatAliados extends FactionsCommand
 			// Mensagem para os aliados
 			for(Faction ally : aliados) {
 				for(MPlayer mp : ally.getMPlayersWhereOnline(true)) {
-					mp.message(("§b[a] §7["  + f.getName() + "§7] §f" + msender.getRole().getPrefix() + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
+					mp.message(("§b[a] §7["  + f.getName() + "§7] §f" + msender.getRole().getPrefix() + msender.getName() + "§b: " + msg).replace('&', '§'));
 				}
 			}
 	
 			// Mensagem para os membros da facção
 	        for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
-	        	mp.message(("§b[a] §7["+ f.getName() + "§7] §f" + msender.getRole().getPrefix()  + msender.getName() + "§b: " + msg).replaceAll("&", "§"));
+	        	mp.message(("§b[a] §7["+ f.getName() + "§7] §f" + msender.getRole().getPrefix()  + msender.getName() + "§b: " + msg).replace('&', '§'));
 			}
 		}
 	}

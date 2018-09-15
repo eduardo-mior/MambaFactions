@@ -67,9 +67,7 @@ public class CmdFactionsPerfil extends FactionsCommand
 		// Mostrando o cargo do player
 		if (mplayer.hasPowerBoost())
 		{
-			double powerBoost = mplayer.getPowerBoost();
-			String powerBoostType = (powerBoost > 0 ? "§2bônus§e" : "§4penalidade§e");
-			msg("§6Boost de Poder: §e%f §e(%s)", powerBoost, powerBoostType);
+			msg("§6Poder máximo: §e%f", mplayer.getPowerBoost());
 		}
 				
 		// Mostrando se o player esta online

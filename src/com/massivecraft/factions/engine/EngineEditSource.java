@@ -91,13 +91,12 @@ public class EngineEditSource  extends Engine{
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void aoColocarSpawner(BlockPlaceEvent e) {
 		if (MConf.get().bloquearSpawnersForaDoClaim) {
-			Player p = e.getPlayer();
 			if (e.getBlockPlaced().getType() == Material.MOB_SPAWNER) {
 				PS ps = PS.valueOf(e.getBlockPlaced());
 				Faction f = BoardColl.get().getFactionAt(ps);
 				if (f.isNone()) {
 					e.setCancelled(true);
-					p.sendMessage("§cHey! Os geradores só podem ser usados em locais protegidos por sua facção.");
+					e.getPlayer().sendMessage("§cHey! Os geradores só podem ser usados em locais protegidos por sua facção.");
 				}
 			}
 		}
@@ -197,7 +196,7 @@ public class EngineEditSource  extends Engine{
 	public static List<Faction> getAliadosPendentesEnviados(Faction f) {
 		List<Faction> aliadosPendentesEnviados = new ArrayList<>();
         Map<String, Rel> relations = f.getRelationWishes();
-		for(Entry<String, Rel> relation : relations.entrySet()){
+		for (Entry<String, Rel> relation : relations.entrySet()){
 			Faction ally = Faction.get(relation.getKey());
 			if (ally != null) {
 				if (relation.getValue() == Rel.ALLY) {
@@ -213,9 +212,9 @@ public class EngineEditSource  extends Engine{
 	public static List<Faction> getAliadosPendentesRecebidos(Faction f) {
 		List<Faction> aliadosPendentesRecebidos = new ArrayList<>();
 		Collection<Faction> factions = FactionColl.get().getAll();
-		for(Faction faction : factions) {
+		for (Faction faction : factions) {
 	        Map<String, Rel> relations = faction.getRelationWishes();
-			for(Entry<String, Rel> relation : relations.entrySet()) {
+			for (Entry<String, Rel> relation : relations.entrySet()) {
 				if (relation.getValue() == Rel.ALLY) {
 					Faction ally = Faction.get(relation.getKey());
 					if (ally == f) {

@@ -56,7 +56,7 @@ public class CmdFactionsDesc extends FactionsCommand
 			EventFactionsDescriptionChange event = new EventFactionsDescriptionChange(sender, msenderFaction, newDescription);
 			event.run();
 			if (event.isCancelled()) return;
-			newDescription = event.getNewDescription().replace("&", "§");
+			newDescription = event.getNewDescription().replace('&', '§');
 	
 			// Aplicando evento
 			msenderFaction.setDescription(newDescription);

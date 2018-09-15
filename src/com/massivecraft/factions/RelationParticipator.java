@@ -2,7 +2,6 @@ package com.massivecraft.factions;
 
 import org.bukkit.ChatColor;
 
-
 public interface RelationParticipator
 {
 	String describeTo(RelationParticipator observer);

@@ -66,7 +66,6 @@ public class MConf extends Entity<MConf>
 	public boolean bloquearSpawnersForaDoClaim = false;
 	public boolean anunciarMorteAoMorrer = true;
 	public int distanciaDoAnuncioEmBlocos = 16;
-	public boolean sistemaDeVoarNoClaim = true;
 	public boolean colocarIconeDoFBauNoMenuGUI = false;
 	public boolean colocarIconeDoFGeradoresNoMenuGUI = false;
 	
@@ -95,8 +94,6 @@ public class MConf extends Entity<MConf>
 	// Do you only want claiming enabled on the one map called "Hurr"?
 	// In such case set standard to false and add "Hurr" as an exeption to worldsClaimingEnabled.
 	public WorldExceptionSet worldsClaimingEnabled = new WorldExceptionSet();
-	public WorldExceptionSet worldsPowerLossEnabled = new WorldExceptionSet();	
-	public WorldExceptionSet worldsPvpRulesEnabled = new WorldExceptionSet();
 	
 	// -------------------------------------------- //
 	// TASKS
@@ -143,21 +140,6 @@ public class MConf extends Entity<MConf>
 	
 	// What power should the player start with?
 	public double defaultPlayerPower = 10.0;
-	
-	// -------------------------------------------- //
-	// MOTD
-	// -------------------------------------------- //
-	
-	// During which event priority should the faction message of the day be displayed?
-	// Choose between: LOWEST, LOW, NORMAL, HIGH, HIGHEST and MONITOR.
-	// This setting only matters if "motdDelayTicks" is set to -1
-	public EventPriority motdPriority = EventPriority.NORMAL;
-	
-	// How many ticks should we delay the faction message of the day with?
-	// -1 means we don't delay at all. We display it at once.
-	// 0 means it's deferred to the upcoming server tick.
-	// 5 means we delay it yet another 5 ticks.
-	public int motdDelayTicks = -1;
 
 	// -------------------------------------------- //
 	// POWER
@@ -334,22 +316,12 @@ public class MConf extends Entity<MConf>
 	// CHAT
 	// -------------------------------------------- //
 	
-	// Should Factions set the chat format?
-	// This should be kept at false if you use an external chat format plugin.
-	// If you are planning on running a more lightweight server you can set this to true.
-	public boolean chatSetFormat = true;
-	
 	// At which event priority should the chat format be set in such case?
 	// Choose between: LOWEST, LOW, NORMAL, HIGH and HIGHEST.
 	public EventPriority chatSetFormatAt = EventPriority.LOWEST;
 	
 	// What format should be set?
 	public String chatSetFormatTo = "<{faction}§f%1$s> %2$s";
-	
-	// Should the chat tags such as {factions_name} be parsed?
-	// NOTE: You can set this to true even with chatSetFormat = false.
-	// But in such case you must set the chat format using an external chat format plugin.
-	public boolean chatParseTags = true;
 	
 	// At which event priority should the faction chat tags be parsed in such case?
 	// Choose between: LOWEST, LOW, NORMAL, HIGH, HIGHEST.

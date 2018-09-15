@@ -39,12 +39,6 @@ public class EngineDenyCommands extends Engine
 		// ... and the player is not overriding ...
 		if (mplayer.isOverriding()) return;
 		
-		// ... clean up the command ...
-		String command = event.getMessage();
-		command = Txt.removeLeadingCommandDust(command);
-		command = command.toLowerCase();
-		command = command.trim();
-		
 		// ... if there is a faction at the players location we fetch the relation now ...
 		PS ps = PS.valueOf(player.getLocation()).getChunk(true);
 		Faction factionAtPs = BoardColl.get().getFactionAt(ps);
@@ -60,6 +54,13 @@ public class EngineDenyCommands extends Engine
 		
 		List<String> deniedCommands = MConf.get().denyCommandsTerritoryRelation.get(factionAtRel);
 		if (deniedCommands == null) return;
+		
+		// ... clean up the command ...
+		String command = event.getMessage();
+		command = Txt.removeLeadingCommandDust(command);
+		command = command.toLowerCase();
+		command = command.trim();
+		
 		if ( ! MUtil.containsCommand(command, deniedCommands)) return;
 		
 		mplayer.msg("§cVocê não pode usar '§c%s§c' em territórios inimigos.", command);

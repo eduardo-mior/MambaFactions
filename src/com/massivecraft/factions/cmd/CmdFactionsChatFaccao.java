@@ -56,7 +56,7 @@ public class CmdFactionsChatFaccao extends FactionsCommand
 			
 			// Mensagem para os membros da facção
 			for(MPlayer mp : f.getMPlayersWhereOnline(true)) {
-				mp.message(("§a[f] §f" + msender.getRole().getPrefix() + msender.getName() + "§a: " + msg).replaceAll("&", "§"));
+				mp.message(("§a[f] §f" + msender.getRole().getPrefix() + msender.getName() + "§a: " + msg).replace('&', '§'));
 				
 			}
 		}
