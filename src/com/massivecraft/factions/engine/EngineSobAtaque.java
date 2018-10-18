@@ -19,6 +19,7 @@ import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsChunksChange;
 import com.massivecraft.factions.event.EventFactionsDisband;
 import com.massivecraft.factions.event.EventFactionsEnteredInAttack;
+import com.massivecraft.factions.event.EventFactionsFinishAttack;
 import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.ps.PS;
 
@@ -71,14 +72,43 @@ public class EngineSobAtaque extends Engine{
 	
 	public void remover(Chunk c, Faction f) {
 		underattack.remove(c);
-		factionattack.remove(f.getName()); 
 		infoattack.remove(c);
+		for (Chunk chunk : infoattack.keySet()) {
+			Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
+			if (at.getName().equalsIgnoreCase(f.getName())) return;
+		}
+		factionattack.remove(f.getName());
+		EventFactionsFinishAttack event = new EventFactionsFinishAttack(c, f);
+		event.run();
 	}
 	
 	public long getTime(Chunk c) {
 		return EngineSobAtaque.underattack.get(c);
 	}
 	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void terras(EventFactionsChunksChange e) {
+		MPlayer mp = e.getMPlayer();
+		if (factionattack.containsKey(mp.getFaction().getName())) {
+			e.getSender().sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
+			e.setCancelled(true);
+			return;
+		}
+		for (PS ps : e.getChunks()) {
+			Chunk c = PS.asBukkitChunk(ps);
+			if (underattack.containsKey(c)) {
+				underattack.remove(c);
+				infoattack.remove(c);
+				Faction atual = BoardColl.get().getFactionAt(ps);
+				for (Chunk chunk : infoattack.keySet()) {
+					Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
+					if (at.equals(atual)) return;
+				}
+				factionattack.remove(atual.getName());
+			}
+		}
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void desfazer(EventFactionsDisband e) {
 		if (factionattack.containsKey(e.getFaction().getName())) {
@@ -101,29 +131,6 @@ public class EngineSobAtaque extends Engine{
 				e.setCancelled(true);
 				p.sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
 				return;
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void terras(EventFactionsChunksChange e) {
-		MPlayer mp = e.getMPlayer();
-		if (factionattack.containsKey(mp.getFaction().getName())) {
-			e.getSender().sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
-			e.setCancelled(true);
-			return;
-		}
-		for (PS ps : e.getChunks()) {
-			Chunk c = PS.asBukkitChunk(ps);
-			if (underattack.containsKey(c)) {
-				underattack.remove(c);
-				infoattack.remove(c);
-				Faction atual = BoardColl.get().getFactionAt(ps);
-				for (Chunk chunk : infoattack.keySet()) {
-					Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
-					if (at.equals(atual)) return;
-				}
-				factionattack.remove(atual.getName());
 			}
 		}
 	}
