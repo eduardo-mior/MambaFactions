@@ -2,30 +2,30 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
-import com.massivecraft.factions.cmd.type.TypeMPlayer;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
-public class CmdFactionsTransferir extends FactionsCommand {
-
+public class CmdFactionsTransferir extends FactionsCommand 
+{
 	// -------------------------------------------- //
 	// CONSTRUCT
 	// -------------------------------------------- //
 
-	public CmdFactionsTransferir() {
-		
+	public CmdFactionsTransferir() 
+	{
 		// Aliases
 		this.addAliases("lider", "liderança", "lideranca");
 		
-		// Parametros (necessario)
-		this.addParameter(TypeMPlayer.get(), "jogador");
+		// Descrição
+		this.setDesc("§6 transferir §e<player> §8-§7 Transfere a liderança da facção.");
 		
-		// Requisições
+		// Requisitos
 		this.addRequirements(ReqHasFaction.get());
 		
-		// Descrição do comando
-		this.setDesc("§6 transferir §e<player> §8-§7 Transfere a liderança da facção.");
+		// Parametros (necessario)
+		this.addParameter(TypeString.get(), "player", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -33,27 +33,35 @@ public class CmdFactionsTransferir extends FactionsCommand {
 	// -------------------------------------------- //
 
 	@Override
-	public void perform() throws MassiveException {
-		MPlayer target = this.readArg(msender);
-		Faction facSender = msender.getFaction();
-		Faction facTarget = target.getFaction();
-		Rel cargoSender = msender.getRole();
-		
+	public void perform() throws MassiveException 
+	{
 		// Verificando se o sender é lider da facção
-		if (cargoSender != Rel.LEADER) {
-			msender.message("§cApenas o líder da facção pode promover um capitão para líder.");
+		if (msender.getRole() != Rel.LEADER) {
+			msg("§cApenas o líder da facção pode promover uma novo líder.");
+			return;
+		}
+		
+		// Verficiando se os argumentos são validos
+		if (!this.argIsSet()) {
+			msg("§cArgumentos insuficientes, use /f transferir <player>");
 			return;
 		}
 		
 		// Verificando se o sender e o target são a mesma pessoa
-		if (msender == target) {
-			msender.message("§cVocê não pode transferir a liderança para você mesmo");
+		String name = this.arg();
+		if (msender.getName().equalsIgnoreCase(name)) {
+			msg("§cVocê não pode transferir a liderança para você mesmo");
 			return;
 		}
 
+		// Argumentos
+		MPlayer target = readMPlayer(name);
+		Faction facSender = msender.getFaction();
+		Faction facTarget = target.getFaction();
+
 		// Verificando se o target é da mesma facão que o sender
 		if (facSender != facTarget) {
-			msender.message("§cEste jogador não esta na sua facção.");
+			msg("§cEste jogador não esta na sua facção.");
 			return;
 		}
 		
@@ -62,6 +70,6 @@ public class CmdFactionsTransferir extends FactionsCommand {
 		target.setRole(Rel.LEADER);
 		
 		// Informando o sender e o target
-		facSender.msg("§e" + msender.getName() + "§e transferiu a lideração da facção para \"§e" + target.getName() + "\"§e.");
+		facSender.msg("§e" + msender.getName() + "§e transferiu a lideração da facção para §f" + target.getName() + "§e.");
 	}
 }

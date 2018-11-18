@@ -1,10 +1,9 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
-import com.massivecraft.factions.cmd.type.TypeFaction;
-import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.Visibility;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.util.MUtil;
 
 public class CmdFactionsRelacaoOld extends FactionsCommand
@@ -29,7 +28,7 @@ public class CmdFactionsRelacaoOld extends FactionsCommand
 		this.addAliases(relName);
 
 		// Parametros (necessario)
-		this.addParameter(TypeFaction.get(), "facção", true);
+		this.addParameter(TypeString.get(), "facção", "erro", true);
 
 		// Visibilidade do comando
 		this.setVisibility(Visibility.INVISIBLE);
@@ -42,18 +41,21 @@ public class CmdFactionsRelacaoOld extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		// Argumentos
-		Faction faction = this.readArg();
+		// Verficiando se os argumentos são validos
+		if (!this.argIsSet()) {
+			msg("§cArgumentos insuficientes, use /f " + this.relName + " <facção>");
+			return;
+		}
 		
 		// Verificando se o player possui permissão
-		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
+		if (!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
 			msender.message("§cVocê precisar ser capitão ou superior para poder gerenciar as relações da facção.");
 			return;
 		}
 		
 		// Aplicando o evento
-		CmdFactions.get().cmdFactionsRelacao.cmdFactionsRelacaoDefinir.execute(sender, MUtil.list(
-			faction.getId(),
+		CmdFactions.get().cmdFactionsRelacao.execute(sender, MUtil.list(
+			this.arg(),
 			this.relName
 		));
 	}

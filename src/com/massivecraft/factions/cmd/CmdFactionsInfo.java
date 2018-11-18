@@ -6,11 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.cmd.type.TypeFaction;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.event.EventFactionsFactionShowAsync;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.PriorityLines;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.mixin.MixinMessage;
 import com.massivecraft.massivecore.util.Txt;
 
@@ -25,11 +25,11 @@ public class CmdFactionsInfo extends FactionsCommand
 		// Aliases
 		this.addAliases("f", "show", "ver", "faction");
 
-		// Parametros (não necessario)
-		this.addParameter(TypeFaction.get(), "facção", "você");
-
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 f,info §e<facção> §8-§7 Mostra as informações da facção.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "outra facção", "sua facção", true);
 	}
 
 	// -------------------------------------------- //
@@ -39,15 +39,13 @@ public class CmdFactionsInfo extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		// Argumentos
-		final Faction faction = this.readArg(msenderFaction);
+		// Argumentos (possuem o modificador final pois serão executados em outra thread)
 		final CommandSender sender = this.sender;
+		final Faction faction = readFaction();
 	
-		Bukkit.getScheduler().runTaskAsynchronously(Factions.get(), new Runnable()
-		{
+		Bukkit.getScheduler().runTaskAsynchronously(Factions.get(), new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				// Evento
 				EventFactionsFactionShowAsync event = new EventFactionsFactionShowAsync(sender, faction);
 				event.run();

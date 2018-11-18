@@ -36,16 +36,14 @@ public class EngineCanCombatHappen extends Engine
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void canCombatDamageHappen(EntityDamageByEntityEvent event)
 	{
-		if (this.canCombatDamageHappen(event, true)) {
+		if (this.canCombatDamageHappenBOOLEAN(event)) {
 			EngineFly.disableFly(event);
 			return;
 		}
 		event.setCancelled(true);
 
 		Entity damager = event.getDamager();
-		if ( ! (damager instanceof Arrow)) return;
-
-		damager.remove();
+		if (damager instanceof Arrow) damager.remove();
 	}
 
 	// mainly for flaming arrows; don't want allies or people in safe zones to be ignited even after damage event is cancelled
@@ -54,7 +52,7 @@ public class EngineCanCombatHappen extends Engine
 	public void canCombatDamageHappen(EntityCombustByEntityEvent event)
 	{
 		EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE, 0D);
-		if (this.canCombatDamageHappen(sub, false)) return;
+		if (this.canCombatDamageHappenBOOLEAN(sub)) return;
 		event.setCancelled(true);
 	}
 
@@ -74,20 +72,19 @@ public class EngineCanCombatHappen extends Engine
 		for (LivingEntity affectedEntity : event.getAffectedEntities())
 		{
 			EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(thrower, affectedEntity, EntityDamageEvent.DamageCause.CUSTOM, 0D);
-			if (this.canCombatDamageHappen(sub, true)) continue;
+			if (this.canCombatDamageHappenBOOLEAN(sub)) continue;
 			
 			// affected entity list doesn't accept modification (iter.remove() is a no-go), but this works
 			event.setIntensity(affectedEntity, 0.0);
 		}
 	}
 	
-	public boolean canCombatDamageHappen(EntityDamageByEntityEvent event, boolean notify)
+	public boolean canCombatDamageHappenBOOLEAN(EntityDamageByEntityEvent event)
 	{		
 		// Verificando se o defensor é 1 player
 		Entity edefender = event.getEntity();
 		if (MUtil.isntPlayer(edefender)) return true;
 		Player defender = (Player)edefender;
-		MPlayer mdefender = MPlayer.get(edefender);
 		
 		// ... and the attacker is someone else ...
 		Entity eattacker = MUtil.getLiableDamager(event);
@@ -101,12 +98,13 @@ public class EngineCanCombatHappen extends Engine
 		Player attacker = (Player)eattacker;
 		MPlayer mattacker = MPlayer.get(attacker);
 		
-		// Pegando a facção onde o PvP esta ocorrendo
-		PS defenderPs = PS.valueOf(defender.getLocation());
-		Faction defenderPsFaction = BoardColl.get().getFactionAt(defenderPs);
-		
 		// ... fast evaluate if the attacker is overriding ...
 		if (mattacker != null && mattacker.isOverriding()) return true;
+		
+		// Pegando a facção onde o PvP esta ocorrendo e o defensor 
+		MPlayer mdefender = MPlayer.get(edefender);
+		PS defenderPs = PS.valueOf(defender.getLocation());
+		Faction defenderPsFaction = BoardColl.get().getFactionAt(defenderPs);
 		
 		// Verificando se o PvP amigo esta ativado
 		if (defenderPsFaction.getFlag(MFlag.getFlagFriendlyire())) return true;

@@ -6,7 +6,7 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
-import com.massivecraft.massivecore.command.Parameter;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.pager.Pager;
 import com.massivecraft.massivecore.pager.Stringifier;
 import com.massivecraft.massivecore.util.Txt;
@@ -23,15 +23,14 @@ public class CmdFactionsListar extends FactionsCommand
 	
 	public CmdFactionsListar()
 	{
-
 		// Aliases
         this.addAliases("l", "list");
-        
-		// Parametros (não necessario)
-		this.addParameter(Parameter.getPage());
 
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 l,listar §e[página] §8-§7 Mostra a lista de facções.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "pagina", "1", true);
 	}
 
 	// -------------------------------------------- //
@@ -42,7 +41,7 @@ public class CmdFactionsListar extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Args
-		int page = this.readArg();
+		int page = readInt();
 		final CommandSender sender = this.sender;
 		final MPlayer msender = this.msender;
 		

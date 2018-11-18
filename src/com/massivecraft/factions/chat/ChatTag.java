@@ -50,6 +50,6 @@ public abstract class ChatTag extends ChatActive
 	// ABSTRACT
 	// -------------------------------------------- //
 	
-	public abstract String getReplacement(CommandSender sender, CommandSender recipient);
+	public abstract String getReplacement(CommandSender sender);
 	
 }

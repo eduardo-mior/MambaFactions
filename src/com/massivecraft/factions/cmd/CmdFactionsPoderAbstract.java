@@ -66,14 +66,13 @@ public abstract class CmdFactionsPoderAbstract extends FactionsCommand
 	private void informPowerBoost(FactionsParticipator factionsParticipator, Double powerBoost, boolean updated)
 	{
 		// Prepare
-		String participatorDescribe = factionsParticipator.describeTo(msender, true);
+		String participatorDescribe = factionsParticipator.describeTo(msender, false);
 		powerBoost = powerBoost == null ? factionsParticipator.getPowerBoost() : powerBoost;
 		String powerDescription = Txt.parse(Double.compare(powerBoost, 0D) >= 0 ? "§aum §2bônus" : "§auma §4penalidade");
 		String when = updated ? "agora " : "";
-		String verb = factionsParticipator.equals(msender) ? "possui" : "possui";
 		
 		// Create message
-		String messagePlayer = Txt.parse("§a%s§a %s%s§a %s§a de poder de §d%.2f§a.", participatorDescribe, when, verb, powerDescription, powerBoost);
+		String messagePlayer = Txt.parse("§a%s§a %spossui§a %s§a de poder de §d%.2f§a.", participatorDescribe, when, powerDescription, powerBoost);
 		
 		// Inform
 		msender.message(messagePlayer);

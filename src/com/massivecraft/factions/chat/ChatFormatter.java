@@ -34,7 +34,7 @@ public class ChatFormatter
 	// FORMAT
 	// -------------------------------------------- //
 	
-	public static String format(String msg, CommandSender sender, CommandSender recipient)
+	public static String format(String msg, CommandSender sender)
 	{
 		// We build the return value in this string buffer
 		StringBuffer ret = new StringBuffer();
@@ -69,7 +69,7 @@ public class ChatFormatter
 			}
 			else
 			{
-				replacement = compute(tag, modifierIds, sender, recipient);
+				replacement = compute(tag, modifierIds, sender);
 				if (replacement == null)
 				{
 					// If a tag or modifier returns null it's the same as opting out.
@@ -91,9 +91,9 @@ public class ChatFormatter
 	// TAG COMPUTE
 	// -------------------------------------------- //
 	
-	public static String compute(ChatTag tag, List<String> modifierIds, CommandSender sender, CommandSender recipient)
+	public static String compute(ChatTag tag, List<String> modifierIds, CommandSender sender)
 	{
-		String ret = tag.getReplacement(sender, recipient);
+		String ret = tag.getReplacement(sender);
 		if (ret == null) return null;
 		
 		return ret;

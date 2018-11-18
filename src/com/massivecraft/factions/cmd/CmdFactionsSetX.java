@@ -2,6 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
+import com.massivecraft.factions.entity.MPerm;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.ps.PS;
 
@@ -46,6 +47,15 @@ public abstract class CmdFactionsSetX extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{	
+		// Verificando se o player tem permissão
+		if (!MPerm.getPermTerritory().has(msender, msenderFaction, true)) return;
+			
+		// Verificando se a facção esta em ataque
+		if (msenderFaction.isInAttack()) {
+			msg("§cVocê não pode controlar territórios enquanto sua facção estiver sobre ataque!");
+			return;
+		}
+		
 		// Args
 		final Faction newFaction = this.getNewFaction();
 		final Set<PS> chunks = this.getChunks();

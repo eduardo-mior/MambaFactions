@@ -10,9 +10,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.massivecraft.factions.Factions;
@@ -30,6 +31,7 @@ import com.massivecraft.massivecore.xlib.gson.reflect.TypeToken;
 public class Board extends Entity<Board> implements BoardInterface
 {
 	public static final transient Type MAP_TYPE = new TypeToken<Map<PS, TerritoryAccess>>(){}.getType();
+	private static final transient String SQUARE = "\u2588";
 	
 	// -------------------------------------------- //
 	// META
@@ -348,33 +350,35 @@ public class Board extends Entity<Board> implements BoardInterface
 		}
 		return false;
 	}
-	
+		
 	@Override
 	public List<Mson> getMap(Player p, RelationParticipator observer, PS centerPs, double inDegrees, int width, int height)
 	{
 		centerPs = centerPs.getChunkCoords(true);
 		
 		List<Mson> ret = new ArrayList<>();
-		//Faction centerFaction = this.getFactionAt(centerPs);
 		
-		//ret.add(Txt.titleize("(" + centerPs.getChunkX() + "," + centerPs.getChunkZ() + ") " + centerFaction.getName(observer)));
-		ret.add(Mson.mson("   "));
-
-		String blacklargesquare = "\u2588";
+		ret.add(Mson.NEWLINE);
 		
 		int halfWidth = width / 2;
 		int halfHeight = height / 2;
 		width = halfWidth * 2 + 1;
 		height = halfHeight * 2 + 1;
-		
+				
 		PS topLeftPs = centerPs.plusChunkCoords(-halfWidth, -halfHeight);
 		
 		// Get the compass
 		List<String> asciiCompass = AsciiCompass.getAsciiCompass(inDegrees);
 		
-		// Make room for the list of names
-		//height--;
-		
+		// Trabalhando com a borda do mundo
+		World world = p.getWorld();
+		Location center = world.getWorldBorder().getCenter();
+		double size = world.getWorldBorder().getSize() / 2.0D;
+		int cXP = new Location(world, center.getX() + size, 0, 0).getChunk().getX();
+		int cXN = new Location(world, center.getX() - size, 0, 0).getChunk().getX();
+		int cZP = new Location(world, 0, 0, center.getZ() + size).getChunk().getZ();
+		int cZN = new Location(world, 0, 0, center.getZ() - size).getChunk().getZ();
+
 		// For each row
 		for (int dz = 0; dz < height; dz++)
 		{
@@ -382,74 +386,84 @@ public class Board extends Entity<Board> implements BoardInterface
 			List<Mson> row = new ArrayList<>();
 			for (int dx = 0; dx < width; dx++)
 			{
-				if (dx == halfWidth && dz == halfHeight)
-				{
-					row.add(Mson.mson(ChatColor.YELLOW + blacklargesquare));
+				
+				if (dx == halfWidth && dz == halfHeight) {
+					row.add(Mson.mson(ChatColor.YELLOW + SQUARE));
 					continue;
 				}
 				
 				PS herePs = topLeftPs.plusChunkCoords(dx, dz);
 				Faction hereFaction = this.getFactionAt(herePs);
-				PS borda = herePs;
-				if(borda.getChunkCoords().getChunkX() > MConf.get().bordaXpositivo/16) {
-					row.add(Mson.mson(ChatColor.BLACK + blacklargesquare));
+				int cX = herePs.getChunkX(true);
+				int cZ = herePs.getChunkZ(true);
+				
+				if (cX > cXP) {
+					row.add(Mson.mson(ChatColor.BLACK + SQUARE));
 					continue;
 				}
 				
-				if(borda.getChunkCoords().getChunkZ() > MConf.get().bordaZpositivo/16) {
-					row.add(Mson.mson(ChatColor.BLACK + blacklargesquare));
+				else if (cX < cXN) {
+					row.add(Mson.mson(ChatColor.BLACK + SQUARE));
 					continue;
 				}
 				
-				if(borda.getChunkCoords().getChunkZ() < MConf.get().bordaZnegativo/16) {
-					row.add(Mson.mson(ChatColor.BLACK + blacklargesquare));
+				else if (cZ > cZP) {
+					row.add(Mson.mson(ChatColor.BLACK + SQUARE));
 					continue;
 				}
 				
-				if(borda.getChunkCoords().getChunkX() < MConf.get().bordaXnegativo/16) {
-					row.add(Mson.mson(ChatColor.BLACK + blacklargesquare));
+				else if (cZ < cZN) {
+					row.add(Mson.mson(ChatColor.BLACK + SQUARE));
 					continue;
 				}
 				
-				if (hereFaction.isNone())
-				{
-					row.add(Mson.mson(ChatColor.GRAY + blacklargesquare));
+				else if (hereFaction.isNone()) {
+					row.add(Mson.mson(ChatColor.GRAY + SQUARE));
+					continue;
 				}
-				else if (getSobAtaque(p, herePs, p.getWorld().getName())) {
-					row.add(Mson.mson(ChatColor.LIGHT_PURPLE 
-					+ blacklargesquare).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+
+				else if (isInAttack(world, herePs))	{
+					row.add(Mson.mson(ChatColor.LIGHT_PURPLE + SQUARE).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+					continue;
 				}
-				else
-				{
-					row.add(Mson.mson(hereFaction.getColorTo(observer).toString() 
-						+ blacklargesquare).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+				
+				else if (TemporaryBoard.get().isTemporary(herePs)) {
+					row.add(Mson.mson(ChatColor.BLUE + SQUARE).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+					continue;
+				}
+				
+				else {
+					row.add(Mson.mson(hereFaction.getColorTo(observer).toString() + SQUARE).tooltip(hereFaction.getColorTo(observer).toString() + hereFaction.getName()));
+					continue;
 				}
 				
 			}
 			
 			// Add the compass
-			if (dz == 5)  row.add(Mson.mson(" " + asciiCompass.get(0)).bold(true));
-			if (dz == 6)  row.add(Mson.mson(" " + asciiCompass.get(1)).bold(true));
-			if (dz == 7)  row.add(Mson.mson(" " + asciiCompass.get(2)).bold(true));
-			if (dz == 9)  row.add(Mson.mson(" " + MConf.get().colorAlly + blacklargesquare + " " + ChatColor.WHITE + "Aliada"));
-			if (dz == 10) row.add(Mson.mson(" " + MConf.get().colorNeutral + blacklargesquare + " " + ChatColor.WHITE + "Neutra"));
-			if (dz == 11) row.add(Mson.mson(" " + MConf.get().colorEnemy + blacklargesquare + " " + ChatColor.WHITE + "Inimiga"));
-			if (dz == 12) row.add(Mson.mson(" " + ChatColor.GRAY + blacklargesquare + " " + ChatColor.WHITE + "Zona Livre"));
-			if (dz == 13) row.add(Mson.mson(" " + MConf.get().colorNoPVP + blacklargesquare + " " + ChatColor.WHITE + "Zona Protegida"));
-			if (dz == 14) row.add(Mson.mson(" " + MConf.get().colorFriendlyFire + blacklargesquare + " " + ChatColor.WHITE + "Zona de Guerra"));
-			if (dz == 15) row.add(Mson.mson(" " + ChatColor.YELLOW + blacklargesquare + " " + ChatColor.WHITE + "Sua posição"));
-			if (dz == 16) row.add(Mson.mson(" " + MConf.get().colorMember + blacklargesquare + " " + ChatColor.WHITE + "Sua facção"));
-			if (dz == 17) row.add(Mson.mson(" " + ChatColor.LIGHT_PURPLE + blacklargesquare + " " + ChatColor.WHITE + "Sob ataque"));
+			     if (dz == 3)  row.add(Mson.mson(" " + asciiCompass.get(0)).bold(true));
+			else if (dz == 4)  row.add(Mson.mson(" " + asciiCompass.get(1)).bold(true));
+			else if (dz == 5)  row.add(Mson.mson(" " + asciiCompass.get(2)).bold(true));
+			else if (dz == 7)  row.add(Mson.mson(" " + MConf.get().colorAlly         + SQUARE + " §fAliada"));
+			else if (dz == 8)  row.add(Mson.mson(" " + MConf.get().colorNeutral      + SQUARE + " §fNeutra"));
+			else if (dz == 9)  row.add(Mson.mson(" " + MConf.get().colorEnemy        + SQUARE + " §fInimiga"));
+			else if (dz == 10) row.add(Mson.mson(" " + ChatColor.GRAY                + SQUARE + " §fZona Livre"));
+			else if (dz == 11) row.add(Mson.mson(" " + MConf.get().colorNoPVP        + SQUARE + " §fZona Protegida"));
+			else if (dz == 12) row.add(Mson.mson(" " + MConf.get().colorFriendlyFire + SQUARE + " §fZona de Guerra"));
+			else if (dz == 13) row.add(Mson.mson(" " + ChatColor.YELLOW              + SQUARE + " §fSua posição"));
+			else if (dz == 14) row.add(Mson.mson(" " + MConf.get().colorMember       + SQUARE + " §fSua facção"));
+			else if (dz == 15) row.add(Mson.mson(" " + ChatColor.LIGHT_PURPLE        + SQUARE + " §fSob ataque"));
+			else if (dz == 16) row.add(Mson.mson(" " + ChatColor.BLUE                + SQUARE + " §fTerreno temporário"));
 			
 			ret.add(Mson.mson(row));
 		}
 		return ret;
 	}
 	
-	public static boolean getSobAtaque(Player p ,PS ps, String world) {
-		Chunk chunk = Bukkit.getWorld(p.getWorld().getName()).getChunkAt(ps.getChunkX(), ps.getChunkZ());
+	// Método para verificar se a facção esta sob ataque
+	private boolean isInAttack(World world, PS ps) {
+		Chunk chunk = world.getChunkAt(ps.getChunkX(), ps.getChunkZ());
 		
-		if(EngineSobAtaque.underattack.containsKey(chunk)) {
+		if (EngineSobAtaque.underattack.containsKey(chunk)) {
 			return true;
 		} 
 		return false;

@@ -12,13 +12,14 @@ public class CmdFactionsPoderPlayer extends CmdFactionsPoderAbstract
 	
 	public CmdFactionsPoderPlayer()
 	{
+		// Super
 		super(TypeMPlayer.get(), "player");
-		
-        // Visibilidade do comando
-        this.setVisibility(Visibility.SECRET);
         
     	// Descrção do comando
     	this.setDesc("§6 poder p §e<player> <quantia> §8-§7 Adiciona poder a um player.");
+    	
+        // Visibilidade do comando
+        this.setVisibility(Visibility.SECRET);
 	}
 	
 }

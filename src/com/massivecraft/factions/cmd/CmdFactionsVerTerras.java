@@ -2,8 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
-import com.massivecraft.massivecore.command.type.primitive.TypeBooleanOn;
-import com.massivecraft.massivecore.util.Txt;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
 public class CmdFactionsVerTerras extends FactionsCommand
 {
@@ -16,14 +15,14 @@ public class CmdFactionsVerTerras extends FactionsCommand
 		// Aliases
 		this.addAliases("sc");
 		
-		// Parametros (não necessario)
-		this.addParameter(TypeBooleanOn.get(), "mostrar", "esconder");
+		// Descrição
+		this.setDesc("§6 sc,verterras §8-§7 Mostra as delimitações das terras.");
 
-		// Requisições
+		// Requisitos
 		this.addRequirements(RequirementIsPlayer.get());
 		
-		// Descrição do comando
-		this.setDesc("§6 sc,verterras §8-§7 Mostra as delimitações das terras.");
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "on/off", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -34,22 +33,29 @@ public class CmdFactionsVerTerras extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Argumentos
-		boolean old = msender.isSeeingChunk();
-		boolean target = this.readArg(!old);
-		String targetDesc = Txt.parse(target ? "§2ativada": "§cdesativada");
+		Boolean old = msender.isSeeingChunk();
+		Boolean target = readBoolean(old);
 		
-		// Verificando se o player ja esta com o modo verterras ativado
-		if (target == old)
-		{
-			msg("§aA visualização das delimitações das terras já está %s§a.", targetDesc);
+		// Verificando se o player digitou um argumento correto
+		if (target == null) {
+			msg("§cComando incorreto, use /f sc [on/off]");
+			return;
+		}
+		
+		// Descrição da ação
+		String desc = target ? "§2ativada": "§cdesativada";
+
+		// Verificando se o player já esta com modo ver terras ativado/desativado
+		if (target == old) {
+			msg("§aA visualização das delimitações das terras já está %s§a.", desc);
 			return;
 		}
 		
 		// Setando o modo verterras como ativado/desativado
 		msender.setSeeingChunk(target);
 		
-		// Informando o msender
-		msg("§aVisualização das delimitações das terras %s§a.", targetDesc);
+		// Informando o sender
+		msg("§aVisualização das delimitações das terras %s§a.", desc);
 	}
 
 }

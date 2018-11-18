@@ -1,7 +1,5 @@
 package com.massivecraft.factions.cmd;
 
-import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
-
 public class CmdFactionsTop extends FactionsCommand
 {	
 	// -------------------------------------------- //
@@ -12,13 +10,9 @@ public class CmdFactionsTop extends FactionsCommand
 	{
 		// Aliases
 	    this.addAliases("rank", "ranking");
-	
-		// Requisições
-		this.addRequirements(RequirementIsPlayer.get());
 	    
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 top §8-§7 Abre o menu do Rank das facções.");
-		
 		
 		/*
 		 * A unica razão deste comando estar aqui

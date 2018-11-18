@@ -1,5 +1,7 @@
 package com.massivecraft.factions.engine;
 
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Chunk;
@@ -10,133 +12,110 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.factions.entity.TemporaryBoard;
 import com.massivecraft.factions.event.EventFactionsChunksChange;
-import com.massivecraft.factions.event.EventFactionsDisband;
 import com.massivecraft.factions.event.EventFactionsEnteredInAttack;
 import com.massivecraft.factions.event.EventFactionsFinishAttack;
 import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.ps.PS;
 
-public class EngineSobAtaque extends Engine{
-
+public class EngineSobAtaque extends Engine
+{
+	// -------------------------------------------- //
+	// INSTANCE & CONSTRUCT
+	// -------------------------------------------- //
+	
 	private static EngineSobAtaque i = new EngineSobAtaque();
 	public static EngineSobAtaque get() { return i; }
 	
-	public static ConcurrentHashMap<Chunk, Long> underattack;
-	public static ConcurrentHashMap<String, Faction> factionattack;
-	public static ConcurrentHashMap<Chunk, Location> infoattack;
-	static { EngineSobAtaque.underattack = new ConcurrentHashMap<Chunk, Long>(); }
-	static { EngineSobAtaque.factionattack = new ConcurrentHashMap<String, Faction>(); }
-	static { EngineSobAtaque.infoattack = new ConcurrentHashMap<Chunk, Location>(); }
+	// -------------------------------------------- //
+	// TEMPORARY INFO
+	// -------------------------------------------- //
 	
-	@EventHandler
-	public void onExplode(EntityExplodeEvent e){
-		Faction faction = BoardColl.get().getFactionAt(PS.valueOf(e.getLocation()));
-		
+	public static Map<Chunk, Long> underattack = new ConcurrentHashMap<>();
+	public static Map<Chunk, Location> infoattack = new ConcurrentHashMap<>();
+	
+	// -------------------------------------------- //
+	// ADD FACTION IN ATACK
+	// -------------------------------------------- //
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onExplode(EntityExplodeEvent e)
+	{
+		// Pegando a chunk
 		Chunk c = e.getLocation().getChunk();
 		
+		// Verificando se a chunk já esta em ataque
 		if (underattack.containsKey(c)) return;
-		else if (faction.getId().equals(Factions.ID_SAFEZONE)) return;
+		
+		// Pegando o PS
+		PS ps = PS.valueOf(e.getLocation());
+				
+		// Pegando a facção e verificando se elá é uma facção padrão
+		Faction faction = BoardColl.get().getFactionAt(ps);
+		if (faction.getId().equals(Factions.ID_SAFEZONE)) return;
 		else if (faction.getId().equals(Factions.ID_WARZONE)) return;
 		else if (faction.getId().equals(Factions.ID_NONE)) return;
 		
-		boolean already = factionattack.containsKey(faction.getName());
-		EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e.getLocation(), already, e);
-		event.run();
-		if (event.isCancelled()) return;
+		// Verificando se o claim não é temporario
+		else if (TemporaryBoard.get().isTemporary(ps)) return;
+		
+		// Colocando a chunk em ataque
 		underattack.put(c, System.currentTimeMillis());
-		factionattack.put(faction.getName(), faction);
 		infoattack.put(c, e.getLocation());
-		desligarFlyDosPlayers(faction);
-	}
-	
-	private void desligarFlyDosPlayers(Faction f) {
-		for (Player p : f.getOnlinePlayers()) {
-			if (!p.hasPermission("factions.voar.bypass") && p.getAllowFlight()) {
-				p.sendMessage("§cSua facção entrou em ataque portanto seu modo voar foi automaticamente desabilitado.");
-				p.setAllowFlight(false);
-				p.setFlying(false);
-			}
+		
+		// Verificação se a facção já esta em ataque
+		if (!faction.isInAttack()) 
+		{
+			EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e.getLocation(), e);
+			event.run();
+			faction.setInAttack(true);
+			EngineFly.disableFlyFaction(faction);
 		}
 	}
 	
-	public void aumentarSegundos(Chunk c) {
-		underattack.replace(c, underattack.get(c) + 1);
-	}
+	// -------------------------------------------- //
+	// REMOVE CHUNK IN ATTACK
+	// -------------------------------------------- //
 	
-	public void remover(Chunk c, Faction f) {
-		underattack.remove(c);
-		infoattack.remove(c);
-		for (Chunk chunk : infoattack.keySet()) {
-			Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
-			if (at.getName().equalsIgnoreCase(f.getName())) return;
-		}
-		factionattack.remove(f.getName());
-		EventFactionsFinishAttack event = new EventFactionsFinishAttack(c, f);
-		event.run();
-	}
-	
-	public long getTime(Chunk c) {
-		return EngineSobAtaque.underattack.get(c);
-	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void terras(EventFactionsChunksChange e) {
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void terras(EventFactionsChunksChange e)
+	{
 		MPlayer mp = e.getMPlayer();
-		if (factionattack.containsKey(mp.getFaction().getName())) {
-			e.getSender().sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
-			e.setCancelled(true);
-			return;
-		}
-		for (PS ps : e.getChunks()) {
-			Chunk c = PS.asBukkitChunk(ps);
-			if (underattack.containsKey(c)) {
-				underattack.remove(c);
-				infoattack.remove(c);
-				Faction atual = BoardColl.get().getFactionAt(ps);
-				for (Chunk chunk : infoattack.keySet()) {
-					Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
-					if (at.equals(atual)) return;
+		Faction faction = mp.getFaction();
+		for (Entry<PS, Faction> entry : e.getOldChunkFaction().entrySet()) 
+		{
+			Faction atual = entry.getValue();
+			if (!atual.isNone()) 
+			{
+				PS ps = entry.getKey();
+				Chunk c = PS.asBukkitChunk(ps);
+				if (underattack.containsKey(c)) 
+				{
+					underattack.remove(c);
+					infoattack.remove(c);
+					for (Chunk chunk : infoattack.keySet()) 
+					{
+						Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
+						if (at.equals(atual)) return;
+					}
 				}
-				factionattack.remove(atual.getName());
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void desfazer(EventFactionsDisband e) {
-		if (factionattack.containsKey(e.getFaction().getName())) {
-			e.setCancelled(true);
-			e.getSender().sendMessage("§cVocê não pode desfazer a sua facção enquanto ela estiver sobre ataque!");
-			return;
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void aoExecutarComando(PlayerCommandPreprocessEvent e) {
-		
-		Player p = e.getPlayer();
-		MPlayer mp = MPlayer.get(p);
-		Faction fac = mp.getFaction();
-		
-		if (factionattack.containsKey(fac.getName())) {
-	        String cmd = e.getMessage().toLowerCase();
-			if (cmd.startsWith("/f unclaim") || cmd.startsWith("/f desproteger") ||cmd.startsWith("/f abandonar")) { 
-				e.setCancelled(true);
-				p.sendMessage("§cVocê não pode controlar territórios enquanto estiver sobre ataque!");
-				return;
+				faction.setInAttack(false);
 			}
 		}
 	}
 	
+	// -------------------------------------------- //
+	// BLOCK REMOVE SPAWNERS AND BEACONS
+	// -------------------------------------------- //
+	
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onBreakSpawner(BlockBreakEvent e) {
+	public void aoQuebrar(BlockBreakEvent e) {
 		
 		if (e.getBlock().getType() == Material.MOB_SPAWNER) {
 			Player p = e.getPlayer();
@@ -147,8 +126,8 @@ public class EngineSobAtaque extends Engine{
 			
 			Faction fac = BoardColl.get().getFactionAt(PS.valueOf(e.getBlock()));
 			
-			if (factionattack.containsKey(fac.getName())) {
-				p.sendMessage("§cVocê não pode remover §lgeradores §cenquanto estiver sob ataque!");
+			if (fac.isInAttack()) {
+				p.sendMessage("§cVocê não pode remover §lgeradores §cenquanto sua facção estiver sob ataque!");
 				e.setCancelled(true);
 				return;
 			}
@@ -163,11 +142,36 @@ public class EngineSobAtaque extends Engine{
 			
 			Faction fac = BoardColl.get().getFactionAt(PS.valueOf(e.getBlock()));
 			
-			if (factionattack.containsKey(fac.getName())) {
-				p.sendMessage("§cVocê não pode remover §lsinalizadores §cenquanto estiver sob ataque!");
+			if (fac.isInAttack()) {
+				p.sendMessage("§cVocê não pode remover §lsinalizadores §cenquanto sua facção estiver sob ataque!");
 				e.setCancelled(true);
 				return;
 			}
 		}
 	}
+	
+	// -------------------------------------------- //
+	// METHODS TO HANDLE
+	// -------------------------------------------- //
+	
+	public void increaseSeconds(Chunk c) {
+		underattack.replace(c, underattack.get(c) + 1);
+	}
+	
+	public void remove(Chunk c, Faction faction) {
+		underattack.remove(c);
+		infoattack.remove(c);
+		for (Chunk chunk : infoattack.keySet()) {
+			Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
+			if (at.getId().equals(faction.getId())) return;
+		}
+		faction.setInAttack(false);
+		EventFactionsFinishAttack event = new EventFactionsFinishAttack(c, faction);
+		event.run();
+	}
+	
+	public long getTime(Chunk c) {
+		return EngineSobAtaque.underattack.get(c);
+	}
+	
 }

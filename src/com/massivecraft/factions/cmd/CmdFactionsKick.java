@@ -2,13 +2,13 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
-import com.massivecraft.factions.cmd.type.TypeMPlayer;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsMembershipChange;
 import com.massivecraft.factions.event.EventFactionsMembershipChange.MembershipChangeReason;
 import com.massivecraft.massivecore.MassiveException;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
 public class CmdFactionsKick extends FactionsCommand
 {
@@ -21,14 +21,14 @@ public class CmdFactionsKick extends FactionsCommand
 		// Aliases
 		this.addAliases("expulsar", "kickar");
 		
-		// Parametros (necessario)
-		this.addParameter(TypeMPlayer.get(), "player");
+		// Descrição
+		this.setDesc("§6 kick §e<player> §8-§7 Expulsa um player da facção.");
 		
-		// Requisições
+		// Requisitos
 		this.addRequirements(ReqHasFaction.get());
 		
-		// Descrição do comando
-		this.setDesc("§6 kick §e<player> §8-§7 Expulsa um player da facção.");
+		// Parametros (necessario)
+		this.addParameter(TypeString.get(), "player", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -39,37 +39,49 @@ public class CmdFactionsKick extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Verificando se o player possui permissão
-		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
-			msender.message("§cVocê precisar ser capitão ou superior para poder expulsar membros da facção.");
+		if (!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
+			msg("§cVocê precisar ser capitão ou superior para poder expulsar membros da facção.");
 			return;
 		}
 		
-		// Argumentos
-		MPlayer mplayer = this.readArg();
+		 // Verificando se a facção não esta sob ataque
+		if (msenderFaction.isInAttack()) {
+			msg("§cVocê não pode expulsar membros da facção enquanto ela estiver sobre ataque.");
+			return;
+		}
 		
-		// Verificando se o target é da mesma facão que o sender
-		if (mplayer.getFaction() != msenderFaction) {
-			msender.message("§cEste jogador não esta na sua facção.");
+		// Verficiando se os argumentos são validos
+		if (!this.argIsSet()) {
+			msg("§cArgumentos insuficientes, use /f kick <player>");
 			return;
 		}
 		
 		// Verificando se o sender e o target são os mesmos
-		if (msender == mplayer)
-		{
+		String name = this.arg();
+		if (msender.getName().equalsIgnoreCase(name)) {
 			msg("§cVocê não pode se expulsar da facção, caso queira sair use /f sair.");
 			return;
 		}
 		
+		// Argumentos
+		MPlayer mplayer = readMPlayer(name);
+		
+		// Verificando se o target é da mesma facão que o sender
+		if (!msenderFaction.getMPlayers().contains(mplayer)) {
+			msg("§cEste jogador não esta na sua facção.");
+			return;
+		}
+		
 		// Verificando se o target é o líder e verificando se o sender não é 1 admin
-		if (mplayer.getRole() == Rel.LEADER && !msender.isOverriding())
-		{
-			throw new MassiveException().addMsg("§cO líder da facção não pode ser expulso!");
+		if (mplayer.getRole() == Rel.LEADER && !msender.isOverriding()) {
+			msg("§cO líder da facção não pode ser expulso!");
+			return;
 		}
 		
 		// Verificando se o rank do sender é maior que o do target e verificando se o sender não é 1 admin
-		if (mplayer.getRole() == Rel.OFFICER && msender.getRole() == Rel.OFFICER && ! msender.isOverriding())
-		{
-			throw new MassiveException().addMsg("§cApenas o líder da facção pode expulsar ou rebaixar outros capitões.");
+		if (mplayer.getRole() == Rel.OFFICER && msender.getRole() == Rel.OFFICER && !msender.isOverriding()) {
+			msg("§cApenas o líder da facção pode expulsar ou rebaixar outros capitões.");
+			return;
 		}
 
 		// Evento
@@ -77,16 +89,15 @@ public class CmdFactionsKick extends FactionsCommand
 		event.run();
 		if (event.isCancelled()) return;
 
-		Faction mplayerFaction = mplayer.getFaction();
+		Faction faction = mplayer.getFaction();
 		// Aplicando o evento e informando o player e facção
-		if (mplayer.getRole() == Rel.LEADER)
-		{
-			mplayerFaction.promoteNewLeader();
+		if (mplayer.getRole() == Rel.LEADER) {
+			faction.promoteNewLeader();
 		}
-		mplayerFaction.uninvite(mplayer);
+		faction.uninvite(mplayer);
 		mplayer.resetFactionData();
-		mplayerFaction.msg("§e%s§e expulsou §e\"%s\"§e da facção! :O", msender.getRole().getPrefix() + msender.getName(), mplayer.getName());
-		mplayer.msg("§eVocê foi expulso da facção §f%s §epor §e%s!§e :O", mplayerFaction.getName(), msender.getRole().getPrefix() + msender.getName());
+		faction.msg("§e%s§e expulsou §f%s§e da facção! :O", msender.getRole().getPrefix() + msender.getName(), mplayer.getName());
+		mplayer.msg("§eVocê foi expulso da facção §f[%s§f]§e por §e%s!", faction.getName(), msender.getRole().getPrefix() + msender.getName());
 	}
 	
 }

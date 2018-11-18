@@ -1,6 +1,5 @@
 package com.massivecraft.factions.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +67,8 @@ public class MConf extends Entity<MConf>
 	public int distanciaDoAnuncioEmBlocos = 16;
 	public boolean colocarIconeDoFBauNoMenuGUI = false;
 	public boolean colocarIconeDoFGeradoresNoMenuGUI = false;
+	public double dinheiroCobradoParaProteger = 200000D;
+	public int limiteDeProtecoesTemporaria = 2;
 	
 	// -------------------------------------------- //
 	// COMMAND ALIASES
@@ -77,14 +78,6 @@ public class MConf extends Entity<MConf>
 	public List<String> aliasesF = MUtil.list("f");
 	public List<String> aliasesChatFaccao = MUtil.list(".", "c");
 	public List<String> aliasesChatAliados = MUtil.list("a");
-	
-	// -------------------------------------------- //
-	// MAP
-	// -------------------------------------------- //
-	public int bordaXnegativo = -20001;
-	public int bordaZnegativo = -20001;
-	public int bordaXpositivo = 20000;
-	public int bordaZpositivo = 20000;
 	
 	// -------------------------------------------- //
 	// WORLDS FEATURE ENABLED
@@ -210,7 +203,7 @@ public class MConf extends Entity<MConf>
 	
 	// Is there a maximum limit to chunks claimed?
 	// 0 means there isn't.
-	public int claimedLandsMax = 0;
+	public int claimedLandsMax = -1;
 	
 	// The max amount of worlds in which a player can have claims in.
 	public int claimedWorldsMax = -1;
@@ -218,11 +211,6 @@ public class MConf extends Entity<MConf>
 	// -------------------------------------------- //
 	// HOMES
 	// -------------------------------------------- //
-	
-	// Must homes be located inside the faction's territory?
-	// It's usually a wise idea keeping this true.
-	// Otherwise players can set their homes inside enemy territory.
-	public boolean homesMustBeInClaimedTerritory = true;
 	
 	// These options can be used to limit rights to tp home under different circumstances.
 	public boolean homesTeleportAllowedFromEnemyTerritory = true;
@@ -305,11 +293,7 @@ public class MConf extends Entity<MConf>
 			"essentials:warps",
 			"essentials:spawn",
 			"jtp"
-		),
-		Rel.NEUTRAL, new ArrayList<String>(),
-		Rel.TRUCE, new ArrayList<String>(),
-		Rel.ALLY, new ArrayList<String>(),
-		Rel.MEMBER, new ArrayList<String>()
+		)
 	);
 	
 	// -------------------------------------------- //
@@ -413,11 +397,5 @@ public class MConf extends Entity<MConf>
 	
 	// Interacting with these entities results in opening a container.
 	public BackstringSet<EntityType> entityTypesContainer = new BackstringSet<>(EntityType.class);
-	
-	// The complete list of entities considered to be monsters.
-	public BackstringSet<EntityType> entityTypesMonsters = new BackstringSet<>(EntityType.class);
-	
-	// List of entities considered to be animals.
-	public BackstringSet<EntityType> entityTypesAnimals = new BackstringSet<>(EntityType.class);
 
 }

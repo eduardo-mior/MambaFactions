@@ -2,8 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.Visibility;
-import com.massivecraft.massivecore.command.type.primitive.TypeBooleanYes;
-import com.massivecraft.massivecore.util.Txt;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
 public class CmdFactionsAdmin extends FactionsCommand
 {
@@ -16,11 +15,11 @@ public class CmdFactionsAdmin extends FactionsCommand
 		// Aliases
 		this.addAliases("adm");
 
-		// Parametros (não necessario)
-		this.addParameter(TypeBooleanYes.get(), "on/off", "flip");
-
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 admin §e[on/off] §8-§7 Entra e sai do modo admin.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "on/off", "erro", true);
 		
         // Visibilidade do comando
         this.setVisibility(Visibility.SECRET);
@@ -34,12 +33,20 @@ public class CmdFactionsAdmin extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Argumentos
-		boolean old = msender.isOverriding();
-		boolean target = this.readArg(!old);
-		String desc = Txt.parse(target ? "§2habilitado" : "§cdesabilitado");
+		Boolean old = msender.isOverriding();
+		Boolean target = readBoolean(old);
+		
+		// Verificando se o player digitou um argumento correto
+		if (target == null) {
+			msg("§cComando incorreto, use /f admin [on/off]");
+			return;
+		}
+		
+		// Descrição da ação
+		String desc = target ? "§2ativado": "§cdesativado";
 
-		if (target == old)
-		{
+		// Verificando se o player já esta com modo admin habilitado.
+		if (target == old) {
 			msg("§aVocê já está com o modo admin %s§a.", desc);
 			return;
 		}
@@ -47,7 +54,7 @@ public class CmdFactionsAdmin extends FactionsCommand
 		// Aplicando o evento
 		msender.setOverriding(target);		
 		
-		// Informando os players players		
-		msender.msg(Txt.parse("§aModo admin " + desc + "§a."));
+		// Informando os players players
+		msender.msg("§aModo admin " + desc + "§a.");
 	}
 }

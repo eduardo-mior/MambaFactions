@@ -32,9 +32,9 @@ public enum Rel implements Colorized, Named
 	) { @Override public ChatColor getColor() { return MConf.get().colorAlly; } },
 	
 	TRUCE(
-			"um trégua", "tréguas", "§euma facção em §8trégua", "facção em trégua",
-			""
-		) { @Override public ChatColor getColor() { return MConf.get().colorTruce; } },
+		"um trégua", "tréguas", "§euma facção em §8trégua", "facção em trégua",
+		""
+	) { @Override public ChatColor getColor() { return MConf.get().colorTruce; } },
 	
 	RECRUIT(
 		"um recruta da sua facção", "recrutas da sua facção", "", "",

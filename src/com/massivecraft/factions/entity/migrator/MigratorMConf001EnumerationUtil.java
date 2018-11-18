@@ -38,8 +38,6 @@ public class MigratorMConf001EnumerationUtil extends MigratorRoot
 		removeFromStringsField(entity, "entityTypesEditOnInteract", EnumerationUtil.ENTITY_TYPES_EDIT_ON_INTERACT.getStringSet());
 		removeFromStringsField(entity, "entityTypesEditOnDamage", EnumerationUtil.ENTITY_TYPES_EDIT_ON_DAMAGE.getStringSet());
 		removeFromStringsField(entity, "entityTypesContainer", EnumerationUtil.ENTITY_TYPES_CONTAINER.getStringSet());
-		removeFromStringsField(entity, "entityTypesMonsters", EnumerationUtil.ENTITY_TYPES_MONSTER.getStringSet());
-		removeFromStringsField(entity, "entityTypesAnimals", EnumerationUtil.ENTITY_TYPES_ANIMAL.getStringSet());
 	}
 	
 	// -------------------------------------------- //

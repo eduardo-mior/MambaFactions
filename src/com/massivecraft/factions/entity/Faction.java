@@ -9,10 +9,12 @@ import com.massivecraft.factions.predicate.PredicateCommandSenderFaction;
 import com.massivecraft.factions.predicate.PredicateMPlayerRole;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.RelationUtil;
+import com.massivecraft.factions.util.OthersUtil;
 import com.massivecraft.massivecore.collections.MassiveList;
 import com.massivecraft.massivecore.collections.MassiveMap;
 import com.massivecraft.massivecore.collections.MassiveMapDef;
 import com.massivecraft.massivecore.collections.MassiveSet;
+import com.massivecraft.massivecore.collections.MassiveSetDef;
 import com.massivecraft.massivecore.mixin.MixinMessage;
 import com.massivecraft.massivecore.predicate.Predicate;
 import com.massivecraft.massivecore.predicate.PredicateAnd;
@@ -24,6 +26,7 @@ import com.massivecraft.massivecore.store.SenderColl;
 import com.massivecraft.massivecore.util.IdUtil;
 import com.massivecraft.massivecore.util.MUtil;
 import com.massivecraft.massivecore.util.Txt;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -73,7 +76,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		this.setRelationWishes(that.relationWishes);
 		this.setFlagIds(that.flags);
 		this.setPermIds(that.perms);
-		
+		this.setTempClaims(that.tempClaims);
 		return this;
 	}
 	
@@ -118,12 +121,6 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// Null means the faction has powerBoost (0).
 	private Double powerBoost = null;
 	
-	// Can anyone join the Faction?
-	// If the faction is open they can.
-	// If the faction is closed an invite is required.
-	// Null means default.
-	// private Boolean open = null;
-	
 	// This is the ids of the invited players.
 	// They are actually "senderIds" since you can invite "@console" to your faction.
 	// Null means no one is invited
@@ -132,6 +129,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// The keys in this map are factionIds.
 	// Null means no special relation whishes.
 	private MassiveMapDef<String, Rel> relationWishes = new MassiveMapDef<>();
+	private transient Set<String> relationPending = new HashSet<>();
 	
 	// The flag overrides are modifications to the default values.
 	// Null means default.
@@ -140,6 +138,14 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// The perm overrides are modifications to the default values.
 	// Null means default.
 	private MassiveMapDef<String, Set<Rel>> perms = new MassiveMapDef<>();
+	
+	// The faction is in atack?
+	// This is not saved in the json file
+	private transient boolean isInAttack = false;
+	
+	// Temporary Claims
+	// Temporary claims are deleted at the server start
+	private MassiveSetDef<PS> tempClaims = new MassiveSetDef<>();
 	
 	// -------------------------------------------- //
 	// FIELD: id
@@ -228,7 +234,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	public void setDescription(String description)
 	{
 		// Clean input
-		String target = clean(description);
+		String target = OthersUtil.cleanMessage(description);
 		
 		// Detect Nochange
 		if (MUtil.equals(this.description, target)) return;
@@ -268,7 +274,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	public void setMotd(String motd)
 	{
 		// Clean input
-		String target = clean(motd);
+		String target = OthersUtil.cleanMessage(motd);
 		
 		// Detect Nochange
 		if (MUtil.equals(this.motd, target)) return;
@@ -367,7 +373,6 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	public boolean isValidHome(PS ps)
 	{
 		if (ps == null) return true;
-		if (!MConf.get().homesMustBeInClaimedTerritory) return true;
 		if (BoardColl.get().getFactionAt(ps) == this) return true;
 		return false;
 	}
@@ -446,19 +451,20 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	
 	public boolean uninvite(String playerId)
 	{
-		System.out.println(playerId);
 		return this.getInvitations().detachId(playerId) != null;
 	}
 	
 	public boolean uninvite(MPlayer mplayer)
 	{
+		mplayer.removeInvitation(this.getId());
 		return uninvite(mplayer.getId());
 	}
 	
-	public void invite(String playerId, Invitation invitation)
+	public void invite(MPlayer mplayer, Invitation invitation)
 	{
-		uninvite(playerId);
-		this.invitations.attach(invitation, playerId);
+		uninvite(mplayer.getId());
+		this.invitations.attach(invitation, mplayer.getId());
+		mplayer.addInvitation(this.getId());
 	}
 	
 	// -------------------------------------------- //
@@ -518,6 +524,31 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	public void setRelationWish(Faction faction, Rel rel)
 	{
 		this.setRelationWish(faction.getId(), rel);
+	}
+	
+	public void addPendingRelation(Faction faction)
+	{
+		this.relationPending.add(faction.getId());
+	}
+	
+	public void removePendingRelation(Faction faction)
+	{
+		this.relationPending.remove(faction.getId());
+	}
+	
+	public Set<String> getPendingRelations()
+	{
+		return this.relationPending;
+	}
+	
+	public Set<Faction> getAllys() {
+		Set<Faction> aliados = new HashSet<>();
+		Set<String> relations = this.getRelationWishes().keySet();
+		for (String id : relations) {
+			Faction fac = Faction.get(id);
+			if (fac != null && fac.getRelationTo(this).equals(Rel.ALLY)) aliados.add(fac);
+		}
+		return aliados;
 	}
 	
 	// -------------------------------------------- //
@@ -860,7 +891,6 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// -------------------------------------------- //
 	// POWER
 	// -------------------------------------------- //
-	// TODO: Implement a has enough feature.
 	
 	public double getPower()
 	{
@@ -1118,19 +1148,112 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	}
 	
 	// -------------------------------------------- //
-	// UTIL
+	// KDR
 	// -------------------------------------------- //
 	
-	// FIXME this probably needs to be moved elsewhere
-	public static String clean(String message)
+	public Integer getKills() 
 	{
-		String target = message;
-		if (target == null) return null;
-		
-		target = target.trim();
-		if (target.isEmpty()) target = null;
-		
-		return target;
+		int kills = 0;
+		for (MPlayer mp : this.getMPlayers()) {
+			kills += mp.getKills();
+		} 
+		return kills;
 	}
 	
+	public Integer getDeaths() 
+	{
+		int deaths = 0;
+		for (MPlayer mp : this.getMPlayers()) {
+			deaths += mp.getDeaths();
+		} 
+		return deaths;
+	}
+	
+	public double getFacKdr() 
+	{
+		double deaths = this.getDeaths();
+		double kills = this.getKills();
+		if (deaths == 0) {
+			return kills;
+		} else {
+			return kills/deaths;
+		}
+	}
+	
+	public String getFacKdrRounded()
+	{
+		return String.format("%.2f", this.getFacKdr());
+	}
+	
+	// -------------------------------------------- //
+	// SOB ATTACK
+	// -------------------------------------------- //
+	
+	public boolean isInAttack() 
+	{
+		return this.isInAttack;
+	}
+	
+	public void setInAttack(boolean inAttack)
+	{
+		isInAttack = inAttack;
+	}
+	
+	// -------------------------------------------- //
+	// TEMPORARY CLAIMS
+	// -------------------------------------------- //
+	
+	public Set<PS> getTempClaims()
+	{
+		return this.tempClaims;
+	}
+	
+	public void addTempClaim(PS ps) 
+	{
+		if (ps == null) throw new NullPointerException("ps");
+
+		// Apply
+		this.tempClaims.add(ps);
+		
+		// Mark as changed
+		this.changed();
+	}
+	
+	public void removeTempClaim(PS ps) 
+	{
+		if (ps == null) throw new NullPointerException("ps");
+		
+		// Apply
+		if (!this.tempClaims.remove(ps)) 
+		{
+			this.tempClaims.removeIf(pss -> pss.getChunkCoords(true).equals(ps.getChunkCoords(true)));
+		}
+		
+		// Mark as changed
+		this.changed();
+	}
+	
+	public void clearTempClains() 
+	{
+		// Apply
+		this.tempClaims.clear();
+						
+		// Mark as changed
+		this.changed();
+	}
+	
+	public void setTempClaims(Set<PS> tempClaims) 
+	{
+		// Clean input
+		MassiveSetDef<PS> target = new MassiveSetDef<>(tempClaims);
+		
+		// Detect Nochange
+		if (MUtil.equals(this.tempClaims, target)) return;
+		
+		// Apply
+		this.tempClaims = target;
+						
+		// Mark as changed
+		this.changed();
+	}
 }

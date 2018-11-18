@@ -180,7 +180,7 @@ public class FactionColl extends Coll<Faction>
 			List<String> names = ret.get(rel);
 			if (names == null) continue;
 
-			String name = fac.describeTo(faction, true);
+			String name = fac.describeTo(faction);
 			names.add(name);
 		}
 

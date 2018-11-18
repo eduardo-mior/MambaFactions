@@ -7,10 +7,9 @@ import org.bukkit.Location;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
-import com.massivecraft.massivecore.command.type.primitive.TypeBooleanYes;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.mson.Mson;
 import com.massivecraft.massivecore.ps.PS;
-import com.massivecraft.massivecore.util.Txt;
 
 public class CmdFactionsMapa extends FactionsCommand
 {
@@ -22,15 +21,15 @@ public class CmdFactionsMapa extends FactionsCommand
 	{
 		// Aliases
         this.addAliases("map");
-        
-		// Parametros (não necessario)
-		this.addParameter(TypeBooleanYes.get(), "on/off", "uma vez");
-        
-		// Requisições
-		this.addRequirements(RequirementIsPlayer.get());
 
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 mapa §e[on/off] §8-§7 Mostra o mapa dos territórios.");
+        
+		// Requisitos
+		this.addRequirements(RequirementIsPlayer.get());
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "on/off", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -40,35 +39,46 @@ public class CmdFactionsMapa extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		boolean argSet = this.argIsSet();
-		boolean showMap = true;
+		// Verificando se algum foi digitado e verificando se o argumento é valido
+		if (this.argIsSet()) {
+			Boolean old = msender.isMapAutoUpdating();
+			Boolean target = readBoolean(old);
+			
+			// Verificando se o player digitou um argumento correto
+			if (target == null) {
+				msg("§cComando incorreto, use /f mapa [on/off]");
+				return;
+			}
+			
+			// Descrição da ação
+			String desc = target ? "§2ativado": "§cdesativado";
+
+			// Verificando se o player ja esta com o modo mapa ativado
+			if (target == old) {
+				msg("§aO seu mapa automatico já esta %s§a.", desc);
+				return;
+			}
+			
+			// Setando o modo mapa como ativado/desativado
+			msender.setMapAutoUpdating(target);
+			
+			// Atualizando o /f mapa auto
+			if (target) showMap(19, 19);
+			
+			// Informando o msender
+			msg("§aMapa automático %s§e.", desc);
+			return;
+		}
 		
-		// Mapa automatico
-		if (argSet) showMap = this.adjustAutoUpdating();
-		if (!showMap) return;
-		
-		// Mostrar Mapa
-		mostrarMap(19, 19);
+		// Chamando o método para exibir o mapa
+		showMap(19, 19);
 	}
 	
-	private boolean adjustAutoUpdating() throws MassiveException
-	{
-		// Verificando se o player ja esta com o modo mapa ativado
-		boolean autoUpdating = this.readArg(!msender.isMapAutoUpdating());
-		
-		// Setando o modo mapa como ativado/desativado
-		msender.setMapAutoUpdating(autoUpdating);
-		
-		// Informando o msender
-		msg("§aMapa automático %s§e.", Txt.parse(autoUpdating ? "§2habilitado" : "§cdesabilitado"));
-		return autoUpdating;
-	}
-	
-	// Mostrando o mapa (personalizado)
-	public void mostrarMap(int width, int height)
+	// Método para mostrar o mapa
+	private void showMap(int width, int height)
 	{
 		Location location = me.getLocation();
-		List<Mson> message = BoardColl.get().getMap(msender.getPlayer(), msenderFaction, PS.valueOf(location), location.getYaw(), width, height);
+		List<Mson> message = BoardColl.get().getMap(me, msenderFaction, PS.valueOf(location), location.getYaw(), width, height);
 		message(message);
 	}
 	

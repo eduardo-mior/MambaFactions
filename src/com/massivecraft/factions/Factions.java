@@ -5,7 +5,6 @@ import com.massivecraft.factions.adapter.BoardMapAdapter;
 import com.massivecraft.factions.adapter.RelAdapter;
 import com.massivecraft.factions.adapter.TerritoryAccessAdapter;
 import com.massivecraft.factions.chat.ChatActive;
-import com.massivecraft.factions.cmd.type.TypeFactionChunkChangeType;
 import com.massivecraft.factions.cmd.type.TypeRel;
 import com.massivecraft.factions.entity.Board;
 import com.massivecraft.factions.entity.BoardColl;
@@ -14,8 +13,6 @@ import com.massivecraft.factions.entity.MConfColl;
 import com.massivecraft.factions.entity.MFlagColl;
 import com.massivecraft.factions.entity.MPermColl;
 import com.massivecraft.factions.entity.MPlayerColl;
-import com.massivecraft.factions.event.EventFactionsChunkChangeType;
-import com.massivecraft.factions.mixin.PowerMixin;
 import com.massivecraft.massivecore.MassivePlugin;
 import com.massivecraft.massivecore.collections.MassiveList;
 import com.massivecraft.massivecore.command.type.RegistryType;
@@ -48,14 +45,6 @@ public class Factions extends MassivePlugin
 	public Factions() { Factions.i = this; }
 	
 	// -------------------------------------------- //
-	// FIELDS
-	// -------------------------------------------- //
-	
-	// Mixins
-	@Deprecated public PowerMixin getPowerMixin() { return PowerMixin.get(); }
-	@Deprecated public void setPowerMixin(PowerMixin powerMixin) { PowerMixin.get().setInstance(powerMixin); }
-	
-	// -------------------------------------------- //
 	// OVERRIDE
 	// -------------------------------------------- //
 	
@@ -65,7 +54,6 @@ public class Factions extends MassivePlugin
 	{
 		// Register types
 		RegistryType.register(Rel.class, TypeRel.get());
-		RegistryType.register(EventFactionsChunkChangeType.class, TypeFactionChunkChangeType.get());
 		
 		// Register Faction accountId Extractor
 		// TODO: Perhaps this should be placed in the econ integration somewhere?
@@ -74,7 +62,9 @@ public class Factions extends MassivePlugin
 		// Activate
 		this.activateAuto();
 		this.activate(this.getClassesActive("chat", ChatActive.class));
-
+		
+		// Addons Activate
+		Addons.load();
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class EngineChat extends Engine
 		if (MUtil.isntPlayer(player)) return;
 		
 		String format = event.getFormat();
-		format = ChatFormatter.format(format, player, null);
+		format = ChatFormatter.format(format, player);
 		event.setFormat(format);
 	}
 	
@@ -123,7 +123,7 @@ public class EngineChat extends Engine
 	public static void parseRelcolor(EventMassiveCorePlayerToRecipientChat event)
 	{
 		String format = event.getFormat();
-		format = ChatFormatter.format(format, event.getSender(), event.getRecipient());
+		format = ChatFormatter.format(format, event.getSender());
 		event.setFormat(format);
 	}
 	

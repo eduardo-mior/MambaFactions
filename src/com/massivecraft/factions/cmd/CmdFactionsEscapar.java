@@ -1,5 +1,11 @@
 package com.massivecraft.factions.cmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MConf;
@@ -12,11 +18,6 @@ import com.massivecraft.massivecore.mixin.TeleporterException;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.teleport.Destination;
 import com.massivecraft.massivecore.teleport.DestinationSimple;
-import org.bukkit.Location;
-import org.bukkit.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CmdFactionsEscapar extends FactionsCommand
 {
@@ -28,12 +29,12 @@ public class CmdFactionsEscapar extends FactionsCommand
 	{
 		// Aliases
 		this.addAliases("desprender", "fugir");
-		
-		// Requisições
-		this.addRequirements(RequirementIsPlayer.get());
 
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 escapar §8-§7 Teleporta para a zona livre mais próxima.");
+		
+		// Requisitos
+		this.addRequirements(RequirementIsPlayer.get());
 	}
 
 	// -------------------------------------------- //
@@ -51,7 +52,6 @@ public class CmdFactionsEscapar extends FactionsCommand
 		 * Eu apenas irei traduzir as strings.
 		 */
 		
-		
 		// If the player is in a chunk ...
 		final PS center = PS.valueOf(me.getLocation().getChunk());
 		
@@ -63,18 +63,14 @@ public class CmdFactionsEscapar extends FactionsCommand
 		}
 		
 		// ... get the nearest free top location ...
-    	int x1 = MConf.get().bordaXpositivo;
-    	int x2 = MConf.get().bordaXnegativo;
-    	int z1 = MConf.get().bordaZpositivo;
-    	int z2 = MConf.get().bordaZnegativo;
 		Location location = getNearestFreeTopLocation(msender, center);
 		if (location == null)
 		{
 			msg("§cNão há nenhuma chunk livre próxima de você! Você está realmente preso.");
 			return;
 		}
-		
-		if (location.getBlockX() > x1 || location.getBlockX() < x2 || location.getBlockZ() > z1 || location.getBlockZ() < z2)
+
+		if (!isValidLocation(location))
 		{
 			msg("§cInfelizmente o local de destino estava fora do mundo, portanto o teleporte foi cancelado.");
 			return;
@@ -94,7 +90,7 @@ public class CmdFactionsEscapar extends FactionsCommand
 	}
 	
 	// Get the first free top location in the spiral.
-	public static Location getNearestFreeTopLocation(MPlayer mplayer, PS ps)
+	public Location getNearestFreeTopLocation(MPlayer mplayer, PS ps)
 	{
 		List<PS> chunks = getChunkSpiral(ps);
 		for (PS chunk : chunks)
@@ -108,7 +104,7 @@ public class CmdFactionsEscapar extends FactionsCommand
 	}
 	
 	// Return the ground level top location for this ps.
-	public static Location getTopLocation(PS ps)
+	public Location getTopLocation(PS ps)
 	{
 		Location ret = null;
 		try
@@ -136,7 +132,7 @@ public class CmdFactionsEscapar extends FactionsCommand
 	}
 	
 	// With a "free" chunk we mean wilderness or that the player has build rights.
-	public static boolean isFree(MPlayer mplayer, PS ps)
+	public boolean isFree(MPlayer mplayer, PS ps)
 	{
 		Faction faction = BoardColl.get().getFactionAt(ps);
 		if (faction.isNone()) return true;
@@ -144,7 +140,7 @@ public class CmdFactionsEscapar extends FactionsCommand
 	}
 	
 	// Not exactly a spiral. But it will do.
-	public static List<PS> getChunkSpiral(PS center)
+	public List<PS> getChunkSpiral(PS center)
 	{
 		// Create Ret
 		List<PS> ret = new ArrayList<>();
@@ -176,6 +172,18 @@ public class CmdFactionsEscapar extends FactionsCommand
 		
 		// Return Ret
 		return ret;
+	}
+	
+	public boolean isValidLocation(Location to)
+	{
+		if (to.getWorld().getWorldBorder() == null) return true;
+		double worldborder = to.getWorld().getWorldBorder().getSize() / 2.0D; 
+		Location center = to.getWorld().getWorldBorder().getCenter();
+		if (center.getX() + worldborder < to.getX()) return false;
+		if (center.getX() - worldborder > to.getX()) return false;
+		if (center.getZ() + worldborder < to.getZ()) return false;
+		if (center.getZ() - worldborder > to.getZ()) return false;
+		return true;
 	}
 	
 }

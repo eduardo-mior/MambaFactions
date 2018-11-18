@@ -4,24 +4,14 @@ import java.util.Collections;
 import java.util.Set;
 
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPerm;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
-import com.massivecraft.massivecore.command.type.primitive.TypeBooleanOn;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.ps.PS;
 
-
 public class CmdFactionsSetAuto extends FactionsCommand
-{
-	// -------------------------------------------- //
-	// FIELDS
-	// -------------------------------------------- //
-	
-	private boolean claim = true;
-	public boolean isClaim() { return this.claim; }
-	public void setClaim(boolean claim) { this.claim = claim; }
-	
+{	
 	// -------------------------------------------- //
 	// CONSTRUCT
 	// -------------------------------------------- //
@@ -29,20 +19,19 @@ public class CmdFactionsSetAuto extends FactionsCommand
 	public CmdFactionsSetAuto(boolean claim)
 	{
 		// Fields
-		this.setClaim(claim);
 		this.setSetupEnabled(false);
-		
-		// Parametros (não necessario)
-		this.addParameter(TypeBooleanOn.get(), "ativar", "desativar");
 		
 		// Aliases
 		this.addAliases("auto");
-
-		// Requirements
-		this.addRequirements(RequirementIsPlayer.get());
 		
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 claim auto §e[on/off] §8-§7 Conquista as terras automaticamente enquanto você anda.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "on/off", "erro", true);
+		
+		// Requisitos
+		this.addRequirements(RequirementIsPlayer.get());
 	}
 
 	// -------------------------------------------- //
@@ -51,42 +40,44 @@ public class CmdFactionsSetAuto extends FactionsCommand
 	
 	@Override
 	public void perform() throws MassiveException
-	{	
+	{		
+		// MPerm Preemptive Check
+		if (!MPerm.getPermTerritory().has(msender, msenderFaction, true)) return;
 		
-		boolean old = msender.getAutoClaimFaction() == null ? false : true;
-		boolean target = this.readArg(!old);
-		
-		if (old == false && target == false) {
-			msender.msg("§aO modo auto conquistar terras já está §cdesativado§a.");
-		} else if (old == true && target == true) {
-			msender.msg("§aO modo auto conquistar terras já está §2ativado§a.");
-		} else {
-		
-		// Args
-		final Faction newFaction;
-		if (claim)
-		{
-			newFaction = msenderFaction;
-		}
-		else
-		{
-			newFaction = FactionColl.get().getNone();
-		}
-		
-		// Disable?
-		if (newFaction == null || newFaction == msender.getAutoClaimFaction())
-		{
-			msender.setAutoClaimFaction(null);
-			msg("§aModo auto conquistar terras §cdesativado§a.");
+		// Verificando se a facção esta em ataque
+		if (msenderFaction.isInAttack()) {
+			msg("§cVocê não pode controlar territórios enquanto sua facção estiver sobre ataque!");
 			return;
 		}
 		
-		// MPerm Preemptive Check
-		if (newFaction.isNormal() && ! MPerm.getPermTerritory().has(msender, newFaction, true)) return;
+		// Argumentos
+		Boolean old = msender.getAutoClaimFaction() == null ? false : true;
+		Boolean target = readBoolean(old);
 		
-		// Apply / Inform
+		// Verificando se o player digitou um argumento correto
+		if (target == null) {
+			msg("§cComando incorreto, use /f claim auto [on/off]");
+			return;
+		}
+		
+		// Descrição da ação
+		String desc = target ? "§2ativado": "§cdesativado";
+		
+		// Verificando se o player ja esta com o modo auto-claim ativado/desativado
+		if (target == old) {
+			msg("§aO modo auto conquistar terras já está %s§a.", desc);
+			return;
+		}
+		
+		// Args
+		final Faction newFaction = target ? msenderFaction : null;
+		
+		// Setando o auto-claim e informando o sender
 		msender.setAutoClaimFaction(newFaction);
-		msg("§aModo auto conquistar terras §2ativado§a.");
+		msg("§aModo auto conquistar terras %s§a.", desc);
+		
+		// Se o auto-claim foi desligado então o processo é encerrado
+		if (newFaction == null) return;
 		
 		// Chunks
 		final PS chunk = PS.valueOf(me.getLocation()).getChunk(true);
@@ -94,6 +85,5 @@ public class CmdFactionsSetAuto extends FactionsCommand
 		
 		// Apply / Inform
 		msender.tryClaim(newFaction, chunks);
-	}
 	}
 }

@@ -17,8 +17,8 @@ public class RelationUtil
 	
 	private static final String UNKNOWN_RELATION_OTHER = "A server admin";
 	private static final String UNDEFINED_FACTION_OTHER = "ERRO";
-	private static final String OWN_FACTION = "sua facção";
-	private static final String SELF = "você";
+	private static final String OWN_FACTION = "Sua facção";
+	private static final String SELF = "Você";
 	
 	// -------------------------------------------- //
 	// DESCRIBE
@@ -66,13 +66,13 @@ public class RelationUtil
 			}
 			else
 			{
-				ret = mplayerthat.getNameAndFactionName();
+				ret = mplayerthat.getName();
 			}
 		}
 
 		if (ucfirst) ret = Txt.upperCaseFirst(ret);
 
-		return getColorOfThatToMe(that, me).toString() + ret;
+		return ret;
 	}
 
 	public static String describeThatToMe(RelationParticipator that, RelationParticipator me)

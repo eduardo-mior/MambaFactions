@@ -2,8 +2,9 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Perm;
+import com.massivecraft.factions.engine.EngineMenuGui;
 import com.massivecraft.factions.entity.MConf;
-import com.massivecraft.massivecore.command.MassiveCommandDeprecated;
+import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.MassiveCommandVersion;
 import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class CmdFactions extends FactionsCommand
 {
 	// -------------------------------------------- //
-	// INSTANCE
+	// INSTANCE & CONSTRUCT
 	// -------------------------------------------- //
 	
 	private static CmdFactions i = new CmdFactions();
@@ -30,8 +31,8 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsMembros cmdFactionsMembros = new CmdFactionsMembros();
 	public CmdFactionsPerfil cmdFactionsPerfil = new CmdFactionsPerfil();
 	public CmdFactionsListar cmdFactionsListar = new CmdFactionsListar();
-	public CmdFactionsHome cmdFactionsHome = new CmdFactionsHome();
 	public CmdFactionsMapa cmdFactionsMapa = new CmdFactionsMapa();
+	public CmdFactionsHome cmdFactionsHome = new CmdFactionsHome();
 	public CmdFactionsPromover cmdFactionsPromover = new CmdFactionsPromover();
 	public CmdFactionsTransferir cmdFactionsTransferir = new CmdFactionsTransferir();
 	public CmdFactionsRebaixar cmdFactionsRebaixar = new CmdFactionsRebaixar();
@@ -49,6 +50,7 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsRelacaoOld cmdFactionsRelacaoOldNeutral = new CmdFactionsRelacaoOld("neutro").setAliases("neutral", "tregua", "neutro");
 	public CmdFactionsRelacaoOld cmdFactionsRelacaoOldEnemy = new CmdFactionsRelacaoOld("inimigo").setAliases("enemy", "rival", "inimigo");
 	public CmdFactionsConvite cmdFactionsConvite = new CmdFactionsConvite();
+	public CmdFactionsProteger cmdFactionsProteger = new CmdFactionsProteger();
 	public CmdFactionsClaim cmdFactionsClaim = new CmdFactionsClaim();
 	public CmdFactionsUnclaim cmdFactionsUnclaim = new CmdFactionsUnclaim();
 	public CmdFactionsDesfazer cmdFactionsDesfazer = new CmdFactionsDesfazer();
@@ -64,17 +66,6 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsPoder cmdFactionsPoder = new CmdFactionsPoder();
 	
 	// -------------------------------------------- //
-	// CONSTRUCT
-	// -------------------------------------------- //
-	
-	public CmdFactions()
-	{
-		// Deprecated Commands
-		this.addChild(new MassiveCommandDeprecated(this.cmdFactionsUnclaim.cmdFactionsUnclaimAll, "unclaimall"));
-		this.addChild(new MassiveCommandDeprecated(this.cmdFactionsInfo, "ver", "quem"));
-	}
-	
-	// -------------------------------------------- //
 	// OVERRIDE
 	// -------------------------------------------- //
 	
@@ -83,5 +74,24 @@ public class CmdFactions extends FactionsCommand
 	{
 		return MConf.get().aliasesF;
 	}
-
+	
+	@Override
+	public void perform() throws MassiveException
+	{
+		if (msender.isPlayer()) 
+		{
+			if (msender.hasFaction()) 
+			{
+				EngineMenuGui.get().abrirMenuPlayerComFaccao(me);
+			}
+			else
+			{
+				EngineMenuGui.get().abrirMenuPlayerSemFaccao(me);
+			}
+		}
+		else
+		{
+			this.getHelpCommand().execute(sender, args);
+		}
+	}
 }

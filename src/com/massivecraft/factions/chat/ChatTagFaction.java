@@ -19,7 +19,7 @@ public class ChatTagFaction extends ChatTag
 	// -------------------------------------------- //
 
 	@Override
-	public String getReplacement(CommandSender sender, CommandSender recipient)
+	public String getReplacement(CommandSender sender)
 	{
 		// Get entities
 		MPlayer usender = MPlayer.get(sender);

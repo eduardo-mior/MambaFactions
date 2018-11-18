@@ -89,7 +89,7 @@ public class MPerm extends Entity<MPerm> implements Prioritized, Registerable, N
 	public static MPerm getPermContainer() { return getCreative(PRIORITY_CONTAINER, ID_CONTAINER, ID_CONTAINER, "usar containers", MUtil.set(Rel.LEADER, Rel.OFFICER, Rel.MEMBER), true); }
 	
 	public static MPerm getPermHome() { return getCreative(PRIORITY_HOME, ID_HOME, ID_HOME, "se teleportar para a home", MUtil.set(Rel.LEADER, Rel.OFFICER, Rel.MEMBER, Rel.RECRUIT, Rel.ALLY), false); }
-	public static MPerm getPermTerritory() { return getCreative(PRIORITY_TERRITORY, ID_TERRITORY, ID_TERRITORY, "administrar os territórios", MUtil.set(Rel.LEADER, Rel.OFFICER), false); }
+	public static MPerm getPermTerritory() { return getCreative(PRIORITY_TERRITORY, ID_TERRITORY, ID_TERRITORY, "administrar territórios", MUtil.set(Rel.LEADER, Rel.OFFICER), false); }
 	public static MPerm getPermClaimnear() { return getCreative(PRIORITY_CLAIMNEAR, ID_CLAIMNEAR, ID_CLAIMNEAR, "claimar perto", MUtil.set(Rel.LEADER, Rel.OFFICER, Rel.MEMBER, Rel.RECRUIT), false); }
 	
 	public static MPerm getCreative(int priority, String id, String name, String desc, Set<Rel> standard, boolean territory)
@@ -205,7 +205,7 @@ public class MPerm extends Entity<MPerm> implements Prioritized, Registerable, N
 		if (mplayer == null) throw new NullPointerException("mplayer");
 		if (hostFaction == null) throw new NullPointerException("hostFaction");
 		
-		String ret = Txt.parse("%s§c não deixa você §c%s§c.", hostFaction.describeTo(mplayer, true), this.getDesc()).replace("§a", "§c");
+		String ret = Txt.parse("%s§c não deixa você §c%s§c.", hostFaction.describeTo(mplayer), this.getDesc());
 		
 		Player player = mplayer.getPlayer();
 		if (player != null && Perm.ADMIN.has(player))
@@ -285,5 +285,37 @@ public class MPerm extends Entity<MPerm> implements Prioritized, Registerable, N
 		}
 		
 		return ret;
+	}
+
+	// -------------------------------------------- //
+	// UTIL: RESET
+	// -------------------------------------------- //
+	
+	public static void resetDefaultPermissions(Faction faction) {
+		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.ALLY);
+		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.NEUTRAL);
+		faction.getPermitted(MPerm.getPermBuild()).remove(Rel.RECRUIT);
+		faction.getPermitted(MPerm.getPermContainer()).remove(Rel.ALLY);
+		faction.getPermitted(MPerm.getPermContainer()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermContainer()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermContainer()).remove(Rel.NEUTRAL);
+		faction.getPermitted(MPerm.getPermContainer()).remove(Rel.RECRUIT);
+		faction.getPermitted(MPerm.getPermHome()).remove(Rel.ALLY);
+		faction.getPermitted(MPerm.getPermHome()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermHome()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermHome()).remove(Rel.NEUTRAL);
+		faction.getPermitted(MPerm.getPermHome()).add(Rel.RECRUIT);
+		faction.getPermitted(MPerm.getPermDoor()).add(Rel.RECRUIT);
+		faction.getPermitted(MPerm.getPermDoor()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermDoor()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermDoor()).remove(Rel.NEUTRAL);
+		faction.getPermitted(MPerm.getPermButton()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermButton()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermButton()).remove(Rel.NEUTRAL);
+		faction.getPermitted(MPerm.getPermLever()).remove(Rel.ENEMY);
+		faction.getPermitted(MPerm.getPermLever()).remove(Rel.TRUCE);
+		faction.getPermitted(MPerm.getPermLever()).remove(Rel.NEUTRAL);
 	}
 }

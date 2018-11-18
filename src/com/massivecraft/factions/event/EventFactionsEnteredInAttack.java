@@ -26,9 +26,6 @@ public class EventFactionsEnteredInAttack extends EventFactionsAbstract
 	private final Location location;
 	public Location getLocation() { return this.location; }
 	
-	private final boolean already;
-	public boolean factionAlreadyInAtack() { return this.already; }
-	
 	private final EntityExplodeEvent event;
 	public EntityExplodeEvent getEvent() { return this.event; }
 	
@@ -36,11 +33,10 @@ public class EventFactionsEnteredInAttack extends EventFactionsAbstract
 	// CONSTRUCT
 	// -------------------------------------------- //
 	
-	public EventFactionsEnteredInAttack(Faction target, Location location, boolean already, EntityExplodeEvent event)
+	public EventFactionsEnteredInAttack(Faction target, Location location, EntityExplodeEvent event)
 	{
 		this.target = target;
 		this.location = location;
-		this.already = already;
 		this.event = event;
 	}
 

@@ -1,14 +1,12 @@
 package com.massivecraft.factions.cmd;
 
-import java.util.LinkedHashMap;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import com.massivecraft.factions.cmd.type.TypeMPlayer;
-import com.massivecraft.factions.engine.EngineKdr;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.Progressbar;
-import com.massivecraft.massivecore.util.TimeDiffUtil;
-import com.massivecraft.massivecore.util.TimeUnit;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.util.Txt;
 
 public class CmdFactionsPerfil extends FactionsCommand
@@ -21,12 +19,12 @@ public class CmdFactionsPerfil extends FactionsCommand
 	{
 		// Aliases
         this.addAliases("p", "player");
-        
-		// Parametros (não necessario)
-		this.addParameter(TypeMPlayer.get(), "player", "você");
 
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 p,perfil §e<player> §8-§7 Mostra os status do player.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "outro player", "você", true);
 	}
 
 	// -------------------------------------------- //
@@ -37,7 +35,7 @@ public class CmdFactionsPerfil extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Argumentos
-		MPlayer mplayer = this.readArg(msender);
+		MPlayer mplayer = readMPlayer();
 		
 		// Verificando se o player tem facção
 		final boolean hasfac = mplayer.hasFaction();
@@ -64,22 +62,20 @@ public class CmdFactionsPerfil extends FactionsCommand
 		
 		msg("§6Cargo: §e" + (hasfac ? (mplayer.getRole().getPrefix() + mplayer.getRole().getName()) : "§7§oNenhum"));
 		
-		// Mostrando o cargo do player
+		// Se o player possui poder máximo
 		if (mplayer.hasPowerBoost())
 		{
 			msg("§6Poder máximo: §e%f", mplayer.getPowerBoost());
 		}
-				
+		
 		// Mostrando se o player esta online
 		msg("§6Status: " + (mplayer.isOnline() ? "§2Online" : "§cOffline"));
 		
-		long ultimoLoginMillis = mplayer.getLastActivityMillis() - System.currentTimeMillis();
-		LinkedHashMap<TimeUnit, Long> ageUnitcounts = TimeDiffUtil.limit(TimeDiffUtil.unitcounts(ultimoLoginMillis, TimeUnit.getAllButMillis()), 3);
-		String ultimoLogin = TimeDiffUtil.formatedMinimal(ageUnitcounts, "§e");
-		msg("§6Último login: §e" + ultimoLogin + "§e atrás");
-		
+		// Mostrando a data e o horario do ultimo login
+		String ultimoLogin = new SimpleDateFormat("dd/MM/yyyy 'às' hh:mm").format(new Date(mplayer.getLastActivityMillis()));
+		msg("§6Último login: §e" + ultimoLogin);
 		
 		// Mostrado o kdr e os stats de pvp 
-		msg("§6Abates / Mortes / Kdr: §e" + EngineKdr.getPlayerKills(mplayer) + "§e/" + EngineKdr.getPlayerDeaths(mplayer) + "§e/" + EngineKdr.getPlayerKdr(mplayer));
+		msg("§6Abates / Mortes / Kdr: §e" + mplayer.getKills() + "§e/" + mplayer.getDeaths() + "§e/" + mplayer.getKdrRounded());
 	}
 }

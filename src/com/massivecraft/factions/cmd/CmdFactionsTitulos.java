@@ -4,9 +4,8 @@ import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.Visibility;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 import com.massivecraft.massivecore.command.requirement.RequirementTitlesAvailable;
-import com.massivecraft.massivecore.command.type.primitive.TypeBooleanOn;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.mixin.MixinTitle;
-import com.massivecraft.massivecore.util.Txt;
 
 public class CmdFactionsTitulos extends FactionsCommand
 {
@@ -18,16 +17,16 @@ public class CmdFactionsTitulos extends FactionsCommand
 	{
 		// Aliases
 		this.addAliases("tt", "territorytitles");
+		
+		// Descrição
+		this.setDesc("§6 tt,titulos §8-§7 Mostra os titulos dos território.");
 
-		// Parametros (não necessario)
-		this.addParameter(TypeBooleanOn.get(), "on|off", "toggle");
-
-		// Requisições
+		// Requisitos
 		this.addRequirements(RequirementIsPlayer.get());
 		this.addRequirements(RequirementTitlesAvailable.get());
 		
-		// Descrição do comando
-		this.setDesc("§6 tt,titulos §8-§7 Mostra os titulos dos território.");
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "on/off", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -46,21 +45,28 @@ public class CmdFactionsTitulos extends FactionsCommand
 	public void perform() throws MassiveException
 	{
 		// Argumentos
-		boolean before = msender.isTerritoryInfoTitles();
-		boolean after = this.readArg(!before);
-		String desc = Txt.parse(after ? "§2ativada": "§cdesativada");
+		Boolean old = msender.isTerritoryInfoTitles();
+		Boolean target = readBoolean(old);
 		
-		// Verificando se o player ja esta com o modo title ativado
-		if (after == before)
-		{
+		// Verificando se o player digitou um argumento correto
+		if (target == null) {
+			msg("§cComando incorreto, use /f tt [on/off]");
+			return;
+		}
+		
+		// Descrição da ação
+		String desc = target ? "§2ativada": "§cdesativada";
+
+		// Verificando se o player já esta com a visualização ativada/desativada
+		if (target == old) {
 			msg("§aA visualização dos titulos dos territórios já está %s§a.", desc);
 			return;
 		}
 		
-		// Setando o modo title como ativado/desativado
-		msender.setTerritoryInfoTitles(after);
+		// Setando a visualização como ativado/desativado
+		msender.setTerritoryInfoTitles(target);
 		
-		// Informando o msender
+		// Informando os players players
 		msg("§aVisualização dos titulos dos territórios %s§a.", desc);
 	}
 	

@@ -31,8 +31,7 @@ public class EngineShow extends Engine
 	// CONSTANTS
 	// -------------------------------------------- //
 	
-	public static final String BASENAME = "factions";
-	public static final String BASENAME_ = BASENAME+"_";
+	public static final String BASENAME_ = "factions_";
 	
 	public static final String SHOW_ID_FACTION_ID = BASENAME_ + "id";
 	public static final String SHOW_ID_FACTION_DESCRIPTION = BASENAME_ + "description";
@@ -93,16 +92,14 @@ public class EngineShow extends Engine
 			show(idPriorityLiness, SHOW_ID_FACTION_AGE, SHOW_PRIORITY_FACTION_AGE, "§6Criada há", ageDesc + "§e atrás");
 
 			// POWER
-			double powerBoost = faction.getPowerBoost();
-			String boost = (powerBoost == 0.0) ? "" : (powerBoost > 0.0 ? " (bônus: " : " (penalidade: ") + powerBoost + ")";
-			String powerDesc = Txt.parse("%d/%d/%d%s", faction.getLandCount(), faction.getPowerRounded(), faction.getPowerMaxRounded(), boost);
+			String powerDesc = Txt.parse("%d/%d/%d", faction.getLandCount(), faction.getPowerRounded(), faction.getPowerMaxRounded());
 			show(idPriorityLiness, SHOW_ID_FACTION_POWER, SHOW_PRIORITY_FACTION_POWER, "Terras / Poder / Poder Máximo", powerDesc);
-		
+
 			// STATS
-			double kdr = EngineKdr.getFacKdr(faction);
-			int kills = EngineKdr.getFacKills(faction);
-			int deaths = EngineKdr.getFacDeaths(faction);
-			String statsDesc = Txt.parse("%d/%d/%.2f", kills, deaths,kdr);
+			String kdr = faction.getFacKdrRounded();
+			int kills = faction.getKills();
+			int deaths = faction.getDeaths();
+			String statsDesc = Txt.parse("%d/%d/%s", kills, deaths,kdr);
 			show(idPriorityLiness, SHOW_ID_FACTION_STATS, SHOW_PRIORITY_FACTION_STATS, "Abates / Mortes / Kdr", statsDesc);
 			
 			String aliados = "";
@@ -188,22 +185,22 @@ public class EngineShow extends Engine
 		idPriorityLiness.put(SHOW_ID_FACTION_FOLLOWERS, new PriorityLines(SHOW_PRIORITY_FACTION_FOLLOWERS, followerLines));
 	}
 
-	public static String show(String key, String value)
+	public String show(String key, String value)
 	{
 		return Txt.parse("§6%s: §e%s", key, value);
 	}
 
-	public static PriorityLines show(int priority, String key, String value)
+	public PriorityLines show(int priority, String key, String value)
 	{
 		return new PriorityLines(priority, show(key, value));
 	}
 
-	public static void show(Map<String, PriorityLines> idPriorityLiness, String id, int priority, String key, String value)
+	public void show(Map<String, PriorityLines> idPriorityLiness, String id, int priority, String key, String value)
 	{
 		idPriorityLiness.put(id, show(priority, key, value));
 	}
 
-	public static List<String> table(List<String> strings, int cols)
+	public List<String> table(List<String> strings, int cols)
 	{
 		List<String> ret = new ArrayList<>();
 

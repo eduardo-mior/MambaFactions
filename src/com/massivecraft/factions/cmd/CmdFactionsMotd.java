@@ -19,15 +19,15 @@ public class CmdFactionsMotd extends FactionsCommand
 	{
 		// Aliases
         this.addAliases("mensagem");
-        
-		// Parametros (não necessario)
-		this.addParameter(TypeNullable.get(TypeString.get()), "novaMotd", "erro", true);
 		
-		// Requisições
+		// Descrição
+		this.setDesc("§6 motd §e<mensagem> §8-§7 Altera a mensagem da facção.");
+		
+		// Requisitos
 		this.addRequirements(ReqHasFaction.get());
 		
-		// Descrição do comando
-		this.setDesc("§6 motd §e[mensagem] §8-§7 Altera ou mostra a mensagem da facção.");
+		// Parametros (não necessario)
+		this.addParameter(TypeNullable.get(TypeString.get()), "motd", "erro", true);
 	}
 
 	// -------------------------------------------- //
@@ -37,39 +37,39 @@ public class CmdFactionsMotd extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		
 		// Verificando se o player possui permissão
-		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
-			msender.message("§cVocê precisar ser capitão ou superior para poder alterar a motd da facção.");
+		if (!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
+			msg("§cVocê precisar ser capitão ou superior para poder alterar a mensagem diaria da facção.");
 			return;
 		}
 		
 		// Lendo os argumanetos e verificando se o argumento é nulo
-		if (!this.argIsSet(0)) 
-		{
-			msender.msg("§cArgumentos insuficientes, use /f motd <mensagem>");
+		if (!this.argIsSet()) {
+			msg("§cArgumentos insuficientes, use /f motd <mensagem>");
 			return;
 		}
 		
 		// Argumentos
-		String target = this.readArg();
-
-		target = target.trim();
-		target = Txt.parse(target);
-
+		String newMotd = Txt.parse(this.arg()).trim().replace('&', '§');
+		
+		// Verificando se a descrição antiga não é igual anova
+		if (msenderFaction.getMotdDesc().equals(newMotd)) {
+			msg("§cA motd da facção já é '" + newMotd + "§c'.");
+			return;
+		}
+			
 		// Evento
-		EventFactionsMotdChange event = new EventFactionsMotdChange(sender, msenderFaction, target);
+		EventFactionsMotdChange event = new EventFactionsMotdChange(sender, msenderFaction, newMotd);
 		event.run();
 		if (event.isCancelled()) return;
-		target = event.getNewMotd().replace("§", "&");
+		newMotd = event.getNewMotd();
 		
 		// Aplicando o evento
-		msenderFaction.setMotd(target);
+		msenderFaction.setMotd(newMotd);
 		
 		// Informando os players
-		for (MPlayer follower : msenderFaction.getMPlayers())
-		{
-			follower.msg("§e%s §edefiniu a motd da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), msenderFaction.getMotdDesc());
+		for (MPlayer follower : msenderFaction.getMPlayersWhereOnline(true)) {
+			follower.msg("§e%s §edefiniu a motd da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), newMotd);
 		}
 	}
 	

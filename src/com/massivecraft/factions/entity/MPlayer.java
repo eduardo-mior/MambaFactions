@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.massivecraft.factions.FactionsIndex;
 import com.massivecraft.factions.FactionsParticipator;
@@ -21,7 +20,6 @@ import com.massivecraft.factions.event.EventFactionsChunksChange;
 import com.massivecraft.factions.event.EventFactionsDisband;
 import com.massivecraft.factions.event.EventFactionsMembershipChange;
 import com.massivecraft.factions.event.EventFactionsMembershipChange.MembershipChangeReason;
-import com.massivecraft.factions.mixin.PowerMixin;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.massivecore.mixin.MixinSenderPs;
 import com.massivecraft.massivecore.mixin.MixinTitle;
@@ -59,7 +57,6 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		this.setTerritoryInfoTitles(that.territoryInfoTitles);
 		this.setKills(that.kills);
 		this.setDeaths(that.deaths);
-
 		return this;
 	}
 	
@@ -159,8 +156,13 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// Null means default specified in MConf.
 	private Boolean territoryInfoTitles = null;
 	
-	private Double kills = null;
-	private Double deaths = null;
+	// The kills and deaths of the player
+	// The KDR is calculated so it does not need to be saved 
+	private Integer kills = null;
+	private Integer deaths = null;
+	
+	// The invitations of de factions
+	private transient Set<String> invitations = new HashSet<>();
 	
 	// The Faction this player is currently autoclaiming for.
 	// Null means the player isn't auto claiming.
@@ -369,27 +371,27 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 
 	public double getPowerMaxUniversal()
 	{
-		return PowerMixin.get().getMaxUniversal(this);
+		return this.getPowerMax();
 	}
 
 	public double getPowerMax()
 	{
-		return PowerMixin.get().getMax(this);
+		return MConf.get().powerMax + this.getPowerBoost();
 	}
 
 	public double getPowerMin()
 	{
-		return PowerMixin.get().getMin(this);
+		return MConf.get().powerMin;
 	}
 
 	public double getPowerPerHour()
 	{
-		return PowerMixin.get().getPerHour(this);
+		return MConf.get().powerPerHour;
 	}
 
 	public double getPowerPerDeath()
 	{
-		return PowerMixin.get().getPerDeath(this);
+		return MConf.get().powerPerDeath;
 	}
 
 	// MIXIN: FINER
@@ -520,8 +522,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// FIELD: Deaths
 	// -------------------------------------------- //
 	
-	public void setDeaths(Double deaths) {
-		Double target = deaths;
+	public void setDeaths(Integer deaths) {
+		Integer target = deaths;
 		
 		// Detect Nochange
 		if (MUtil.equals(this.deaths, target)) return;
@@ -533,9 +535,9 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		this.changed();
 	}
 	
-	public double getDeaths() {
-		Double deaths = this.deaths;
-		if (deaths == null) deaths = 0.0;
+	public Integer getDeaths() {
+		Integer deaths = this.deaths;
+		if (deaths == null) deaths = 0;
 		return deaths;
 	}
 	
@@ -543,8 +545,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// FIELD: Kills
 	// -------------------------------------------- //
 	
-	public void setKills(Double kills) {
-		Double target = kills;
+	public void setKills(Integer kills) {
+		Integer target = kills;
 		
 		// Detect Nochange
 		if (MUtil.equals(this.kills, target)) return;
@@ -556,9 +558,9 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		this.changed();
 	}
 	
-	public double getKills() {
-		Double kills = this.kills;
-		if (kills == null) kills = 0.0;
+	public Integer getKills() {
+		Integer kills = this.kills;
+		if (kills == null) kills = 0;
 		return kills;
 	}
 	
@@ -567,16 +569,46 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// -------------------------------------------- //
 	
 	public double getKdr() {
-		Double kills = this.getKills();
-		Double deaths = this.getDeaths();
+		double kills = this.getKills();
+		double deaths = this.getDeaths();
 		if (deaths == 0) {
 			return kills;
 		} else {
-		double kdr = kills/deaths;
-		return kdr;
+			return kills/deaths;
 		}
 	}
-
+	
+	public String getKdrRounded() {
+		return String.format("%.2f", this.getKdr());
+	}
+	
+	// -------------------------------------------- //
+	// INVITATIONS
+	// -------------------------------------------- //
+	
+	public Set<String> getInvitations()
+	{
+		return this.invitations;
+	}
+	
+	public void addInvitation(String factionId) 
+	{
+		// Apply
+		this.invitations.add(factionId);
+	}
+	
+	public void removeInvitation(String factionId) 
+	{		
+		// Apply
+		this.invitations.remove(factionId);
+	}
+	
+	public void clearInvitations() 
+	{
+		// Apply
+		this.invitations.clear();
+	}
+	
 	// -------------------------------------------- //
 	// FIELD: territoryInfoTitles
 	// -------------------------------------------- //
@@ -672,20 +704,6 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	}
 
 	// -------------------------------------------- //
-	// HEALTH
-	// -------------------------------------------- //
-
-	public void heal(int amnt)
-	{
-		Player player = this.getPlayer();
-		if (player == null)
-		{
-			return;
-		}
-		player.setHealth(player.getHealth() + amnt);
-	}
-
-	// -------------------------------------------- //
 	// TERRITORY
 	// -------------------------------------------- //
 
@@ -713,15 +731,6 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 
 		boolean permanent = myFaction.getFlag(MFlag.getFlagPermanent());
 
-		if (myFaction.getMPlayers().size() > 1)
-		{
-			if (!permanent && this.getRole() == Rel.LEADER)
-			{
-				msg("§cVocê deve passar liderança da facção para outra pessoa para poder fazer isso.");
-				return;
-			}
-		}
-
 		// Event
 		EventFactionsMembershipChange membershipChangeEvent = new EventFactionsMembershipChange(this.getSender(), this, myFaction, MembershipChangeReason.LEAVE);
 		membershipChangeEvent.run();
@@ -731,7 +740,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		{
 			for (MPlayer mplayer : myFaction.getMPlayersWhereOnline(true))
 			{
-				mplayer.msg("§f%s§e abandonou a sua facção.", this.describeTo(mplayer, true).replace("Você", "§eVocê"));
+				mplayer.msg("§f%s§e abandonou a facção.", this.describeTo(mplayer).replace("Você", "§eVocê"));
 			}
 		}
 
@@ -744,7 +753,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 			if (!eventFactionsDisband.isCancelled())
 			{
 				// Remove this faction
-				this.msg("§eA facção §f%s §efoi desfeita pois você saiu e você era o ultimo membro da façcão.", myFaction.getName());
+				this.msg("§eA facção §f[%s§f]§e foi desfeita pois você abandonou a facção e você era o ultimo membro da façcão.", myFaction.getName());
 				myFaction.detach();
 			}
 		}
@@ -779,7 +788,14 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		}
 		if (chunks.isEmpty())
 		{
-			msg(("§e%s§e já é dona deste território."), newFaction.describeTo(this, true).replace("Sua facção", "§eSua facção"));
+			if (newFaction == this.getFaction()) 
+			{
+				msg(("§eSua facção já é dona deste território."));
+			}
+			else 
+			{
+				msg(("§eSua facção não é dona deste território."));
+			}
 			return true;
 		}
 
@@ -787,15 +803,6 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		// NOTE: We listen to this event ourselves at LOW.
 		// NOTE: That is where we apply the standard checks.
 		CommandSender sender = this.getSender();
-		if (sender == null)
-		{
-			msg("§cERROR: O seu \"CommandSender Link\" foi cortado/depurado.");
-			msg("§cÉ provável que você esteja usando Cauldron.");
-			msg("§cAtualmete o factions não suporta Cauldron.");
-			msg("§cNós adoraríamos adicionar suporte ao Cauldron, mas infelizmente não temos tempo para desenvolver.");
-			msg("§aVocê sabe como codificar? Por favor, envie-nos um pull request <3, desculpe por tudo.");
-			return false;
-		}
 		EventFactionsChunksChange event = new EventFactionsChunksChange(sender, chunks, newFaction);
 		event.run();
 		if (event.isCancelled()) return false;
@@ -812,19 +819,39 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 			final Faction oldFaction = entry.getKey();
 			final Set<PS> oldChunks = entry.getValue();
 			final PS oldChunk = oldChunks.iterator().next();
-			final Set<MPlayer> informees = getClaimInformees(this, oldFaction, newFaction);
 			final EventFactionsChunkChangeType type = EventFactionsChunkChangeType.get(oldFaction, newFaction, this.getFaction());
 
 			String chunkString = oldChunk.toString(PSFormatHumanSpace.get());
 			String typeString = type.past;
+			boolean format = oldChunks.size() == 1;
 
-			for (MPlayer informee : informees)
+			// Verificando uma terra está sendo dominada...
+			if (!oldFaction.isNone() && !newFaction.isNone()) 
 			{
-				informee.msg((oldChunks.size() == 1 ? formatOne : formatMany), this.describeTo(informee, true), typeString, oldChunks.size(), chunkString);
-				informee.msg("§f%s§e --> §d%s", oldFaction.describeTo(informee, true), newFaction.describeTo(informee, true));
+				for (MPlayer informee : oldFaction.getMPlayers())
+				{
+					informee.msg("§eSua facção teve §d%d§e " + (format ? "terreno dominado" : " terrenos dominados") + " pela §f[%s§f]§e.", oldChunks.size(), newFaction.getName());
+				}	
+					
+				for (MPlayer informee : newFaction.getMPlayers())
+				{
+					informee.msg((format ? formatOne : formatMany), name(informee), typeString, oldChunks.size(), chunkString);
+					informee.msg("§f%s§e --> §a%s", oldFaction.getName(), "§a" + newFaction.describeTo(informee));
+				}
 			}
+			
+			// Caso contrario um CLAIM ou um UNCLAIM normal esta ocorrendo...
+			else
+			{
+				Set<MPlayer> informees = getClaimInformees(this, newFaction, oldFaction);
+				for (MPlayer informee : informees)
+				{
+					informee.msg((format ? formatOne : formatMany), name(informee), typeString, oldChunks.size(), chunkString);
+					informee.msg("§f%s§e --> §a%s", oldFaction.getName(), newFaction.isNone() ? "§2" + newFaction.describeTo(informee) : "§a" + newFaction.describeTo(informee));
+				}
+			}
+			
 		}
-
 		// Success
 		return true;
 	}
@@ -832,6 +859,11 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// -------------------------------------------- //
 	// UTIL
 	// -------------------------------------------- //
+	
+	private String name(MPlayer mp) {
+		if (this.getId().equals(mp.getId())) return "§aVocê";
+		else return "§a" + this.getRole().getPrefix() + this.getName();
+	}
 
 	public static Set<MPlayer> getClaimInformees(MPlayer msender, Faction... factions)
 	{

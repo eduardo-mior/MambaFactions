@@ -1,5 +1,16 @@
 package com.massivecraft.factions.entity;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.bukkit.entity.Player;
+
 import com.massivecraft.factions.RelationParticipator;
 import com.massivecraft.factions.TerritoryAccess;
 import com.massivecraft.massivecore.collections.MassiveMap;
@@ -8,18 +19,6 @@ import com.massivecraft.massivecore.mson.Mson;
 import com.massivecraft.massivecore.ps.PS;
 import com.massivecraft.massivecore.store.Coll;
 import com.massivecraft.massivecore.util.MUtil;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.entity.Player;
-
-import java.util.Set;
 
 public class BoardColl extends Coll<Board> implements BoardInterface
 {
@@ -101,11 +100,29 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		board.setFactionAt(ps, faction);
 	}
 	
+	public void setTempFactionAt(PS ps, Faction faction)
+	{
+		faction.addTempClaim(ps);
+		if (ps == null) return;
+		Board board = this.get(ps.getWorld());
+		if (board == null) return;
+		board.setFactionAt(ps, faction);
+	}
+	
 	// REMOVE
 	
 	@Override
 	public void removeAt(PS ps)
 	{
+		if (ps == null) return;
+		Board board = this.get(ps.getWorld());
+		if (board == null) return;
+		board.removeAt(ps);
+	}
+	
+	public void removeTempAt(Faction faction, PS ps)
+	{
+		faction.removeTempClaim(ps);
 		if (ps == null) return;
 		Board board = this.get(ps.getWorld());
 		if (board == null) return;
@@ -435,6 +452,18 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		
 		// Return
 		return ret;
+	}
+	
+	public static boolean containsNormalFaction(Set<Faction> factions) 
+	{
+		for (Faction faction : factions) 
+		{
+			if (faction.isNormal()) 
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

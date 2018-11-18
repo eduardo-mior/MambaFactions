@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemBuilder {
+	
 	   private ItemStack is;
 
 	   public ItemBuilder(Material m) {
@@ -59,12 +60,6 @@ public class ItemBuilder {
 		   is.addUnsafeEnchantment(ench, level);
 		   return this;
 	   }
-
-	   public ItemBuilder removeEnchantment(Enchantment ench) {
-		   is.removeEnchantment(ench);
-		   return this;
-	   }
-
 	   @SuppressWarnings("deprecation")
 	   public ItemBuilder setSkullOwner(String dono) {
 		   try {
@@ -89,10 +84,10 @@ public class ItemBuilder {
 		   return this;
 	   }
 
-	   public ItemBuilder setLore(String string, String string2, String string3, String string4, String string5, String string6, String string7, String string8, String string9, String string10, List<String> lore2, String string12, String string13, String string14, String string15, String string16, List<String> lore3) {
+	   public ItemBuilder setLore(String string1, String string2, String string3, String string4, String string5, String string6, String string7, String string8, String string9, List<String> lista1, String string10, String string11, String string12, String string13, String string14, List<String> lista2) {
 		   ItemMeta im = is.getItemMeta();
 		   List<String> l = new ArrayList<>();
-		   l.add(string);
+		   l.add(string1);
 		   l.add(string2);
 		   l.add(string3);
 		   l.add(string4);
@@ -101,14 +96,13 @@ public class ItemBuilder {
 		   l.add(string7);
 		   l.add(string8);
 		   l.add(string9);
+		   l.addAll(lista1);
 		   l.add(string10);
-		   l.addAll(lore2);
+		   l.add(string11);
 		   l.add(string12);
 		   l.add(string13);
 		   l.add(string14);
-		   l.add(string15);
-		   l.add(string16);
-		   l.addAll(lore3);
+		   l.addAll(lista2);
 		   im.setLore(l);
 		   is.setItemMeta(im);
 		   return this;

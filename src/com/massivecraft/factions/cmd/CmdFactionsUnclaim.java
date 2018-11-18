@@ -1,20 +1,24 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
+import com.massivecraft.massivecore.MassiveException;
+import com.massivecraft.massivecore.util.MUtil;
 
 public class CmdFactionsUnclaim extends FactionsCommand
-{
+{	
+	// -------------------------------------------- //
+	// CONSTRUCT
+	// -------------------------------------------- //
+	public CmdFactionsUnclaim() 
 	{
-
-	// Aliases
-    this.addAliases("desproteger", "abandonar");
-
-	// Descrição do comando
-	this.setDesc("§6 unclaim §8-§7 Abandona territórios da sua facção.");
+		// Aliases
+	    this.addAliases("desproteger", "abandonar");
 	
-	// Requisições
-	this.addRequirements(ReqHasFaction.get());
-    
+		// Descrição
+		this.setDesc("§6 abandonar §8-§7 Abandona territórios da sua facção.");
+		
+		// Requisitos
+		this.addRequirements(ReqHasFaction.get());
 	}
 	
 	// -------------------------------------------- //
@@ -23,4 +27,15 @@ public class CmdFactionsUnclaim extends FactionsCommand
 	
 	public CmdFactionsSetOne cmdFactionsUnclaimOne = new CmdFactionsSetOne(false);
 	public CmdFactionsSetAll cmdFactionsUnclaimAll = new CmdFactionsSetAll(false);
+	
+
+	// -------------------------------------------- //
+	// OVERRIDE
+	// -------------------------------------------- //
+
+	@Override
+	public void perform() throws MassiveException
+	{
+		CmdFactions.get().cmdFactionsUnclaim.cmdFactionsUnclaimOne.execute(sender, MUtil.list());
+	}
 }

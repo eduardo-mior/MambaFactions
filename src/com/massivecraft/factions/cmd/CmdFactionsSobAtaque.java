@@ -1,10 +1,7 @@
 package com.massivecraft.factions.cmd;
 
-import org.bukkit.entity.Player;
-
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.engine.EngineMenuGui;
-import com.massivecraft.factions.engine.EngineSobAtaque;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 
@@ -18,13 +15,13 @@ public class CmdFactionsSobAtaque extends FactionsCommand
 	{
 		// Aliases
         this.addAliases("ataque");
-        
-		// Requisições
+
+		// Descrição
+		this.setDesc("§6 sobataque §8-§7 Mostra mais informações sobre o ataque.");
+		
+		// Requisitos
 		this.addRequirements(RequirementIsPlayer.get());
 		this.addRequirements(ReqHasFaction.get());
-
-		// Descrição do comando
-		this.setDesc("§6 sobataque §8-§7 Mostra mais informações sobre o ataque.");
 	}
 
 	// -------------------------------------------- //
@@ -34,11 +31,13 @@ public class CmdFactionsSobAtaque extends FactionsCommand
 	@Override
 	public void perform() throws MassiveException
 	{
-		Player p = msender.getPlayer();
-		if (!EngineSobAtaque.factionattack.containsKey(msenderFaction.getName())) {
-			msender.message("§cSua facção não esta sob ataque!");
-		} else {
-			EngineMenuGui.abrirMenuFaccaoSobAtaque(p);
+		if (!msenderFaction.isInAttack()) 
+		{
+			msg("§cSua facção não esta sob ataque!");
+		}
+		else 
+		{
+			EngineMenuGui.get().abrirMenuFaccaoSobAtaque(msender);
 		}
 	}
 }

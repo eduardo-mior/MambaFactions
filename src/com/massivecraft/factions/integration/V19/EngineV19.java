@@ -56,7 +56,7 @@ public class EngineV19 extends Engine
 		{
 			EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(thrower, affectedEntity, EntityDamageEvent.DamageCause.CUSTOM, 0D);
 			// Notification disabled due to the iterating nature of effect clouds.
-			if (EngineCanCombatHappen.get().canCombatDamageHappen(sub, false)) continue;
+			if (EngineCanCombatHappen.get().canCombatDamageHappenBOOLEAN(sub)) continue;
 			
 			affectedList.add(affectedEntity);
 		}

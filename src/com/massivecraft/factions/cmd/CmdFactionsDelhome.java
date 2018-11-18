@@ -16,10 +16,10 @@ public class CmdFactionsDelhome extends FactionsCommand
 		// Aliases
 		this.addAliases("unsethome", "removerbase", "delbase");
 		
-		// Descrição do comando
+		// Descrição
 		this.setDesc("§6 delhome §8-§7 Deleta a home da facção.");
 		
-		// Requisições
+		// Requisitos
 		this.addRequirements(ReqHasFaction.get());
 	}
 
@@ -31,15 +31,14 @@ public class CmdFactionsDelhome extends FactionsCommand
 	public void perform() throws MassiveException
 	{		
 		// Verificando se o player possui permissão
-		if(!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
+		if (!(msender.getRole() == Rel.LEADER || msender.getRole() == Rel.OFFICER || msender.isOverriding())) {
 			msender.message("§cVocê precisar ser capitão ou superior para poder deletar a home da facção.");
 			return;
 		}
 				
 		// Verificando se a facção possui home
-		if ( ! msenderFaction.hasHome())
-		{
-			msender.msg("§cA sua facção ainda não definiu a home da facção.");
+		if (!msenderFaction.hasHome()) {
+			msender.msg("§cA sua facção ainda não possui sua home definida.");
 			return;
 		}
 		
