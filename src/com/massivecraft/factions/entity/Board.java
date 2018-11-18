@@ -462,10 +462,6 @@ public class Board extends Entity<Board> implements BoardInterface
 	// Método para verificar se a facção esta sob ataque
 	private boolean isInAttack(World world, PS ps) {
 		Chunk chunk = world.getChunkAt(ps.getChunkX(), ps.getChunkZ());
-		
-		if (EngineSobAtaque.underattack.containsKey(chunk)) {
-			return true;
-		} 
-		return false;
+		return EngineSobAtaque.underattack.containsKey(chunk);
 	}
 }

@@ -1,6 +1,5 @@
 package com.massivecraft.factions.event;
 
-import org.bukkit.Location;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
@@ -23,9 +22,6 @@ public class EventFactionsEnteredInAttack extends EventFactionsAbstract
 	private final Faction target;
 	public Faction getFaction() { return this.target; }
 	
-	private final Location location;
-	public Location getLocation() { return this.location; }
-	
 	private final EntityExplodeEvent event;
 	public EntityExplodeEvent getEvent() { return this.event; }
 	
@@ -33,10 +29,9 @@ public class EventFactionsEnteredInAttack extends EventFactionsAbstract
 	// CONSTRUCT
 	// -------------------------------------------- //
 	
-	public EventFactionsEnteredInAttack(Faction target, Location location, EntityExplodeEvent event)
+	public EventFactionsEnteredInAttack(Faction target, EntityExplodeEvent event)
 	{
 		this.target = target;
-		this.location = location;
 		this.event = event;
 	}
 

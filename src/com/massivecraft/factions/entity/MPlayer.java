@@ -522,7 +522,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// FIELD: Deaths
 	// -------------------------------------------- //
 	
-	public void setDeaths(Integer deaths) {
+	public void setDeaths(Integer deaths) 
+	{
 		Integer target = deaths;
 		
 		// Detect Nochange
@@ -534,8 +535,9 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		// Mark as changed
 		this.changed();
 	}
-	
-	public Integer getDeaths() {
+
+	public Integer getDeaths() 
+	{
 		Integer deaths = this.deaths;
 		if (deaths == null) deaths = 0;
 		return deaths;
@@ -545,7 +547,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// FIELD: Kills
 	// -------------------------------------------- //
 	
-	public void setKills(Integer kills) {
+	public void setKills(Integer kills)
+	{
 		Integer target = kills;
 		
 		// Detect Nochange
@@ -558,7 +561,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		this.changed();
 	}
 	
-	public Integer getKills() {
+	public Integer getKills()
+	{
 		Integer kills = this.kills;
 		if (kills == null) kills = 0;
 		return kills;
@@ -568,7 +572,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	// FIELD: Kdr
 	// -------------------------------------------- //
 	
-	public double getKdr() {
+	public double getKdr() 
+	{
 		double kills = this.getKills();
 		double deaths = this.getDeaths();
 		if (deaths == 0) {
@@ -578,7 +583,8 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		}
 	}
 	
-	public String getKdrRounded() {
+	public String getKdrRounded() 
+	{
 		return String.format("%.2f", this.getKdr());
 	}
 	
@@ -865,7 +871,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		else return "§a" + this.getRole().getPrefix() + this.getName();
 	}
 
-	public static Set<MPlayer> getClaimInformees(MPlayer msender, Faction... factions)
+	private Set<MPlayer> getClaimInformees(MPlayer msender, Faction... factions)
 	{
 		Set<MPlayer> ret = new HashSet<>();
 

@@ -1169,7 +1169,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		return deaths;
 	}
 	
-	public double getFacKdr() 
+	public double getKdr() 
 	{
 		double deaths = this.getDeaths();
 		double kills = this.getKills();
@@ -1180,9 +1180,9 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		}
 	}
 	
-	public String getFacKdrRounded()
+	public String getKdrRounded() 
 	{
-		return String.format("%.2f", this.getFacKdr());
+		return String.format("%.2f", this.getKdr());
 	}
 	
 	// -------------------------------------------- //

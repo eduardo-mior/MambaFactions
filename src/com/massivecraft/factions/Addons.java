@@ -8,6 +8,7 @@ import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.factions.util.Heads;
 import com.massivecraft.massivecore.ps.PS;
 
 public class Addons {
@@ -19,6 +20,7 @@ public class Addons {
 			@Override
 			public void run()
 			{
+				new Heads();
 				final BoardColl board = BoardColl.get();
 				for (Faction faction : FactionColl.get().getAll())
 				{

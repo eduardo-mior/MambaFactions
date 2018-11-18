@@ -9,10 +9,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.massivecraft.factions.RelationParticipator;
 import com.massivecraft.factions.TerritoryAccess;
+import com.massivecraft.factions.engine.EngineSobAtaque;
 import com.massivecraft.massivecore.collections.MassiveMap;
 import com.massivecraft.massivecore.collections.MassiveSet;
 import com.massivecraft.massivecore.mson.Mson;
@@ -466,4 +470,15 @@ public class BoardColl extends Coll<Board> implements BoardInterface
 		return false;
 	}
 	
+	// Método para verificar se a facção esta sob ataque
+	public boolean isInAttack(World world, PS ps) {
+		Chunk chunk = world.getChunkAt(ps.getChunkX(), ps.getChunkZ());
+		return EngineSobAtaque.underattack.containsKey(chunk);
+	}
+	
+	// Método para verificar se a facção esta sob ataque
+	public boolean isInAttack(Location loc) {
+		Chunk chunk = loc.getChunk();
+		return EngineSobAtaque.underattack.containsKey(chunk);
+	}
 }

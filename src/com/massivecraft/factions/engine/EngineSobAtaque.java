@@ -72,7 +72,7 @@ public class EngineSobAtaque extends Engine
 		// Verificação se a facção já esta em ataque
 		if (!faction.isInAttack()) 
 		{
-			EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e.getLocation(), e);
+			EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e);
 			event.run();
 			faction.setInAttack(true);
 			EngineFly.disableFlyFaction(faction);
@@ -166,7 +166,7 @@ public class EngineSobAtaque extends Engine
 			if (at.getId().equals(faction.getId())) return;
 		}
 		faction.setInAttack(false);
-		EventFactionsFinishAttack event = new EventFactionsFinishAttack(c, faction);
+		EventFactionsFinishAttack event = new EventFactionsFinishAttack(faction);
 		event.run();
 	}
 	

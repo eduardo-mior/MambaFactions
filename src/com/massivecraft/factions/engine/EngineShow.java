@@ -96,7 +96,7 @@ public class EngineShow extends Engine
 			show(idPriorityLiness, SHOW_ID_FACTION_POWER, SHOW_PRIORITY_FACTION_POWER, "Terras / Poder / Poder Máximo", powerDesc);
 
 			// STATS
-			String kdr = faction.getFacKdrRounded();
+			String kdr = faction.getKdrRounded();
 			int kills = faction.getKills();
 			int deaths = faction.getDeaths();
 			String statsDesc = Txt.parse("%d/%d/%s", kills, deaths,kdr);

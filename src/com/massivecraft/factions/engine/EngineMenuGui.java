@@ -79,7 +79,7 @@ public class EngineMenuGui extends Engine
 		int factionpoder = faction.getPowerRounded();
 		int playerpoder = mplayer.getPowerRounded();
 		final String kdr = mplayer.getKdrRounded();
-		final String fackdr = faction.getFacKdrRounded();
+		final String fackdr = faction.getKdrRounded();
 		final GuiHolder holder = new GuiHolder(Menu.COM_FACCAO);
 	
 		// Criando o inventario
@@ -91,7 +91,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(15, new ItemBuilder(Heads.LARANJA.clone()).setName("§eFacções Online").setLore("§7Clique para ver a lista de facções","§7online no servidor.").toItemStack());
 		inv.setItem(16, new ItemBuilder(Heads.AMARELO.clone()).setName("§eAjuda").setLore("§7Todas as ações disponíveis neste menu", "§7também podem ser realizadas por","§7comando. Utilize o comando '§f/f ajuda§7'", "§7para ver todos os comandos disponíveis.").toItemStack());
 		inv.setItem(30, new ItemBuilder(Material.PAPER).setName("§eGerenciar Convites").setLore("§7Clique para gerenciar os","§7convites da sua facção.").toItemStack());
-		inv.setItem(31, new ItemBuilder(Material.BOOK_AND_QUILL).setName("§dGerenciar permissões").setLore("§7Clique para gerenciar as","§7permissões da sua facção.").toItemStack());
+		inv.setItem(31, new ItemBuilder(Material.BOOK_AND_QUILL).setName("§9Gerenciar permissões").setLore("§7Clique para gerenciar as","§7permissões da sua facção.").toItemStack());
 		inv.setItem(39, new ItemBuilder(Material.SKULL_ITEM,membrosnafac,3).setName("§aMembros").setLore("§7A sua facção possui §a" + membrosnafac + (membrosnafac == 1 ? "§7 membro." : "§7 membros."),"§7Clique para obter mais informações.").toItemStack());
 		inv.setItem(40, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aRelações").setLore("§7Clique para gerenciar todas","§7as relações da sua facção.").setLeatherArmorColor(Color.LIME).toItemStack());
 		
