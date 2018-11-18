@@ -25,7 +25,7 @@ public class CmdFactionsSetAuto extends FactionsCommand
 		this.addAliases("auto");
 		
 		// Descrição
-		this.setDesc("§6 claim auto §e[on/off] §8-§7 Conquista as terras automaticamente enquanto você anda.");
+		this.setDesc("§6 dominar auto §e[on/off] §8-§7 Conquista as terras automaticamente enquanto você anda.");
 		
 		// Parametros (não necessario)
 		this.addParameter(TypeString.get(), "on/off", "erro", true);

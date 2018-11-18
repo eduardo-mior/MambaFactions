@@ -17,7 +17,7 @@ public class CmdFactionsClaim extends FactionsCommand
 	    this.addAliases("conquistar", "dominar");
 	    
 		// Descrição
-		this.setDesc("§6 proteger §8-§7 Conquista territórios para a sua facção.");
+		this.setDesc("§6 dominar §8-§7 Conquista territórios para a sua facção.");
 		
 		// Requisitos
 		this.addRequirements(ReqHasFaction.get());

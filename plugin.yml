@@ -41,7 +41,7 @@ permissions:
   factions.permissoes: {description: "§6 perm §8-§7 Gerencia as permissões da facção.", default: true}
   factions.poder.faction: {description: "§6 poder f §e<facção> <quantia> §8-§7 Adiciona poder a um facção.", default: false}
   factions.poder.player: {description: "§6 poder p §e<player> <quantia> §8-§7 Adiciona poder a um player.", default: false}
-  factions.poder.set: {description: adicionar poder para um player/facção, default: false}
+  factions.poder.set: {description: "adiciona poder para um player ou facção.", default: false}
   factions.poder: {description: "§6 poder §8-§7 Adiciona ou remove poder de um player ou facção.", default: false}
   factions.promover: {description: "§6 promover §e<player> §8-§7 Promove um player de cargo.", default: true}
   factions.proteger: {description: "§6 proteger §8-§7 Protege territórios temporariamente.", default: true}

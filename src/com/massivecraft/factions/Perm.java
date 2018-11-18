@@ -16,7 +16,6 @@ public enum Perm implements Identified
 	CHATALIADOS,
 	CHATFACCAO,
 	CLAIM,
-	CLAIM_ALL,
 	CLAIM_AUTO,
 	CLAIM_ONE,
 	CONVITE,
