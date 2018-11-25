@@ -14,7 +14,7 @@ public enum EventFactionsChunkChangeType implements Colorized
 	BUY("conquistar", "conquistou", ChatColor.GREEN),
 	SELL("abandonar", "abandonou", ChatColor.GREEN),
 	CONQUER("conquistar", "conquistou", ChatColor.DARK_GREEN),
-	PILLAGE("saquear", "saqueou", ChatColor.RED),
+	PILLAGE("desproteger", "desprotegeu", ChatColor.RED),
 	
 	// END OF LIST
 	;

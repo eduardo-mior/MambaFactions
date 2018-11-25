@@ -122,21 +122,35 @@ public class OthersUtil {
 		List<String> motd = new ArrayList<>();
 		
 		if (!f.hasMotd()) {
-			motd.add("§7§o'Mensagem do dia indefinida.'");
+			motd.add(Faction.NOMOTD);
 			return motd; }
 		
-		else if (factionmotdtamanho < 40) {
-			motd.add("§7'§b"+ factionmotd.substring(0, factionmotdtamanho) + "§7'"); 
+		else if (factionmotdtamanho < 45) {
+			String line = "§7'"+ factionmotd.substring(0, factionmotdtamanho) + "§7'";
+			motd.add(line); 
 			return motd; }
 		
-		else if (factionmotdtamanho < 110) {
-			motd.add("§7'§b"+factionmotd.substring(0,40));
-			motd.add("§b"+factionmotd.substring(50, factionmotdtamanho) + "§7'");
+		else if (factionmotdtamanho < 100) {
+			String line1 = "§7'"+ factionmotd.substring(0, 45);
+			String line2 = factionmotd.substring(45, factionmotdtamanho) + "§7'";
+			line2 = lastColor(line1) + line2;
+			motd.add(line1);
+			motd.add(line2);
+			return motd; }
+		
+		else if (factionmotdtamanho < 160) {
+			String line1 = "§7'"+ factionmotd.substring(0, 45);
+			String line2 = factionmotd.substring(45, 90);
+			String line3 = factionmotd.substring(90, factionmotdtamanho) + "§7'";
+			line2 = lastColor(line1) + line2;
+			line3 = lastColor(line2) + line3;
+			motd.add(line1);
+			motd.add(line2);
+			motd.add(line3);
 			return motd; }
 		
 		else {
-			motd.add("§7A frase da motd é muito grande!");
-			motd.add("§7Para visualiza-la use '§f/f motd§7'");
+			motd.add("§7§o'A frase da motd é muito grande para ser exibida aqui!'");
 			return motd; 
 		}
 	}
@@ -156,6 +170,12 @@ public class OthersUtil {
 			}
 		}
 		return aliadosPendentesEnviados;
+	}
+	
+	private static String lastColor(String str) 
+	{
+		int lastColor = str.lastIndexOf("§");
+		return lastColor == -1 ? "§7" : "§" + str.charAt(lastColor + 1); 
 	}
 	
 }

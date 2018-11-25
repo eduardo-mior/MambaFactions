@@ -15,7 +15,7 @@ public class FactionsCommand extends MassiveCommand
 	// -------------------------------------------- //
 	// CONSTANT
 	// -------------------------------------------- //
-	static final Mson HELP_MESSAGE = mson(Lang.COMMAND_CHILD_NONE, Mson.NEWLINE, Lang.COMMAND_CHILD_HELP).tooltip("§8Clique para §6/f").command("/f");
+	static final Mson HELP_MESSAGE = mson(Lang.COMMAND_CHILD_NONE, Mson.NEWLINE, Lang.COMMAND_CHILD_HELP).command("/f");
 	
 	// -------------------------------------------- //
 	// FIELDS

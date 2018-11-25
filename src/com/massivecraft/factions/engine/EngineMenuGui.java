@@ -70,7 +70,8 @@ public class EngineMenuGui extends Engine
 		int fackills = faction.getKills();
 		int facmortes = faction.getDeaths();
 		int membrosonline = faction.getOnlinePlayers().size();
-		int membrosnafac = faction.getMPlayers().size();
+		int membrosnafac = faction.getMembersCount();
+		int membroslimite = faction.getMembersLimit();
 		int terrastotal = faction.getLandCount();
 		int mortes = mplayer.getDeaths();
 		int kills = mplayer.getKills();
@@ -97,9 +98,9 @@ public class EngineMenuGui extends Engine
 		
 		// Setando os itens que usam verificações
 		if (faction.isInAttack()) {
-		inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e[" + factionNome + "§e]").setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + MConf.get().factionMemberLimit + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
+		inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e[" + factionNome + "§e]").setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
 		else {
-		inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e[" + factionNome + "§e]").setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + MConf.get().factionMemberLimit + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
+		inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e[" + factionNome + "§e]").setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
 			
 		if (mplayer.getRole() == Rel.LEADER) {
 		inv.setItem(43, new ItemBuilder(Material.DARK_OAK_DOOR_ITEM).setName("§cDesfazer facção").setLore("§7Clique para desfazer a sua facção.").toItemStack()); }
@@ -207,7 +208,7 @@ public class EngineMenuGui extends Engine
 		
 		// Variaveis
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy 'às' hh:mm");
-		int limitemembros = MConf.get().factionMemberLimit;
+		int limitemembros = faction.getMembersLimit();
 		List<MPlayer> mps = faction.getMPlayers();
 		Player p = mplayer.getPlayer();
 		GuiHolder holder = new GuiHolder(Menu.MEMBROS);
@@ -791,7 +792,7 @@ public class EngineMenuGui extends Engine
 			}
 		
 			else if (slot == 15) {
-				p.performCommand("f listar");
+				p.chat("/f listar");
 				p.closeInventory();
 				return;
 			}
@@ -820,7 +821,7 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 31) {
 				if (e.getClick().isRightClick()) {
-					p.performCommand("f mapa");
+					p.chat("/f mapa");
 					return;
 				}
 				else if (e.getClick().isLeftClick()) {
@@ -835,13 +836,13 @@ public class EngineMenuGui extends Engine
 			}
 			
 			else if (slot == 32) {
-				p.performCommand("f tt");
+				p.chat("/f tt");
 				abrirMenuPlayerSemFaccao(p);
 				return;
 			}
 			
 			else if (slot == 33) {
-				p.performCommand("f sc");
+				p.chat("/f sc");
 				abrirMenuPlayerSemFaccao(p);
 				return;
 			}
@@ -867,7 +868,7 @@ public class EngineMenuGui extends Engine
 			}
 		
 			else if (slot == 15) {
-				p.performCommand("f listar");
+				p.chat("/f listar");
 				p.closeInventory();
 				return;
 			}
@@ -879,7 +880,7 @@ public class EngineMenuGui extends Engine
 			}
 			
 			else if (slot == 28) {
-				p.performCommand("f sc");
+				p.chat("/f sc");
 				abrirMenuPlayerComFaccao(p);
 				return;
 			}
@@ -888,7 +889,7 @@ public class EngineMenuGui extends Engine
 				if (f.hasHome() == false) {
 					if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
 						if (e.getClick().isRightClick()) {
-							p.performCommand("f sethome");
+							p.chat("/f sethome");
 							abrirMenuPlayerComFaccao(p);
 							return;
 						}
@@ -896,19 +897,19 @@ public class EngineMenuGui extends Engine
 				} else {
 					if (e.getClick().isShiftClick()) {
 						if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
-							p.performCommand("f delhome");
+							p.chat("/f delhome");
 							abrirMenuPlayerComFaccao(p);
 							return;
 						}
 					}
 					if (e.getClick().isRightClick()) {
 						if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
-							p.performCommand("f sethome");
+							p.chat("/f sethome");
 							return;
 						}
 					}
 					if (e.getClick().isLeftClick()) {
-						p.performCommand("f home");
+						p.chat("/f home");
 						p.closeInventory();
 						return;
 					}
@@ -925,25 +926,25 @@ public class EngineMenuGui extends Engine
 			}
 			
 			else if (slot == 31) {
-				p.performCommand("f perm");
+				EngineMenuPermissoes.get().abrirMenuPermissoes(mp, f);
 				return;
 			}
 			
 			else if (slot == 32) {
-				p.performCommand("f voar");
+				p.chat("/f voar");
 				abrirMenuPlayerComFaccao(p);
 				return;
 			}
 			
 			else if (slot == 37) {
-				p.performCommand("f tt");
+				p.chat("/f tt");
 				abrirMenuPlayerComFaccao(p);
 				return;
 			}
 			
 			else if (slot == 38) {
 				if (e.getClick().isRightClick()) {
-					p.performCommand("f mapa");
+					p.chat("/f mapa");
 					return;
 				}
 				else if (e.getClick().isLeftClick()) {
@@ -958,7 +959,7 @@ public class EngineMenuGui extends Engine
 			}
 			
 			else if (slot == 39) {
-				p.performCommand("f membros");
+				abrirMenuMembrosDaFaccao(mp, f);
 				return;
 			}
 			
@@ -997,7 +998,7 @@ public class EngineMenuGui extends Engine
 		else if (menu == Menu.DESFAZER_FACCAO) {
 			
 			if (slot == 20) {
-				p.performCommand("f desfazer confirmar");
+				p.chat("/f desfazer confirmar");
 				p.closeInventory();
 				return;
 			}
@@ -1016,7 +1017,7 @@ public class EngineMenuGui extends Engine
 		else if (menu == Menu.ABANDONAR_FACCAO) {
 			
 			if (slot == 20) {
-				p.performCommand("f sair confirmar");
+				p.chat("/f sair confirmar");
 				p.closeInventory();
 				return;
 			}
@@ -1035,7 +1036,7 @@ public class EngineMenuGui extends Engine
 		else if (menu == Menu.ABANDONAR_TERRAS) {
 			
 			if (slot == 20) {
-				p.performCommand("f unclaim all confirmar");
+				p.chat("/f unclaim all confirmar");
 				p.closeInventory();
 				return;
 			}
@@ -1134,10 +1135,10 @@ public class EngineMenuGui extends Engine
 			else if (item.getType() == Material.PAPER) {
 				String nome = item.getItemMeta().getLore().get(0).replace("§7Player convidado: §f", "").replace(" ", "");
 				if (e.getClick().isShiftClick()) {
-					p.performCommand("f perfil " + nome);
+					p.chat("/f perfil " + nome);
 					p.closeInventory();
 				} else if (e.getClick().isRightClick()) {
-					p.performCommand("f convite del " + nome);
+					p.chat("/f convite del " + nome);
 					abrirMenuConvitesEnviados(mp.getFaction(), mp);
 				}
 				return;
@@ -1159,10 +1160,10 @@ public class EngineMenuGui extends Engine
 			else if (item.getType() == Material.PAPER) {
 				String nome = item.getItemMeta().getLore().get(0).replace("§7Convite da facção: §f[", "").replace("§f]", "").replace(" ", "");
 				if (e.getClick().isShiftClick()) {
-					p.performCommand("f info " + nome);
+					p.chat("/f info " + nome);
 					p.closeInventory();
 				} else if (e.getClick().isLeftClick()) {
-					p.performCommand("f entrar " + nome);
+					p.chat("/f entrar " + nome);
 					p.closeInventory();
 				} else {
 					Faction target = FactionColl.get().getByName(nome);
@@ -1201,7 +1202,7 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 15) {
 				if (e.getCurrentItem().getAmount() > 0) {
-					p.performCommand("f relacao listar");
+					p.chat("/f relacao listar");
 					p.closeInventory();
 				}
 				return;
@@ -1217,7 +1218,7 @@ public class EngineMenuGui extends Engine
 			if (slot == 15) {
 				ItemStack item = e.getCurrentItem();
 				if (item.getAmount() > 0) {
-					p.performCommand("f relacao listar");
+					p.chat("/f relacao listar");
 					p.closeInventory();
 				}
 				return;
@@ -1237,7 +1238,7 @@ public class EngineMenuGui extends Engine
 			
 			if (slot == 11) {
 				if (item.getItemMeta().getLore().size() < 2) {
-					p.performCommand("f relacao " + faction + " ally");
+					p.chat("/f relacao " + faction + " ally");
 					p.closeInventory();
 				} else {
 					abrirMenuRelacoesPendentes(p);
@@ -1246,13 +1247,13 @@ public class EngineMenuGui extends Engine
 			}
 			
 			else if (slot == 13) {
-				p.performCommand("f relacao " + faction + " neutral");
+				p.chat("/f relacao " + faction + " neutral");
 				p.closeInventory();
 				return;
 			}
 			
 			else if (slot == 15) {
-				p.performCommand("f relacao " + faction + " enemy");
+				p.chat("/f relacao " + faction + " enemy");
 				p.closeInventory();
 				return;
 			}	
@@ -1301,7 +1302,7 @@ public class EngineMenuGui extends Engine
 			else if (item.getType() == Material.PAPER) {
 				String nome = item.getItemMeta().getDisplayName().replace("§eConvite para facção §f[", "").replace("§f]", "").replace(" ", "");
 				if (e.getClick().isShiftClick()) {
-					p.performCommand("f info " + nome.replace(" ", ""));
+					p.chat("/f info " + nome.replace(" ", ""));
 					p.closeInventory();
 				} else if (e.getClick().isRightClick()) {
 					Faction target = FactionColl.get().getByName(nome);
@@ -1330,10 +1331,10 @@ public class EngineMenuGui extends Engine
 			else if (item.getType() == Material.PAPER) {
 				String nome = item.getItemMeta().getDisplayName().replace("§eConvite da facção §f[", "").replace("§f]", "").replace(" ", "");
 				if (e.getClick().isShiftClick()) {
-					p.performCommand("f info " + nome.replace(" ", ""));
+					p.chat("/f info " + nome.replace(" ", ""));
 					p.closeInventory();
 				} else if (e.getClick().isLeftClick()) {
-					p.performCommand("f relacao " + nome.replace(" ", "") + " ally" );
+					p.chat("/f relacao " + nome.replace(" ", "") + " ally" );
 					abrirMenuRelacoesPendentesRecebidos(p);
 				} else if (e.getClick().isRightClick()) {
 					Faction target = FactionColl.get().getByName(nome);

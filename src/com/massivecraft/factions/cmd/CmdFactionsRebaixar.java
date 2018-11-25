@@ -6,6 +6,7 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 
 public class CmdFactionsRebaixar extends FactionsCommand
 {
@@ -76,7 +77,7 @@ public class CmdFactionsRebaixar extends FactionsCommand
 
 		// Verificando se o target já é o cargo mais baixo (recruit)
 		if (cargomp == Rel.RECRUIT) {
-			msg("§cEste jogador já esta no cargo mais baixo da facção, caso queira expulsa-lo use /f expulsar §c" + target.getName());
+			message(Mson.parse("§cEste jogador já esta no cargo mais baixo da facção, caso queira expulsa-lo use /f expulsar §c" + target.getName()).suggest("/f expulsar " + target.getName()));
 			return;
 		}
 

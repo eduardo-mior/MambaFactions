@@ -4,7 +4,6 @@ import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.command.MassiveCommand;
 import com.massivecraft.massivecore.command.requirement.RequirementAbstract;
 import com.massivecraft.massivecore.util.MUtil;
-import com.massivecraft.massivecore.util.Txt;
 import org.bukkit.command.CommandSender;
 
 public class ReqHasFaction extends RequirementAbstract
@@ -38,7 +37,7 @@ public class ReqHasFaction extends RequirementAbstract
 	@Override
 	public String createErrorMessage(CommandSender sender, MassiveCommand command)
 	{
-		return Txt.parse("§cVocê precisa estar em alguma facção para poder utilizar este comando.");
+		return "§cVocê precisa estar em alguma facção para poder utilizar este comando.";
 	}
 	
 }

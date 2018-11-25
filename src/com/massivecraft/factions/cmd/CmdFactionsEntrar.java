@@ -46,16 +46,16 @@ public class CmdFactionsEntrar extends FactionsCommand
 		String name = this.arg();
 		Faction faction = readFaction(name);
 
-		// Verificando se a facção atingiu o limite de membros definido na config
-		if (MConf.get().factionMemberLimit > 0 && faction.getMPlayers().size() >= MConf.get().factionMemberLimit) {
-			msg("§cA facção §f[%s§f] já atingiu o limite maximo de membros por facção (%d), portanto você não podera entrar.", faction.getName(), MConf.get().factionMemberLimit);
-			return;
-		}
-
 		// Verificando se o player possui um convite para entrar na facção
 		// Nós tambem verificando se ele é admin ><
 		if (!(faction.isInvited(msender) || msender.isOverriding())) {
 			msg("§cVocê precisa de um convite para poder entrar na facção.");
+			return;
+		}
+		
+		// Verificando se a facção atingiu o limite de membros definido na config
+		if (MConf.get().factionMemberLimit > 0 && faction.getMembersCount() >= faction.getMembersLimit()) {
+			msg("§cA facção §f[%s§f]§c já atingiu o limite maximo de membros por facção (%d), portanto você não podera entrar.", faction.getName(), faction.getMembersLimit());
 			return;
 		}
 

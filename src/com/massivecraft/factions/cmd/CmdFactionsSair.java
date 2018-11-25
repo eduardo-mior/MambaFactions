@@ -4,6 +4,7 @@ import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.engine.EngineMenuGui;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 
 public class CmdFactionsSair extends FactionsCommand
 {
@@ -41,7 +42,7 @@ public class CmdFactionsSair extends FactionsCommand
 
 		// Verificando se o player é o lider da facção
 		if (msender.getRole() == Rel.LEADER) {
-			msg("§cVocê é o lider da facção, portanto não pode abandona-la. Caso queira desfaze-la use /f desfazer.");
+			message(Mson.parse("§cVocê é o lider da facção, portanto não pode abandona-la. Caso queira desfaze-la use /f desfazer").command("/f desfazer"));
 			return;
 		}
 		

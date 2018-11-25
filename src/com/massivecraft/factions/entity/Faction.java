@@ -48,7 +48,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// -------------------------------------------- //
 	
 	public static final transient String NODESCRIPTION = Txt.parse("§7§oDescrição Indefinida");
-	public static final transient String NOMOTD = Txt.parse("§7§oMensagem do dia indefinida.");
+	public static final transient String NOMOTD = Txt.parse("§7§oMensagem da facção indefinida.");
 	
 	// -------------------------------------------- //
 	// META
@@ -71,6 +71,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		this.setMotd(that.motd);
 		this.setCreatedAtMillis(that.createdAtMillis);
 		this.setHome(that.home);
+		this.setMemberBoost(that.memberBoost);
 		this.setPowerBoost(that.powerBoost);
 		this.invitations.load(that.invitations);
 		this.setRelationWishes(that.relationWishes);
@@ -120,6 +121,11 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// The powerBoost is a custom increase/decrease to default and maximum power.
 	// Null means the faction has powerBoost (0).
 	private Double powerBoost = null;
+	
+	// Factions usually do not have a memberbooster. It defaults to 0.
+	// The memberBoost is a custom increase/decrease to default and maximum member limits.
+	// Null means the faction has memberBoost (0).
+	private Integer memberBoost = null;
 	
 	// This is the ids of the invited players.
 	// They are actually "senderIds" since you can invite "@console" to your faction.
@@ -305,7 +311,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		List<Object> ret = new MassiveList<>();
 		
 		// Fill
-		Object title = "§bMensagem do Dia.";
+		Object title = "§bMensagem da Facção.";
 		title = Txt.titleize(title);
 		ret.add(title);
 		
@@ -426,6 +432,45 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		
 		// Mark as changed
 		this.changed();
+	}
+	
+	// -------------------------------------------- //
+	// FIELD: memberBoost
+	// -------------------------------------------- //
+	
+	// RAW
+	public int getMemberBoost()
+	{
+		Integer ret = this.memberBoost;
+		if (ret == null) ret = 0;
+		return ret;
+	}
+	
+	public void setMemberBoost(Integer memberBoost)
+	{
+		// Clean input
+		Integer target = memberBoost;
+		
+		if (target == null || target == 0) target = null;
+		
+		// Detect Nochange
+		if (MUtil.equals(this.memberBoost, target)) return;
+		
+		// Apply
+		this.memberBoost = target;
+		
+		// Mark as changed
+		this.changed();
+	}
+	
+	public int getMembersLimit()
+	{
+		return this.getMemberBoost() + MConf.get().factionMemberLimit;
+	}
+	
+	public int getMembersCount()
+	{
+		return this.getMPlayers().size();
 	}
 	
 	// -------------------------------------------- //

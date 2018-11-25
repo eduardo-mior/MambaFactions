@@ -9,6 +9,7 @@ import com.massivecraft.factions.event.EventFactionsMembershipChange;
 import com.massivecraft.factions.event.EventFactionsMembershipChange.MembershipChangeReason;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 
 public class CmdFactionsKick extends FactionsCommand
 {
@@ -59,7 +60,7 @@ public class CmdFactionsKick extends FactionsCommand
 		// Verificando se o sender e o target são os mesmos
 		String name = this.arg();
 		if (msender.getName().equalsIgnoreCase(name)) {
-			msg("§cVocê não pode se expulsar da facção, caso queira sair use /f sair.");
+			message(Mson.parse("§cVocê não pode se expulsar da facção, caso queira sair use /f sair").command("/f sair"));
 			return;
 		}
 		

@@ -777,9 +777,6 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		if (formatOne == null) formatOne = "§a%s§a %s §d%d §achunk§a.";
 		if (formatMany == null) formatMany = "§a%s§a %s §d%d §achunks próximas§a.";
 
-		if (newFaction == null) throw new NullPointerException("newFaction");
-
-		if (pss == null) throw new NullPointerException("pss");
 		final Set<PS> chunks = PS.getDistinctChunks(pss);
 
 		// NoChange
@@ -831,7 +828,7 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 			String typeString = type.past;
 			boolean format = oldChunks.size() == 1;
 
-			// Verificando uma terra está sendo dominada...
+			// Verificando se uma terra está sendo dominada...
 			if (!oldFaction.isNone() && !newFaction.isNone()) 
 			{
 				for (MPlayer informee : oldFaction.getMPlayers())

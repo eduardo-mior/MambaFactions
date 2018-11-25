@@ -61,18 +61,32 @@ public class EngineChunkChange extends Engine
 		final Set<PS> chunks = event.getChunks();
 		final Map<Faction, Set<PS>> currentFactionChunks = event.getOldFactionChunks();
 		final Set<Faction> currentFactions = currentFactionChunks.keySet();
-		
-		// Verificando se a facção tem poder infinito
-		if (newFaction.getFlag(MFlag.getFlagInfpower())) return;
-		
-		// Verificando se o player tem permissão para usar o comando
-		if (!MPerm.getPermTerritory().has(mplayer, newFaction, true)) {
-			event.setCancelled(true);
-			return;
-		}		
 
+		// Verificando se o player esta desclaimando uma terra inimiga
+		if (newFaction.isNone()) {
+			String mplayerFactionId = mplayer.getFaction().getId();
+			for (Faction oldFaction : currentFactions) {
+				if (!mplayerFactionId.equals(oldFaction.getId())){
+					if (oldFaction.getPowerRounded() >= oldFaction.getLandCount()) {
+						mplayer.msg("§eA facção §f[%s§f]§e é dona deste território e é forte o bastante para mantê-lo.", oldFaction.getName());
+						event.setCancelled(true);
+						return;
+					}
+				}
+			}
+		}
+		
 		// Verificando se o player esta realmente claimando
 		if (newFaction.isNormal()) {
+			
+			// Verificando se a facção tem poder infinito
+			if (newFaction.getFlag(MFlag.getFlagInfpower())) return;
+			
+			// Verificando se o player tem permissão para usar o comando
+			if (!MPerm.getPermTerritory().has(mplayer, newFaction, true)) {
+				event.setCancelled(true);
+				return;
+			}
 			
 			// Verificando se a facção possui o minimo de membros requeridos
 			if (newFaction.getMPlayers().size() < MConf.get().claimsRequireMinFactionMembers) {
@@ -147,7 +161,6 @@ public class EngineChunkChange extends Engine
 			// Percorrendo todas as chunks e facções claimandas
 			for (Entry<Faction, Set<PS>> entry : currentFactionChunks.entrySet()) {
 				Faction oldFaction = entry.getKey();
-				Set<PS> oldChunks = entry.getValue();
 
 				// Verificando se a facção não é a zona livre
 				// Caso a facção não seja a zona livre, então o terreno esta sendo dominado de uma facção para outra
@@ -161,7 +174,7 @@ public class EngineChunkChange extends Engine
 					}
 	
 					// Verificando se a facção inimiga esta realmente com poder baixo
-					if (oldFaction.getPowerRounded() > oldFaction.getLandCount() - oldChunks.size()) {
+					if (oldFaction.getPowerRounded() >= oldFaction.getLandCount()) {
 						mplayer.msg("§eA facção §f[%s§f]§e é dona deste território e é forte o bastante para mantê-lo.", oldFaction.getName());
 						event.setCancelled(true);
 						return;

@@ -69,7 +69,7 @@ public class CmdFactionsMotd extends FactionsCommand
 		
 		// Informando os players
 		for (MPlayer follower : msenderFaction.getMPlayersWhereOnline(true)) {
-			follower.msg("§e%s §edefiniu a motd da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), newMotd);
+			follower.msg("§e%s §edefiniu a mensagem da facção para:\n§7'§f%s§7'", msender.getRole().getPrefix() + msender.getName(), newMotd);
 		}
 	}
 	

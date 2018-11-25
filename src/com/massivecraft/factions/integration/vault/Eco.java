@@ -6,6 +6,7 @@ import com.massivecraft.massivecore.money.MoneyMixinVault;
 
 import net.milkbowl.vault.economy.Economy;
 
+@SuppressWarnings("deprecation")
 public class Eco {
 	
 	public static boolean isEnabled()
@@ -20,11 +21,25 @@ public class Eco {
 	
 	public static boolean has(Player p, Double amount)
 	{
-		return getEconomy().has(p, amount);
+		try 
+		{
+			return getEconomy().has(p, amount);
+		} 
+		catch (Error | Exception e) 
+		{
+			return getEconomy().has(p.getName(), amount);
+		}
 	}
 
 	public static void Withdraw(Player p, Double amount)
 	{
-		getEconomy().withdrawPlayer(p, amount);
+		try 
+		{
+			getEconomy().withdrawPlayer(p, amount);
+		} 
+		catch (Error | Exception e)
+		{
+			getEconomy().withdrawPlayer(p.getName(), amount);
+		}
 	}
 }

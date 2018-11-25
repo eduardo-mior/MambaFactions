@@ -3,6 +3,7 @@ package com.massivecraft.factions.util;
 import org.bukkit.ChatColor;
 
 public class ColorScrollPlus {
+	
 	private int position;
 	private String str;
 	private String colorBefore;

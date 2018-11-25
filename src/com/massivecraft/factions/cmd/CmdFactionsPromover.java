@@ -6,6 +6,7 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 
 public class CmdFactionsPromover extends FactionsCommand 
 {
@@ -77,7 +78,7 @@ public class CmdFactionsPromover extends FactionsCommand
 		// Se o target for recruit = sucesso
 		if (cargomp == Rel.RECRUIT) {
 			msender.msg("§aPlayer promovido com sucesso para o cargo de Membro.");
-			target.msg("§aVocê foi promovido para o cargo de Membro da facção por " + cargoms.getPrefix() + msender.getName() + ".");
+			target.msg("§aVocê foi promovido para o cargo de Membro por " + cargoms.getPrefix() + msender.getName() + ".");
 			target.setRole(Rel.MEMBER);
 			return;
 		}
@@ -97,7 +98,7 @@ public class CmdFactionsPromover extends FactionsCommand
 		// Verificando se o target é um capitão e verificando ainda se o sender é líder
 		if (cargomp == Rel.OFFICER) {
 			if (cargoms == Rel.LEADER) {
-				msg("§cEste jogador já é capitão da facção, caso queira transferir a liderança da facção use /f transferir §c" +  target.getName());
+				message(Mson.parse("§cEste jogador já é capitão da facção, caso queira transferir a liderança da facção use /f transferir §c" +  target.getName()).suggest("/f transferir " + target.getName()));
 				return;
 			}
 			msg("§cApenas o líder da facção pode promover um capitão para líder.");
