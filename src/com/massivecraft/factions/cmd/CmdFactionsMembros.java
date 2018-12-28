@@ -44,14 +44,14 @@ public class CmdFactionsMembros extends FactionsCommand
 		}
 		
 		// Verificando se a facção tem muitos membros
-		if (faction.getMPlayers().size() > 29) {
+		if (faction.getMPlayers().size() > 30) {
 			msg("§cA facção §f"+ faction.getName() +"§c possui muitos membros portanto o Menu não podera ser aberto.");
 			return;
 		}
 		
 		// Verificando se esta sem membros
 		if (faction.getMPlayers().size() == 0) {
-			msg("§cA facção §f" + faction.getName() + "§c não possui membros!");
+			msg("§cA facção §f[" + faction.getName() + "§f]§c não possui membros!");
 			return;
 		}
 		

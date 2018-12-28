@@ -215,29 +215,30 @@ public class EngineMenuGui extends Engine
 		
 		// Definindo o tamanho do menu com base no limite de membros por facção
 		int tamanhodomenu = 54;
-		int linhas = 4;
 		int slot = 11;
-		if (limitemembros <= 10) {
+		if (limitemembros <= 5) {
+			tamanhodomenu = 27;
+		} else if (limitemembros <= 10) {
 			tamanhodomenu = 36;
-			linhas = 2;
-		} else if (limitemembros > 10 && limitemembros < 20) {
+		} else if (limitemembros < 20) {
 			tamanhodomenu = 45;
-			linhas = 3;
 		}
 		
 		// Criando o inventario
 		Inventory inv = Bukkit.createInventory(holder, tamanhodomenu, "Membros da [" + faction.getName() + "§r]");
 		
 		// Setando as cabeças "vagas"
+		if (limitemembros > 25) slot = 2;
 		ItemStack vago = new ItemBuilder(Material.SKULL_ITEM,1,3).setName("§8Vago").toItemStack();
-		for (int i = 0; i < linhas * 5; i++) {
+		for (int i = 0; i < limitemembros && i < 30; i++) {
 			inv.setItem(slot, vago);
-			slot += slot == 15 || slot == 24 || slot == 33 ? + 5 : + 1;
+			slot += slot == 6 || slot == 15 || slot == 24 || slot == 33 || slot == 42 ? + 5 : + 1;
 		}
 		
 		// Setando as cabeças dos players da facção
-		slot = 11;
-		for (int i = 0; i < mps.size(); i++) {
+		if (limitemembros > 25) slot = 2;
+		else slot = 11;
+		for (int i = 0; i < mps.size() && slot < 30; i++) {
 			MPlayer mp = mps.get(i);
 			Rel cargo = mp.getRole();
 			String nome = mp.getName();
@@ -249,7 +250,7 @@ public class EngineMenuGui extends Engine
 			String kdr2f = mp.getKdrRounded();
 			String ultimoLogin = sdf.format(new Date(mp.getLastActivityMillis()));
 			inv.setItem(slot, new ItemBuilder(Material.SKULL_ITEM,1,3).setSkullOwner(nome).setName("§7"+nome).setLore("§fPoder: §7" +  poderAtual + "/" + poderMax,"§fCargo: §7" + cargo.getPrefix() + cargo.getName(),"§fAbates: §7" + kills,"§fMortes: §7" + deaths, "§fKdr: §7" + kdr2f, "§fStats: " + (isOnline ? "§aOnline" : "§cOffline"), "§fÚltimo login: §7" + ultimoLogin).toItemStack());
-			slot+= slot == 15 || slot == 24 || slot == 33 ? + 5 : + 1;
+			slot += slot == 6 || slot == 15 || slot == 24 || slot == 33 || slot == 42 ? + 5 : + 1;
 		}
 		
 		// Abrindo o inventário

@@ -124,7 +124,7 @@ public class CmdFactionsEscapar extends FactionsCommand
 			
 			ret = new Location(world, locationX, locationY, locationZ);
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			e.printStackTrace();
 		}

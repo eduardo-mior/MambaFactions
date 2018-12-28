@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,11 +21,11 @@ public class ItemBuilder {
 	   }
 
 	   public ItemBuilder(ItemStack is) {
-		   this.is=is;
+		   this.is = is;
 	   }
 
 	   public ItemBuilder(Material m, int quantia) {
-		   is= new ItemStack(m, quantia);
+		   is = new ItemStack(m, quantia);
 	   }
 
 	   public ItemBuilder(Material m, int quantia, byte durabilidade) {
@@ -36,10 +35,6 @@ public class ItemBuilder {
 	   public ItemBuilder(Material m, int quantia, int durabilidade) {
 		   is = new ItemStack(m, quantia, (short) durabilidade);
 		}
-	   
-	   public ItemBuilder clone() {
-		   return new ItemBuilder(is);
-	   }
 	   
 	   public ItemBuilder setAmount(int amount) {
 		   is.setAmount(amount);
@@ -55,18 +50,14 @@ public class ItemBuilder {
 		   is.setItemMeta(im);
 		   return this;
 	   }
-
-	   public ItemBuilder addUnsafeEnchantment(Enchantment ench, int level) {
-		   is.addUnsafeEnchantment(ench, level);
-		   return this;
-	   }
+	   
 	   @SuppressWarnings("deprecation")
 	   public ItemBuilder setSkullOwner(String dono) {
 		   try {
 			   SkullMeta im = (SkullMeta)is.getItemMeta();
 			   im.setOwner(dono);
 			   is.setItemMeta(im);
-		   } catch (ClassCastException expected) {}
+		   } catch (Throwable expected) {}
 		   return this;
 	   }
 	   
@@ -113,7 +104,7 @@ public class ItemBuilder {
 			   LeatherArmorMeta im = (LeatherArmorMeta)is.getItemMeta();
 			   im.setColor(cor);
 			   is.setItemMeta(im);
-		   } catch (ClassCastException expected) {}
+		   } catch (Throwable expected) {}
 		   return this;
 	   }
 

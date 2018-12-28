@@ -131,7 +131,7 @@ public class FactionsCommand extends MassiveCommand
 			{
 				return Integer.parseInt(number);
 			} 
-			catch (Exception e) 
+			catch (Throwable e) 
 			{
 				throw new MassiveException().setMsg("§cO número '" + number + "' não é valido.");
 			}
@@ -145,7 +145,7 @@ public class FactionsCommand extends MassiveCommand
 		{
 			return Integer.parseInt(number);
 		} 
-		catch (Exception e) 
+		catch (Throwable e) 
 		{
 			throw new MassiveException().setMsg("§cO número '" + number + "' não é valido.");
 		}

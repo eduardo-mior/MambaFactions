@@ -25,7 +25,7 @@ public class Eco {
 		{
 			return getEconomy().has(p, amount);
 		} 
-		catch (Error | Exception e) 
+		catch (Throwable e) 
 		{
 			return getEconomy().has(p.getName(), amount);
 		}
@@ -37,7 +37,7 @@ public class Eco {
 		{
 			getEconomy().withdrawPlayer(p, amount);
 		} 
-		catch (Error | Exception e)
+		catch (Throwable e)
 		{
 			getEconomy().withdrawPlayer(p.getName(), amount);
 		}

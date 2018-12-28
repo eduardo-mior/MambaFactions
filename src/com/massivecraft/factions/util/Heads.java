@@ -40,7 +40,7 @@ public class Heads {
 			Field profileField = skullMeta.getClass().getDeclaredField("profile");
 			profileField.setAccessible(true);
 			profileField.set(skullMeta, profile);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 		skull.setItemMeta(skullMeta);

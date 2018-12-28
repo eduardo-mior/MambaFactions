@@ -989,8 +989,9 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	
 	public int getLandCount()
 	{
-		return BoardColl.get().getCount(this);
+		return BoardColl.get().getCount(this) - this.getTempClaims().size();
 	}
+	
 	public int getLandCountInWorld(String worldName)
 	{
 		return Board.get(worldName).getCount(this);
