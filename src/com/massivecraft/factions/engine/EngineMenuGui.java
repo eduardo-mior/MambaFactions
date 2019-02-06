@@ -18,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
@@ -767,20 +766,23 @@ public class EngineMenuGui extends Engine
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoClickar(InventoryClickEvent e) {
-		if (e.getSlotType() == SlotType.OUTSIDE || e.getCurrentItem() == null || e.getInventory().getType() != InventoryType.CHEST)
+		Inventory inv = e.getInventory();
+		if (e.getCurrentItem() == null || inv.getType() != InventoryType.CHEST)
 			return;
 
-		InventoryHolder holder = e.getInventory().getHolder();
-		if (!(holder instanceof GuiHolder))
+		InventoryHolder holder = inv.getHolder();
+		if (holder == null || !(holder instanceof GuiHolder))
 			return;
 		
 		e.setCancelled(true);
 		e.setResult(Result.DENY);
 		
 		Menu menu = ((GuiHolder) holder).getType();
-		Player p = (Player)e.getWhoClicked();
+		Player p = (Player) e.getWhoClicked();
 		MPlayer mp = MPlayer.get(p);
-    	int slot = e.getSlot();
+    	int slot = e.getRawSlot();
+    	
+    	if (inv.getSize() < slot) return;
 
     	/**
     	 * @Menu: SEM_FACCAO
@@ -1053,7 +1055,7 @@ public class EngineMenuGui extends Engine
     	/**
     	 * @Menu: PROTEGER_TERRENO
     	 */
-		else if (menu == Menu.PROTEGER_TERRENO) {	    	
+		else if (menu == Menu.PROTEGER_TERRENO) {
 			if (slot == 20) {
 				Faction f = mp.getFaction();
 				

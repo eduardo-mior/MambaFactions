@@ -2,6 +2,7 @@ package com.massivecraft.factions.entity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -62,6 +63,7 @@ public class MConf extends Entity<MConf>
 	// OTHERS
 	// -------------------------------------------- //
 	
+	public Set<String> mundosComFlyAtivado = MUtil.set("vip");
 	public boolean bloquearSpawnersForaDoClaim = false;
 	public boolean anunciarMorteAoMorrer = true;
 	public int distanciaDoAnuncioEmBlocos = 16;

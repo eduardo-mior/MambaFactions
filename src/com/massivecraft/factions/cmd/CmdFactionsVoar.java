@@ -1,7 +1,8 @@
 package com.massivecraft.factions.cmd;
 
-import com.massivecraft.factions.cmd.req.ReqHasFaction;
+import com.massivecraft.factions.engine.EngineFly;
 import com.massivecraft.factions.entity.BoardColl;
+import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
@@ -23,7 +24,6 @@ public class CmdFactionsVoar extends FactionsCommand
 	    
 		// Requisitos
 		this.addRequirements(RequirementIsPlayer.get());
-		this.addRequirements(ReqHasFaction.get());
 		
 		// Parametros (não necessario)
 		this.addParameter(TypeString.get(), "on/off", "erro", true);
@@ -35,18 +35,29 @@ public class CmdFactionsVoar extends FactionsCommand
 	
 	@Override
 	public void perform() throws MassiveException
-	{		
-		// Verificando se o player pode ligar o fly
-		PS ps = PS.valueOf(me.getLocation());
-		if (!msender.isOverriding() && !BoardColl.get().getFactionAt(ps).equals(msenderFaction) && !me.hasPermission("factions.voar.bypass")) {
-			msg("§cVocê não pode habilitar o modo voar fora dos territórios da sua facção.");
-			return;
-		}
-		 
-		// Verificando se a facção não esta sob ataque
-		if (msenderFaction.isInAttack()) {
-			msg("§cVocê não pode habilitar o modo voar enquanto sua facção estiver sob ataque.");
-			return;
+	{	
+		// Verificando se o player permissão de bypass
+		boolean bypass = me.hasPermission("factions.voar.bypass") || msender.isOverriding();
+		if (!bypass) {
+		
+			// Verificando se o player possui facção
+			if (!msender.hasFaction()) {
+				msg("§cVocê precisa estar em alguma facção para poder utilizar este comando.");
+				return;
+			}
+			
+			// Verificando se o player pode ligar o fly
+			PS ps = PS.valueOf(me.getLocation());
+			if (!BoardColl.get().getFactionAt(ps).equals(msenderFaction) && !MConf.get().mundosComFlyAtivado.contains(me.getWorld().getName())) {
+				msg("§cVocê não pode habilitar o modo voar fora dos territórios da sua facção.");
+				return;
+			}
+			 
+			// Verificando se a facção não esta sob ataque
+			if (msenderFaction.isInAttack()) {
+				msg("§cVocê não pode habilitar o modo voar enquanto sua facção estiver sob ataque.");
+				return;
+			}
 		}
 		
 		// Argumentos
@@ -66,6 +77,12 @@ public class CmdFactionsVoar extends FactionsCommand
 		if (target == old) {
 			msg("§aO seu modo voar já está %s§a.", desc);
 			return;
+		}
+		
+		// Caso o player não possua bypass, ativando
+		if (!bypass) {
+			if (target) EngineFly.flys.add(me);
+			else        EngineFly.flys.remove(me);
 		}
 		
 		// Setando o modo fly como ativado/desativado

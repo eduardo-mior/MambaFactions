@@ -1,7 +1,9 @@
 package com.massivecraft.factions.engine;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Chunk;
@@ -39,6 +41,7 @@ public class EngineSobAtaque extends Engine
 	
 	public static Map<Chunk, Long> underattack = new ConcurrentHashMap<>();
 	public static Map<Chunk, Location> infoattack = new ConcurrentHashMap<>();
+	public static Set<Faction> facs = new HashSet<>();
 	
 	// -------------------------------------------- //
 	// ADD FACTION IN ATACK
@@ -66,12 +69,13 @@ public class EngineSobAtaque extends Engine
 		else if (TemporaryBoard.get().isTemporary(ps)) return;
 		
 		// Colocando a chunk em ataque
-		underattack.put(c, System.currentTimeMillis());
+		underattack.put(c, System.currentTimeMillis() + 300000L);
 		infoattack.put(c, e.getLocation());
 		
 		// Verificação se a facção já esta em ataque
 		if (!faction.isInAttack()) 
 		{
+			facs.add(faction);
 			EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e);
 			event.run();
 			faction.setInAttack(true);
@@ -154,10 +158,6 @@ public class EngineSobAtaque extends Engine
 	// METHODS TO HANDLE
 	// -------------------------------------------- //
 	
-	public void increaseSeconds(Chunk c) {
-		underattack.replace(c, underattack.get(c) + 1);
-	}
-	
 	public void remove(Chunk c, Faction faction) {
 		underattack.remove(c);
 		infoattack.remove(c);
@@ -165,6 +165,7 @@ public class EngineSobAtaque extends Engine
 			Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
 			if (at.getId().equals(faction.getId())) return;
 		}
+		facs.remove(faction);
 		faction.setInAttack(false);
 		EventFactionsFinishAttack event = new EventFactionsFinishAttack(faction);
 		event.run();
