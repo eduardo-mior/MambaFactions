@@ -325,18 +325,19 @@ public class Board extends Entity<Board> implements BoardInterface
 		ps = ps.getChunk(true);
 		
 		PS nearby = null;
+		TemporaryBoard board = TemporaryBoard.get();
 		
 		nearby = ps.withChunkX(ps.getChunkX() +1);
-		if (faction == this.getFactionAt(nearby)) return true;
+		if (!board.isTemporary(nearby) && faction == this.getFactionAt(nearby)) return true;
 		
 		nearby = ps.withChunkX(ps.getChunkX() -1);
-		if (faction == this.getFactionAt(nearby)) return true;
+		if (!board.isTemporary(nearby) && faction == this.getFactionAt(nearby)) return true;
 		
 		nearby = ps.withChunkZ(ps.getChunkZ() +1);
-		if (faction == this.getFactionAt(nearby)) return true;
+		if (!board.isTemporary(nearby) && faction == this.getFactionAt(nearby)) return true;
 		
 		nearby = ps.withChunkZ(ps.getChunkZ() -1);
-		if (faction == this.getFactionAt(nearby)) return true;
+		if (!board.isTemporary(nearby) && faction == this.getFactionAt(nearby)) return true;
 		
 		return false;
 	}

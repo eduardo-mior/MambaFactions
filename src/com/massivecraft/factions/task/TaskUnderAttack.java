@@ -41,7 +41,7 @@ public class TaskUnderAttack extends ModuloRepeatTask
 	{
 		for (Chunk chunk : EngineSobAtaque.underattack.keySet())
 		{						
-			if (System.currentTimeMillis() > EngineSobAtaque.get().getTime(chunk))
+			if (System.currentTimeMillis() > EngineSobAtaque.underattack.get(chunk))
 			{
 				Faction fac = BoardColl.get().getFactionAt(PS.valueOf(chunk));
 				EngineSobAtaque.get().remove(chunk, fac);

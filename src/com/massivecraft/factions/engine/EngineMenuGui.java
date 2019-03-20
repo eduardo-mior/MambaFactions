@@ -17,7 +17,6 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
@@ -766,16 +765,17 @@ public class EngineMenuGui extends Engine
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void aoClickar(InventoryClickEvent e) {
+		
 		Inventory inv = e.getInventory();
-		if (e.getCurrentItem() == null || inv.getType() != InventoryType.CHEST)
-			return;
-
 		InventoryHolder holder = inv.getHolder();
-		if (holder == null || !(holder instanceof GuiHolder))
+		if (!(holder instanceof GuiHolder))
 			return;
 		
 		e.setCancelled(true);
 		e.setResult(Result.DENY);
+		
+		if (e.getCurrentItem() == null)
+			return;
 		
 		Menu menu = ((GuiHolder) holder).getType();
 		Player p = (Player) e.getWhoClicked();
@@ -1235,7 +1235,7 @@ public class EngineMenuGui extends Engine
 		else if (menu == Menu.DEFINIR_RELACAO) {
 			
 			ItemStack item = e.getCurrentItem();
-			if (!item.getItemMeta().hasLore()) return;
+			if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) return;
 			
 			String faction = e.getInventory().getName().replace("Relação com [", "").replace("§r]", "").replace(" ", "");
 			

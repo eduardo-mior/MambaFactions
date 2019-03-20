@@ -171,8 +171,4 @@ public class EngineSobAtaque extends Engine
 		event.run();
 	}
 	
-	public long getTime(Chunk c) {
-		return EngineSobAtaque.underattack.get(c);
-	}
-	
 }

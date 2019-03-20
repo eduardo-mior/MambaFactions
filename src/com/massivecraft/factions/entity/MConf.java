@@ -236,10 +236,6 @@ public class MConf extends Entity<MConf>
 	// ASSORTED
 	// -------------------------------------------- //
 	
-	// Set this to true if want to block the promotion of new leaders for permanent factions.
-	// I don't really understand the user case for this option.
-	public boolean permanentFactionsDisableLeaderPromotion = false;
-	
 	// Protects the faction land from piston extending/retracting
 	// through the denying of MPerm build
 	public boolean handlePistonProtectionThroughDenyBuild = true;

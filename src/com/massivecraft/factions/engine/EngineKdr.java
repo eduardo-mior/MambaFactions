@@ -28,8 +28,10 @@ public class EngineKdr extends Engine
 		if (en instanceof Player) {
 			MPlayer matador = MPlayer.get(p.getKiller());
 			MPlayer difunto = MPlayer.get(p);
-			matador.setKills(matador.getKills() + 1);
-			difunto.setDeaths(difunto.getDeaths() + 1);
+			if (matador != null) 
+				matador.setKills(matador.getKills() + 1);
+			if (difunto != null)
+				difunto.setDeaths(difunto.getDeaths() + 1);
 		}
 	}
 }

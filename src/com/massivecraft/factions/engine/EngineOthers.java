@@ -58,6 +58,7 @@ public class EngineOthers extends Engine
 	    		Player k = p.getKiller().getPlayer();
 	    		MPlayer mp = MPlayer.get(p);
 	    		MPlayer mk = MPlayer.get(k);
+	    		if (mp == null || mk == null) return;
 	    		String facp = mp.getFaction().isNone() ? "" : "§3[" + mp.getRole().getPrefix() + mp.getFaction().getName() + "§3] ";
 	    		String fack = mk.getFaction().isNone() ? "" : "§3[" + mk.getRole().getPrefix() + mk.getFaction().getName() + "§3] ";
 	    		for (Player target : OthersUtil.getPlayersNearby(p, MConf.get().distanciaDoAnuncioEmBlocos)) {
@@ -71,7 +72,7 @@ public class EngineOthers extends Engine
 	// BLOCK SPAWNERS OFF FACTIONS LANDS 
 	// -------------------------------------------- //
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void aoColocarSpawner(BlockPlaceEvent e) {
 		if (e.getBlockPlaced().getType() == Material.MOB_SPAWNER) {
 			if (MConf.get().bloquearSpawnersForaDoClaim) {
