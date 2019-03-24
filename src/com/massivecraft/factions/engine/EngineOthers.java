@@ -166,8 +166,10 @@ public class EngineOthers extends Engine
 				
 		Player p = e.getPlayer();
         MPlayer mp = MPlayer.get(p);
-            
-		if (e.getCause() == TeleportCause.COMMAND || e.getCause() == TeleportCause.UNKNOWN  || e.getCause() == TeleportCause.PLUGIN ) {
+        
+        if (mp == null) return;
+   
+		if (e.getCause() == TeleportCause.COMMAND || e.getCause() == TeleportCause.PLUGIN ) {
 	        Faction faction = BoardColl.get().getFactionAt(PS.valueOf(e.getTo()));
 			if (!faction.getMPlayers().contains(mp) && !faction.getRelationTo(mp.getFaction()).equals(Rel.ALLY)) {
 				if (LIST.contains(p.getName())) {
