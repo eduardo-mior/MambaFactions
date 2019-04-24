@@ -1,5 +1,7 @@
 package com.massivecraft.factions.cmd;
 
+import com.massivecraft.massivecore.MassiveException;
+
 public class CmdFactionsTop extends FactionsCommand
 {	
 	// -------------------------------------------- //
@@ -23,4 +25,10 @@ public class CmdFactionsTop extends FactionsCommand
 		 */
 	}
 	
+	// -------------------------------------------- //
+	// OVERRIDE
+	// -------------------------------------------- //
+	
+	@Override
+	public void perform() throws MassiveException {}
 }

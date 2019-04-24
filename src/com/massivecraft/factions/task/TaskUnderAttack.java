@@ -17,7 +17,12 @@ public class TaskUnderAttack extends ModuloRepeatTask
 	// INSTANCE
 	// -------------------------------------------- //
     private static final ColorScrollPlus cs = new ColorScrollPlus("§c", "Sua facção está sob ataque!", "§4", "§c", "§c");
-	 
+	private static final NmsChat chat;
+	
+	static {
+		chat = NmsChat.get();
+	}
+	
 	private static TaskUnderAttack i = new TaskUnderAttack();
 	public static TaskUnderAttack get() { return i; }
 	
@@ -53,7 +58,7 @@ public class TaskUnderAttack extends ModuloRepeatTask
 			String next = cs.next();
 			for (Player p : f.getOnlinePlayers())
 			{
-				NmsChat.get().sendActionbarMsg(p, next);
+				chat.sendActionbarMsg(p, next);
 			}
 		}
 	}

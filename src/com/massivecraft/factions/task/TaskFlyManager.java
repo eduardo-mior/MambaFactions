@@ -30,7 +30,7 @@ public class TaskFlyManager extends ModuloRepeatTask
 	@Override
 	public long getDelayMillis()
 	{
-		return 1000L;
+		return 1500L;
 	}
 	
 	@Override

@@ -38,11 +38,17 @@ public class CmdFactionsInfo extends FactionsCommand
 	
 	@Override
 	public void perform() throws MassiveException
-	{
+	{		
 		// Argumentos (possuem o modificador final pois serão executados em outra thread)
 		final CommandSender sender = this.sender;
 		final Faction faction = readFaction();
-	
+		
+		// Verificando se o sender possui facção
+		if (faction.isNone()) {
+			msg("§cVocê não possui facção, use /f info <facção>");
+			return;
+		}
+		
 		Bukkit.getScheduler().runTaskAsynchronously(Factions.get(), new Runnable() {
 			@Override
 			public void run() {

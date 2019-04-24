@@ -72,7 +72,10 @@ public class CmdFactionsEntrar extends FactionsCommand
 		msender.resetFactionData();
 		msender.setFaction(faction);
 		
-		faction.uninvite(msender);
+		// Removendo o convite
+		if (faction.isInvited(msender)) {
+			faction.uninvite(msender);
+		}
 	}
 	
 }

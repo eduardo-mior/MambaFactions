@@ -21,7 +21,7 @@ public class CmdFactionsGeradores extends FactionsCommand
 		    this.addAliases("spawners");
 		    
 			// Descrição
-			this.setDesc("§6 geradores §8-§7 Administra os geradores da facção.");
+			this.setDesc("§6 geradores §8-§7 Gerencia os geradores da facção.");
 			
 			// Requisitos
 			this.addRequirements(RequirementIsPlayer.get());

@@ -4,6 +4,7 @@ import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.engine.EngineMenuGui;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
 public class CmdFactionsConviteListar extends FactionsCommand
 {
@@ -18,6 +19,9 @@ public class CmdFactionsConviteListar extends FactionsCommand
 		
 		// Descrição
 		this.setDesc("§6 convite listar §8-§7 Mostra a lista de convites pendentes.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "null", "null", true);
 		
 		// Requisitos
 		this.addRequirements(ReqHasFaction.get());

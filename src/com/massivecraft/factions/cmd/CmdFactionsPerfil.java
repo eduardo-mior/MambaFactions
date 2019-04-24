@@ -41,7 +41,7 @@ public class CmdFactionsPerfil extends FactionsCommand
 		final boolean hasfac = mplayer.hasFaction();
 		
 		// Criando o titulo da mensagem
-		message(Txt.titleize("§ePefil de §e" + mplayer.getName()));
+		message(Txt.titleize(mplayer.getId().equals(msender.getId()) ? "§eSeu Perfil" : "§ePerfil de §e" + mplayer.getName()));
 		
 		// Criando a profressbar do powr do player
 		double progressbarQuota = 0;

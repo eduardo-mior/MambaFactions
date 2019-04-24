@@ -7,6 +7,7 @@ import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsInvitedChange;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 import com.massivecraft.massivecore.util.IdUtil;
 
 public class CmdFactionsConviteAdd extends FactionsCommand
@@ -89,7 +90,7 @@ public class CmdFactionsConviteAdd extends FactionsCommand
 			isInvited = event.isNewInvited();
 				
 			// Informando o sender e o target
-			mplayer.msg("§a%s§a convidou você para entrar na facção §f[%s§f]§a.", msender.getRole().getPrefix() + msender.getName(), msenderFaction.getName());
+			mplayer.message(Mson.parse("§a" + msender.getRole().getPrefix() + msender.getName() + "§a convidou você para entrar na facção §f[" +  msenderFaction.getName() + "§f]§a.").command("/f entrar " + msenderFaction.getName()));
 			msg("§aConvite enviado com sucesso para '%s'.", mplayer.getName());
 				
 			// Aplicando o evento

@@ -75,7 +75,7 @@ public class ItemBuilder {
 		   return this;
 	   }
 
-	   public ItemBuilder setLore(String string1, String string2, String string3, String string4, String string5, String string6, String string7, String string8, String string9, List<String> lista1, String string10, String string11, String string12, String string13, String string14, List<String> lista2) {
+	   public ItemBuilder setLore(String string1, String string2, String string3, String string4, String string5, String string6, String string7, String top, String string8, String string9, List<String> lista1, String string10, String string11, String string12, String string13, String string14, List<String> lista2) {
 		   ItemMeta im = is.getItemMeta();
 		   List<String> l = new ArrayList<>();
 		   l.add(string1);
@@ -85,6 +85,7 @@ public class ItemBuilder {
 		   l.add(string5);
 		   l.add(string6);
 		   l.add(string7);
+		   l.add(top);
 		   l.add(string8);
 		   l.add(string9);
 		   l.addAll(lista1);
@@ -111,4 +112,25 @@ public class ItemBuilder {
 	   public ItemStack toItemStack() {
 		   return is;
 	   }
+
+	public ItemBuilder setLore(String string, String string2, String string3, String string4, String string5, String string6, String top, String string7, String string8, List<String> fplayers, String string9, String string10, String string11) {
+		   ItemMeta im = is.getItemMeta();
+		   List<String> l = new ArrayList<>();
+		   l.add(string);
+		   l.add(string2);
+		   l.add(string3);
+		   l.add(string4);
+		   l.add(string5);
+		   l.add(string6);
+		   l.add(top);
+		   l.add(string7);
+		   l.add(string8);
+		   l.addAll(fplayers);
+		   l.add(string9);
+		   l.add(string10);
+		   l.add(string11);
+		   im.setLore(l);
+		   is.setItemMeta(im);
+		   return this;
+	}
 }

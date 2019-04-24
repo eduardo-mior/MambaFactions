@@ -42,19 +42,26 @@ public class CmdFactionsProteger extends FactionsCommand
 			return;
 		}
 		
+		// Verificando se a facção atingiu o limite de claims temporários
 		int limit = MConf.get().limiteDeProtecoesTemporaria;
 		if (limit > 0 && msenderFaction.getTempClaims().size() >= limit) {
 			msg("§cLimite máximo de terrenos temporários atingido (" + limit + ")! Abandone terrenos temporário antigos para poder proteger novos terrenos.");
 			return;
 		}
 		
-		// Verificando se a facção é valida
+		// Verificando se a facção já não é dona do território
 		Faction factionAt = BoardColl.get().getFactionAt(PS.valueOf(me.getLocation()));
+		if (factionAt.equals(msenderFaction)) {
+			msg("§eSua facção já é dona deste território.");
+			return;
+		}
+		
+		// Verificando se o território esta livre
 		if (!factionAt.isNone()) {
-			msender.msg("§cVocê só pode proteger terrenos que estejam livres.");
+			msg("§cVocê só pode proteger terrenos que estejam livres.");
 			return;
 		} 
 		
-		EngineMenuGui.get().abrirMenuProtegerTerreno(me);
+		EngineMenuGui.get().abrirMenuProtegerTerreno(msender);
 	}
 }

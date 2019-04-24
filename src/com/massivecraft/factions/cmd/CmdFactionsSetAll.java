@@ -21,6 +21,8 @@ public class CmdFactionsSetAll extends CmdFactionsSetXAll
 		
 		// Aliases
 		this.addAliases("all");
+		this.addAliases("todas");
+		this.addAliases("tudo");
 	}
 
 	// -------------------------------------------- //
@@ -52,7 +54,7 @@ public class CmdFactionsSetAll extends CmdFactionsSetXAll
 			// Verificando se a facção possui terras para abandonar
 			if (msenderFaction.getLandCount() < 1) throw new MassiveException().setMsg("§cA sua facção não possui terras para abandonar.");
 			
-			EngineMenuGui.get().abrirMenuAbandonarTerras(me);
+			EngineMenuGui.get().abrirMenuAbandonarTerras(msender);
 			throw new MassiveException();
 		} 		
 	}

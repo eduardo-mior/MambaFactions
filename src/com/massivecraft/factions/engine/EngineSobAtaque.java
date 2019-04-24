@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -54,7 +54,10 @@ public class EngineSobAtaque extends Engine
 		Chunk c = e.getLocation().getChunk();
 		
 		// Verificando se a chunk já esta em ataque
-		if (underattack.containsKey(c)) return;
+		if (underattack.containsKey(c)) {
+			underattack.replace(c, System.currentTimeMillis() + 300000L);
+			return;
+		}
 		
 		// Pegando o PS
 		PS ps = PS.valueOf(e.getLocation());
@@ -75,10 +78,10 @@ public class EngineSobAtaque extends Engine
 		// Verificação se a facção já esta em ataque
 		if (!faction.isInAttack()) 
 		{
-			facs.add(faction);
 			EventFactionsEnteredInAttack event = new EventFactionsEnteredInAttack(faction, e);
 			event.run();
 			faction.setInAttack(true);
+			facs.add(faction);
 			EngineFly.disableFlyFaction(faction);
 		}
 	}
@@ -95,7 +98,7 @@ public class EngineSobAtaque extends Engine
 		for (Entry<PS, Faction> entry : e.getOldChunkFaction().entrySet()) 
 		{
 			Faction atual = entry.getValue();
-			if (!atual.isNone()) 
+			if (!atual.isNone() && atual.isInAttack()) 
 			{
 				PS ps = entry.getKey();
 				Chunk c = PS.asBukkitChunk(ps);
@@ -106,9 +109,10 @@ public class EngineSobAtaque extends Engine
 					for (Chunk chunk : infoattack.keySet()) 
 					{
 						Faction at = BoardColl.get().getFactionAt(PS.valueOf(chunk));
-						if (at.equals(atual)) return;
+						if (at.getId().equals(atual.getId())) return;
 					}
 				}
+				facs.remove(atual);
 				faction.setInAttack(false);
 			}
 		}
@@ -120,34 +124,19 @@ public class EngineSobAtaque extends Engine
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void aoQuebrar(BlockBreakEvent e) {
+		Block b = e.getBlock();
 		
-		if (e.getBlock().getType() == Material.MOB_SPAWNER) {
-			Player p = e.getPlayer();
-			MPlayer mp = MPlayer.get(p);
-			if(!mp.hasFaction()) {
-				return;
-			}
-			
-			Faction fac = BoardColl.get().getFactionAt(PS.valueOf(e.getBlock()));
-			
-			if (fac.isInAttack()) {
-				p.sendMessage("§cVocê não pode remover §lgeradores §cenquanto sua facção estiver sob ataque!");
+		if (b.getType() == Material.MOB_SPAWNER) {
+			if (BoardColl.get().getFactionAt(PS.valueOf(b)).isInAttack()) {
+				e.getPlayer().sendMessage("§cVocê não pode remover §lgeradores §cenquanto a facção estiver sob ataque!");
 				e.setCancelled(true);
 				return;
 			}
 		}
 		
-		if (e.getBlock().getType() == Material.BEACON) {
-			Player p = e.getPlayer();
-			MPlayer mp = MPlayer.get(p);
-			if(!mp.hasFaction()) {
-				return;
-			}
-			
-			Faction fac = BoardColl.get().getFactionAt(PS.valueOf(e.getBlock()));
-			
-			if (fac.isInAttack()) {
-				p.sendMessage("§cVocê não pode remover §lsinalizadores §cenquanto sua facção estiver sob ataque!");
+		if (b.getType() == Material.BEACON) {
+			if (BoardColl.get().getFactionAt(PS.valueOf(b)).isInAttack()) {
+				e.getPlayer().sendMessage("§cVocê não pode remover §lsinalizadores §cenquanto a facção estiver sob ataque!");
 				e.setCancelled(true);
 				return;
 			}

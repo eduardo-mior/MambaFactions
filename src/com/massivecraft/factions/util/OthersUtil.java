@@ -3,14 +3,11 @@ package com.massivecraft.factions.util;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MConf;
@@ -153,23 +150,6 @@ public class OthersUtil {
 			motd.add("§7§o'A frase da motd é muito grande para ser exibida aqui!'");
 			return motd; 
 		}
-	}
-	
-	public static Set<Faction> getAliadosPendentesEnviados(Faction f) 
-	{
-		Set<Faction> aliadosPendentesEnviados = new HashSet<>();
-        Map<String, Rel> relations = f.getRelationWishes();
-		for (Entry<String, Rel> relation : relations.entrySet()){
-			Faction ally = Faction.get(relation.getKey());
-			if (ally != null) {
-				if (relation.getValue() == Rel.ALLY) {
-					if (ally.getRelationWish(f) != Rel.ALLY) {
-						aliadosPendentesEnviados.add(ally);
-					}
-				}
-			}
-		}
-		return aliadosPendentesEnviados;
 	}
 	
 	private static String lastColor(String str) 

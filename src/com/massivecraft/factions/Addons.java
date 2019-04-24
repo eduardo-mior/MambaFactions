@@ -35,7 +35,7 @@ public class Addons {
 					for (String mplayerId : faction.getInvitations().keySet()) 
 					{
 						MPlayer mp = MPlayer.get(mplayerId);
-						if (mp != null) mp.addInvitation(faction.getId());
+						if (mp != null) mp.addInvitation(faction);
 					}
 					
 					// Updating the pending relations
@@ -51,6 +51,11 @@ public class Addons {
 						if (otherRel == Rel.ALLY && myRel == Rel.ALLY) continue;
 						if (otherRel == Rel.ALLY) faction.addPendingRelation(otherFaction);
 						if (myRel == Rel.ALLY) otherFaction.addPendingRelation(faction);
+						if (otherRel == Rel.ENEMY || myRel == Rel.ENEMY) 
+						{
+							faction.addEnemy(otherFaction);
+							otherFaction.addEnemy(faction);
+						}
 					}
 				}
 			}

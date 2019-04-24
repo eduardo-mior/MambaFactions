@@ -2,6 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
+import com.massivecraft.factions.engine.EngineMenuGui;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
@@ -29,7 +30,8 @@ public class CmdFactionsKick extends FactionsCommand
 		this.addRequirements(ReqHasFaction.get());
 		
 		// Parametros (necessario)
-		this.addParameter(TypeString.get(), "player", "erro", true);
+		this.addParameter(TypeString.get(), "player", "erro");
+		this.addParameter(TypeString.get(), "confirmação", "null", true);
 	}
 
 	// -------------------------------------------- //
@@ -52,7 +54,7 @@ public class CmdFactionsKick extends FactionsCommand
 		}
 		
 		// Verficiando se os argumentos são validos
-		if (!this.argIsSet()) {
+		if (!this.argIsSet(0)) {
 			msg("§cArgumentos insuficientes, use /f kick <player>");
 			return;
 		}
@@ -60,7 +62,7 @@ public class CmdFactionsKick extends FactionsCommand
 		// Verificando se o sender e o target são os mesmos
 		String name = this.arg();
 		if (msender.getName().equalsIgnoreCase(name)) {
-			message(Mson.parse("§cVocê não pode se expulsar da facção, caso queira sair use /f sair").command("/f sair"));
+			message(Mson.parse("§cVocê não pode se expulsar, caso queira sair use /f sair").command("/f sair"));
 			return;
 		}
 		
@@ -82,6 +84,12 @@ public class CmdFactionsKick extends FactionsCommand
 		// Verificando se o rank do sender é maior que o do target e verificando se o sender não é 1 admin
 		if (mplayer.getRole() == Rel.OFFICER && msender.getRole() == Rel.OFFICER && !msender.isOverriding()) {
 			msg("§cApenas o líder da facção pode expulsar ou rebaixar outros capitões.");
+			return;
+		}
+		
+		// Caso não haja o argumento "confirmar" então é aberto um menu de confirmação
+		if ((!this.argIsSet(1) || !this.arg().equalsIgnoreCase("confirmar")) && msender.isPlayer()) {
+			EngineMenuGui.get().abrirMenuKickarPlayer(me, mplayer);
 			return;
 		}
 

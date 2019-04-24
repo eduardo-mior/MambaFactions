@@ -5,7 +5,6 @@ import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsMotdChange;
 import com.massivecraft.massivecore.MassiveException;
-import com.massivecraft.massivecore.command.type.TypeNullable;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import com.massivecraft.massivecore.util.Txt;
 
@@ -27,7 +26,7 @@ public class CmdFactionsMotd extends FactionsCommand
 		this.addRequirements(ReqHasFaction.get());
 		
 		// Parametros (não necessario)
-		this.addParameter(TypeNullable.get(TypeString.get()), "motd", "erro", true);
+		this.addParameter(TypeString.get(), "motd", "erro", true);
 	}
 
 	// -------------------------------------------- //

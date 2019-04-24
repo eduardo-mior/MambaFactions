@@ -82,11 +82,11 @@ public class CmdFactions extends FactionsCommand
 		{
 			if (msender.hasFaction()) 
 			{
-				EngineMenuGui.get().abrirMenuPlayerComFaccao(me);
+				EngineMenuGui.get().abrirMenuPlayerComFaccao(msender);
 			}
 			else
 			{
-				EngineMenuGui.get().abrirMenuPlayerSemFaccao(me);
+				EngineMenuGui.get().abrirMenuPlayerSemFaccao(msender);
 			}
 		}
 		else

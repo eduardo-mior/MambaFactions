@@ -1,22 +1,19 @@
 package com.massivecraft.factions.engine;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.comparator.ComparatorMPlayerRole;
 import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColl;
+import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsFactionShowAsync;
 import com.massivecraft.massivecore.Engine;
@@ -37,6 +34,7 @@ public class EngineShow extends Engine
 	public static final String SHOW_ID_FACTION_DESCRIPTION = BASENAME_ + "description";
 	public static final String SHOW_ID_FACTION_AGE = BASENAME_ + "age";
 	public static final String SHOW_ID_FACTION_POWER = BASENAME_ + "power";
+	public static final String SHOW_ID_FACTION_TOP = BASENAME_ + "top";
 	public static final String SHOW_ID_FACTION_STATS = BASENAME_ + "stats";
 	public static final String SHOW_ID_FACTION_FOLLOWERS = BASENAME_ + "followers";
 	public static final String SHOW_ID_FACTION_ALIADOS = BASENAME_ + "allys";
@@ -45,7 +43,8 @@ public class EngineShow extends Engine
 	public static final int SHOW_PRIORITY_FACTION_ID = 1000;
 	public static final int SHOW_PRIORITY_FACTION_DESCRIPTION = 2000;
 	public static final int SHOW_PRIORITY_FACTION_AGE = 3000;
-	public static final int SHOW_PRIORITY_FACTION_POWER = 5000;
+	public static final int SHOW_PRIORITY_FACTION_POWER = 4000;
+	public static final int SHOW_PRIORITY_FACTION_TOP = 5000;
 	public static final int SHOW_PRIORITY_FACTION_STATS = 6000;
 	public static final int SHOW_PRIORITY_FACTION_FOLLOWERS = 9000;
 	public static final int SHOW_PRIORITY_FACTION_ALIADOS = 10000;
@@ -95,6 +94,10 @@ public class EngineShow extends Engine
 			String powerDesc = Txt.parse("%d/%d/%d", faction.getLandCount(), faction.getPowerRounded(), faction.getPowerMaxRounded());
 			show(idPriorityLiness, SHOW_ID_FACTION_POWER, SHOW_PRIORITY_FACTION_POWER, "Terras / Poder / Poder Máximo", powerDesc);
 
+			// TOP
+			String topDesc = Txt.parse("%dº§e Lugar", faction.getTopPosition());
+			show(idPriorityLiness, SHOW_ID_FACTION_TOP, SHOW_PRIORITY_FACTION_TOP, "Posição no Ranking", topDesc);
+			
 			// STATS
 			String kdr = faction.getKdrRounded();
 			int kills = faction.getKills();
@@ -102,20 +105,18 @@ public class EngineShow extends Engine
 			String statsDesc = Txt.parse("%d/%d/%s", kills, deaths,kdr);
 			show(idPriorityLiness, SHOW_ID_FACTION_STATS, SHOW_PRIORITY_FACTION_STATS, "Abates / Mortes / Kdr", statsDesc);
 			
+			// ALLYS and ENEMIES
 			String aliados = "";
 			String rival = "";
-			Collection<Faction> facs = FactionColl.get().getAll();
-			Set<String> relations = faction.getRelationWishes().keySet();
+			String aliadosColor = MConf.get().colorAlly.toString();
+			String rivalColor = MConf.get().colorEnemy.toString();
 			
-			for (String id : relations) {
-				Faction fac = Faction.get(id);
-				if (fac != null && fac.getRelationTo(faction).equals(Rel.ALLY)) aliados += "§8, " + fac.getName(faction);
+			for (Faction f : faction.getAllys()) {
+				aliados += "§8, " + aliadosColor + f.getName();
 			}
 			
-			for(Faction f : facs) {
-				if (faction.getRelationTo(f).equals(Rel.ENEMY)) {
-					rival +=  "§8, " + f.getName(faction);
-				}
+			for (Faction f : faction.getEnemies()) {
+				rival +=  "§8, " + rivalColor + f.getName();
 			}
 				
 			if (aliados.equals("")) {
@@ -124,10 +125,6 @@ public class EngineShow extends Engine
 			if (rival.equals("")) {
 				rival = "....§7§oNenhum";
 			}
-			if (rival.length() > 250) {
-				rival = "§7§oMuitos inimigos! Use /f relação listar " + faction.getName();
-			}
-
 			
 			show(idPriorityLiness, SHOW_ID_FACTION_ALIADOS, SHOW_PRIORITY_FACTION_ALIADOS, "Aliados", aliados.substring(4,aliados.length()));
 			show(idPriorityLiness, SHOW_ID_FACTION_INIMIGOS, SHOW_PRIORITY_FACTION_INIMIGOS, "Inimigos", rival.substring(4,rival.length()));

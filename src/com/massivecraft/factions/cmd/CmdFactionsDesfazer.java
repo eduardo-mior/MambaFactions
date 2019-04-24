@@ -80,12 +80,6 @@ public class CmdFactionsDesfazer extends FactionsCommand
 			mplayer.msg("§f%s§e desfez a facção!", msender.describeTo(mplayer).replace("Você", "§eVocê"));
 		}
 		
-		// Removendo os convites da facção
-		for (String playerId : msenderFaction.getInvitations().keySet()) {
-			MPlayer mplayer = MPlayer.get(playerId);
-			if (mplayer != null) mplayer.removeInvitation(msenderFaction.getId());
-		}
-		
 		// Aplicando o evento.
 		msenderFaction.detach();
 	}

@@ -2,7 +2,7 @@ main: com.massivecraft.factions.Factions
 name: Factions
 version: 2.13.6
 website: https://www.massivecraft.com/factions
-description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov20
+description: §eEsta versão do plugin Factions é gratuita e livre para todos. Esta edição do plugin foi feita por §bRUSHyoutuber§e e seus colaboradores. §8§ov21
 authors: [Cayorion, Madus, Ulumulu1510, MarkehMe, Brettflan]
 depend: [MassiveCore]
 softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]
@@ -28,13 +28,13 @@ permissions:
   factions.desfazer: {description: "§6 desfazer §8-§7 Desfaz a sua facção.", default: true}
   factions.entrar: {description: "§6 entrar §e<facção> §8-§7 Entra em uma facção.", default: true}
   factions.escapar: {description: "§6 escapar §8-§7 Teleporta para a zona livre mais próxima.", default: true}
-  factions.geradores: {description: "§6 geradores §8-§7 Administra os geradores da facção.", default: true}
+  factions.geradores: {description: "§6 geradores §8-§7 Gerencia os geradores da facção.", default: true}
   factions.home: {description: "§6 home §e[facção] §8-§7 Teleporta para a home da facção.", default: true}
   factions.info: {description: "§6 f,info §e<facção> §8-§7 Mostra as informações da facção.", default: true}
   factions.kick: {description: "§6 kick §e<player> §8-§7 Expulsa um player da facção.", default: true}
   factions.listar: {description: "§6 l,listar §e[página] §8-§7 Mostra a lista de facções.", default: true}
   factions.mapa: {description: "§6 mapa §e[on/off] §8-§7 Mostra o mapa dos territórios.", default: true}
-  factions.membros: {description: "§6 membros §e<facção> §8-§7 Mostra a lista de membros de uma facção.", default: true}
+  factions.membros: {description: "§6 membros §e<facção> §8-§7 Mostra a lista de membros da facção.", default: true}
   factions.motd: {description: "§6 motd §e<mensagem> §8-§7 Altera a mensagem da facção.", default: true}
   factions.nome: {description: "§6 nome §e<nome> §8-§7 Altera o nome da facção.", default: true}
   factions.perfil: {description: "§6 p,perfil §e<player> §8-§7 Mostra os status do player.", default: true}

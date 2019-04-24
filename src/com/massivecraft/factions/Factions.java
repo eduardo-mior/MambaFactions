@@ -4,7 +4,6 @@ import com.massivecraft.factions.adapter.BoardAdapter;
 import com.massivecraft.factions.adapter.BoardMapAdapter;
 import com.massivecraft.factions.adapter.RelAdapter;
 import com.massivecraft.factions.adapter.TerritoryAccessAdapter;
-import com.massivecraft.factions.chat.ChatActive;
 import com.massivecraft.factions.cmd.type.TypeRel;
 import com.massivecraft.factions.entity.Board;
 import com.massivecraft.factions.entity.BoardColl;
@@ -48,7 +47,6 @@ public class Factions extends MassivePlugin
 	// OVERRIDE
 	// -------------------------------------------- //
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnableInner()
 	{
@@ -61,7 +59,6 @@ public class Factions extends MassivePlugin
 
 		// Activate
 		this.activateAuto();
-		this.activate(this.getClassesActive("chat", ChatActive.class));
 		
 		// Addons Activate
 		Addons.load();

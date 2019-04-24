@@ -597,16 +597,16 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 		return this.invitations;
 	}
 	
-	public void addInvitation(String factionId) 
+	public void addInvitation(Faction faction) 
 	{
 		// Apply
-		this.invitations.add(factionId);
+		this.invitations.add(faction.getId());
 	}
 	
-	public void removeInvitation(String factionId) 
+	public void removeInvitation(Faction faction) 
 	{		
 		// Apply
-		this.invitations.remove(factionId);
+		this.invitations.remove(faction.getId());
 	}
 	
 	public void clearInvitations() 

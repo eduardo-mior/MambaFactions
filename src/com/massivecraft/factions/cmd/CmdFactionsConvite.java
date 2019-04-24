@@ -53,7 +53,7 @@ public class CmdFactionsConvite extends FactionsCommand
 		
 		// Verificando se é um player para abrir o menu gui
 		if (msender.isPlayer()) {
-			EngineMenuGui.get().abrirMenuConvites(me);
+			EngineMenuGui.get().abrirMenuConvites(msender);
 			return;
 		}
 	}

@@ -4,6 +4,7 @@ import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.cmd.req.ReqHasFaction;
 import com.massivecraft.factions.event.EventFactionsHomeChange;
 import com.massivecraft.massivecore.MassiveException;
+import com.massivecraft.massivecore.command.type.primitive.TypeString;
 
 public class CmdFactionsDelhome extends FactionsCommand
 {
@@ -18,6 +19,9 @@ public class CmdFactionsDelhome extends FactionsCommand
 		
 		// Descrição
 		this.setDesc("§6 delhome §8-§7 Deleta a home da facção.");
+		
+		// Parametros (não necessario)
+		this.addParameter(TypeString.get(), "null", "null", true);
 		
 		// Requisitos
 		this.addRequirements(ReqHasFaction.get());

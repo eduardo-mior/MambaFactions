@@ -5,6 +5,7 @@ import com.massivecraft.factions.FactionsIndex;
 import com.massivecraft.factions.FactionsParticipator;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.RelationParticipator;
+import com.massivecraft.factions.integration.ftop.Top;
 import com.massivecraft.factions.predicate.PredicateCommandSenderFaction;
 import com.massivecraft.factions.predicate.PredicateMPlayerRole;
 import com.massivecraft.factions.util.MiscUtil;
@@ -135,7 +136,8 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	// The keys in this map are factionIds.
 	// Null means no special relation whishes.
 	private MassiveMapDef<String, Rel> relationWishes = new MassiveMapDef<>();
-	private transient Set<String> relationPending = new HashSet<>();
+	private transient Set<Faction> relationPending = new HashSet<>();
+	private transient Set<Faction> enemies = new HashSet<>();
 	
 	// The flag overrides are modifications to the default values.
 	// Null means default.
@@ -501,7 +503,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	
 	public boolean uninvite(MPlayer mplayer)
 	{
-		mplayer.removeInvitation(this.getId());
+		mplayer.removeInvitation(this);
 		return uninvite(mplayer.getId());
 	}
 	
@@ -509,7 +511,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 	{
 		uninvite(mplayer.getId());
 		this.invitations.attach(invitation, mplayer.getId());
-		mplayer.addInvitation(this.getId());
+		mplayer.addInvitation(this);
 	}
 	
 	// -------------------------------------------- //
@@ -571,20 +573,24 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		this.setRelationWish(faction.getId(), rel);
 	}
 	
+	// PENDING
+	
 	public void addPendingRelation(Faction faction)
 	{
-		this.relationPending.add(faction.getId());
+		this.relationPending.add(faction);
 	}
 	
 	public void removePendingRelation(Faction faction)
 	{
-		this.relationPending.remove(faction.getId());
+		this.relationPending.remove(faction);
 	}
 	
-	public Set<String> getPendingRelations()
+	public Set<Faction> getPendingRelations()
 	{
 		return this.relationPending;
 	}
+	
+	// ALLYS
 	
 	public Set<Faction> getAllys() {
 		Set<Faction> aliados = new HashSet<>();
@@ -594,6 +600,46 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 			if (fac != null && fac.getRelationTo(this).equals(Rel.ALLY)) aliados.add(fac);
 		}
 		return aliados;
+	}
+	
+	public Set<Faction> getSemiAllys() {
+		Set<Faction> aliados = new HashSet<>();
+		aliados.addAll(getAliadosPendentesEnviados());
+		aliados.addAll(getPendingRelations());
+		return aliados;
+	}
+	
+	public Set<Faction> getAliadosPendentesEnviados() {
+		Set<Faction> aliadosPendentesEnviados = new HashSet<>();
+        Map<String, Rel> relations = getRelationWishes();
+		for (Entry<String, Rel> relation : relations.entrySet()){
+			Faction ally = Faction.get(relation.getKey());
+			if (ally != null) {
+				if (relation.getValue() == Rel.ALLY) {
+					if (ally.getRelationWish(this) != Rel.ALLY) {
+						aliadosPendentesEnviados.add(ally);
+					}
+				}
+			}
+		}
+		return aliadosPendentesEnviados;
+	}
+	
+	// ENEMIES
+	
+	public void addEnemy(Faction faction)
+	{
+		this.enemies.add(faction);
+	}
+	
+	public void removeEnemy(Faction faction)
+	{
+		this.enemies.remove(faction);
+	}
+	
+	public Set<Faction> getEnemies()
+	{
+		return this.enemies;
 	}
 	
 	// -------------------------------------------- //
@@ -1300,5 +1346,17 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 						
 		// Mark as changed
 		this.changed();
+	}
+	
+	// -------------------------------------------- //
+	// FTOP HOOK
+	// -------------------------------------------- //
+	
+	public int getTopPosition() {
+		try {
+			return Top.getTopPosition(this);
+		} catch (Throwable e) {
+			return 0;
+		}
 	}
 }

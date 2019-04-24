@@ -45,6 +45,12 @@ public class CmdFactionsHome extends FactionsCommand
 		// Argumentos
 		Faction faction = readFaction();
 		
+		// Verificando se a facção é a zona livre
+		if (faction.isNone()) {
+			msg("§cArgumentos insuficientes, use /f home <facção>");
+			return;
+		}
+		
 		// Verificando se o sender possui permissão
 		if (!MPerm.getPermHome().has(msender, faction, true)) return;
 		

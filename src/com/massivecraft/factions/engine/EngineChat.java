@@ -1,12 +1,14 @@
 package com.massivecraft.factions.engine;
 
 import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.chat.ChatFormatter;
+import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MConf;
+import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.event.EventMassiveCorePlayerToRecipientChat;
 import com.massivecraft.massivecore.util.MUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
@@ -54,7 +56,7 @@ public class EngineChat extends Engine
 			try
 			{
 				if (!(event instanceof AsyncPlayerChatEvent)) return;
-				setFormat((AsyncPlayerChatEvent)event);
+			((AsyncPlayerChatEvent)event).setFormat(MConf.get().chatSetFormatTo);
 			}
 			catch (Throwable t)
 			{
@@ -63,10 +65,6 @@ public class EngineChat extends Engine
 		}
 	}
 	
-	public static void setFormat(AsyncPlayerChatEvent event)
-	{	
-		event.setFormat(MConf.get().chatSetFormatTo);
-	}
 	
 	// -------------------------------------------- //
 	// PARSE TAGS
@@ -95,7 +93,7 @@ public class EngineChat extends Engine
 		if (MUtil.isntPlayer(player)) return;
 		
 		String format = event.getFormat();
-		format = ChatFormatter.format(format, player);
+		format = format(format, player);
 		event.setFormat(format);
 	}
 	
@@ -123,8 +121,20 @@ public class EngineChat extends Engine
 	public static void parseRelcolor(EventMassiveCorePlayerToRecipientChat event)
 	{
 		String format = event.getFormat();
-		format = ChatFormatter.format(format, event.getSender());
+		format = format(format, event.getSender());
 		event.setFormat(format);
+	}
+	
+	private static String format(String msg, CommandSender sender)
+	{		
+		// Get entities
+		MPlayer usender = MPlayer.get(sender);
+		
+		// No "force"
+		Faction faction = usender.getFaction();
+		if (faction.isNone()) return msg.replace("{faction}", "");
+		
+		return msg.replace("{faction}","§7[" + usender.getRole().getPrefix() + faction.getName() + "§7] §f");
 	}
 	
 }

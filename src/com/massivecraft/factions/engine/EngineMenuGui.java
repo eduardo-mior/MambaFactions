@@ -51,14 +51,16 @@ public class EngineMenuGui extends Engine
 	private static EngineMenuGui i = new EngineMenuGui();
 	public static EngineMenuGui get() { return i; }
 	
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy 'às' hh:mm");
+	
 	/**
 	 * Menu principal dos players com facção
 	 * @Menu: COM_FACÇÃO
 	 */
-	public void abrirMenuPlayerComFaccao(Player p) {
+	public void abrirMenuPlayerComFaccao(MPlayer mplayer) {
 
 		// Variaveis
-		final MPlayer mplayer = MPlayer.get(p);
+		final Player p = mplayer.getPlayer();
 		final Rel cargo = mplayer.getRole();
 		final Faction factionclaim = BoardColl.get().getFactionAt(PS.valueOf(p.getLocation()));
 		final Faction faction = mplayer.getFaction();
@@ -96,9 +98,9 @@ public class EngineMenuGui extends Engine
 		
 		// Setando os itens que usam verificações
 		if (faction.isInAttack()) {
-		inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e[" + factionNome + "§e]").setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
+		inv.setItem(34, new ItemBuilder(Heads.VERMELHO.clone()).setName("§e[" + factionNome + "§e]").setLore("§cFacção sob ataque! Clique para mais detalhes.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fPosição no Ranking: §7" + faction.getTopPosition() + "º Lugar", "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7","§fDescrição:", "§7'" + factiondesc + "§7'", "§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
 		else {
-		inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e[" + factionNome + "§e]").setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
+		inv.setItem(34, new ItemBuilder(Heads.BRANCO.clone()).setName("§e[" + factionNome + "§e]").setLore("§aA facção não esta sob ataque.","§fTerras: §7" + terrastotal,"§fPoder: §7" + factionpoder, "§fPoder máximo: §7" + factionpodermaximo, "§fAbates: §7" + fackills, "§fMortes: §7" + facmortes, "§fKdr: §7" + fackdr, "§fPosição no Ranking: §7" + faction.getTopPosition() + "º Lugar", "§fLíder: §7" + lider, "§fMembros: §7(" + membrosnafac + "/" + membroslimite + ") " + membrosonline + " online", OthersUtil.fplayers(faction), "§7", "§fDescrição:","§7'" + factiondesc + "§7'","§f", "§fMotd: §7", OthersUtil.fmotd(faction)).toItemStack()); }
 			
 		if (mplayer.getRole() == Rel.LEADER) {
 		inv.setItem(43, new ItemBuilder(Material.DARK_OAK_DOOR_ITEM).setName("§cDesfazer facção").setLore("§7Clique para desfazer a sua facção.").toItemStack()); }
@@ -149,15 +151,15 @@ public class EngineMenuGui extends Engine
 	 * Menu principal dos players sem facção
 	 * @Menu: SEM_FACÇÃO
 	 */
-	public void abrirMenuPlayerSemFaccao(Player p) {
+	public void abrirMenuPlayerSemFaccao(MPlayer mplayer) {
 		
 		// Variaveis
-		final MPlayer mplayer = MPlayer.get(p);
+		final Player p = mplayer.getPlayer();
 		final Faction factionclaim = BoardColl.get().getFactionAt(PS.valueOf(p.getLocation()));
 		int mortes = mplayer.getDeaths();
 		int kills = mplayer.getKills();
 		int playerpodermaximo = mplayer.getPowerMaxRounded();
-		int playerpoder = mplayer.getPowerMaxRounded();
+		int playerpoder = mplayer.getPowerRounded();
 		int invitations = mplayer.getInvitations().size();
 		final String kdr2f = mplayer.getKdrRounded();
 		final GuiHolder holder = new GuiHolder(Menu.SEM_FACCAO);
@@ -205,7 +207,6 @@ public class EngineMenuGui extends Engine
 	public void abrirMenuMembrosDaFaccao(MPlayer mplayer, Faction faction) {
 		
 		// Variaveis
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy 'às' hh:mm");
 		int limitemembros = faction.getMembersLimit();
 		List<MPlayer> mps = faction.getMPlayers();
 		Player p = mplayer.getPlayer();
@@ -242,11 +243,11 @@ public class EngineMenuGui extends Engine
 			String nome = mp.getName();
 			boolean isOnline = mp.isOnline();
 			int poderMax = mp.getPowerMaxRounded();
-			int poderAtual = mp.getPowerMaxRounded();
+			int poderAtual = mp.getPowerRounded();
 			int kills = mp.getKills();
 			int deaths = mp.getDeaths();
 			String kdr2f = mp.getKdrRounded();
-			String ultimoLogin = sdf.format(new Date(mp.getLastActivityMillis()));
+			String ultimoLogin = SDF.format(new Date(mp.getLastActivityMillis()));
 			inv.setItem(slot, new ItemBuilder(Material.SKULL_ITEM,1,3).setSkullOwner(nome).setName("§7"+nome).setLore("§fPoder: §7" +  poderAtual + "/" + poderMax,"§fCargo: §7" + cargo.getPrefix() + cargo.getName(),"§fAbates: §7" + kills,"§fMortes: §7" + deaths, "§fKdr: §7" + kdr2f, "§fStats: " + (isOnline ? "§aOnline" : "§cOffline"), "§fÚltimo login: §7" + ultimoLogin).toItemStack());
 			slot += slot == 6 || slot == 15 || slot == 24 || slot == 33 || slot == 42 ? + 5 : + 1;
 		}
@@ -342,7 +343,7 @@ public class EngineMenuGui extends Engine
 	 * Menu de confirmação para abandonar todas as terras
 	 * @Menu: PROTEGER_TERRENO
 	 */
-	public void abrirMenuProtegerTerreno(Player p) {
+	public void abrirMenuProtegerTerreno(MPlayer mplayer) {
 		
 		// Variaveis
         GuiHolder holder = new GuiHolder(Menu.PROTEGER_TERRENO);
@@ -356,7 +357,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(24, new ItemBuilder(Material.WOOL, 1, (byte) 14).setName("§cCancelar ação").setLore("§7Clique para cancelar.").toItemStack());
 
 		// Abrindo o inventario
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -364,10 +365,9 @@ public class EngineMenuGui extends Engine
 	 * Menu de confirmação para abandonar todas as terras
 	 * @Menu: ABANDONAR_TERRAS
 	 */
-	public void abrirMenuAbandonarTerras(Player p) {
+	public void abrirMenuAbandonarTerras(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
         int terras = faction.getLandCount();
         GuiHolder holder = new GuiHolder(Menu.ABANDONAR_TERRAS);
@@ -381,6 +381,28 @@ public class EngineMenuGui extends Engine
 		inv.setItem(24, new ItemBuilder(Material.WOOL, 1, (byte) 14).setName("§cCancelar ação").setLore("§7Clique para cancelar.").toItemStack());
 
 		// Abrindo o inventario
+		mplayer.getPlayer().openInventory(inv);
+	}
+	
+	
+	/**
+	 * Menu de confirmação para kick player
+	 * @Menu: KIKCAR_PLAYER
+	 */
+	public void abrirMenuKickarPlayer(Player p, MPlayer mp) {
+		
+		// Variaveis
+        GuiHolder holder = new GuiHolder(Menu.KICKAR_PLAYER);
+		
+        // Criando o inventario
+		Inventory inv = Bukkit.createInventory(holder, 36, "Expulsar player");
+		
+		// Setando os itens
+		inv.setItem(13, new ItemBuilder(Material.PAPER).setName("§fInformações").setLore("§7Você esta prestes a expulsar", "§2" + mp.getName() + "§7 da sua facção.").toItemStack());
+		inv.setItem(20, new ItemBuilder(Material.WOOL, 1, (byte) 5).setName("§aConfirmar ação").setLore("§7Clique para confirmar.").toItemStack());
+		inv.setItem(24, new ItemBuilder(Material.WOOL, 1, (byte) 14).setName("§cCancelar ação").setLore("§7Clique para cancelar.").toItemStack());
+
+		// Abrindo o inventario
 		p.openInventory(inv);
 	}
 	
@@ -389,10 +411,9 @@ public class EngineMenuGui extends Engine
 	 * Menu principal do sistema de convites
 	 * @Menu: CONVITES
 	 */
-	public void abrirMenuConvites(Player p) {
+	public void abrirMenuConvites(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
 		int nconvites = faction.getInvitations().size();
         GuiHolder holder = new GuiHolder(Menu.CONVITES);
@@ -408,7 +429,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(15, new ItemBuilder(Material.PAPER).setName("§eGerenciar convites pendentes").setLore("§7Sua facção possui §e" + nconvites + (nconvites == 1 ? " §7convite pendente." : " §7convites pendentes."),"§7Clique para gerenciar" + (nconvites == 1 ? " §7o convite pendente." : " §7os convites pendentes.")).setAmount(nconvites).toItemStack()); }
 		
 		// Abrindo o inventario
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -536,21 +557,18 @@ public class EngineMenuGui extends Engine
 		// Abrindo o inventario
 		p.openInventory(inv);
 	}
-
 	
 	
 	/**
 	 * Menu principal do sistema de relações
 	 * @Menu: GERENCIAR_RELACOES
 	 */
-	public void abrirMenuGerenciarRelacoes(Player p) {
+	public void abrirMenuGerenciarRelacoes(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
-        int enviados = OthersUtil.getAliadosPendentesEnviados(faction).size();
-        int nrelations = faction.getRelationWishes().size() - enviados;
-        int pendentes = enviados + faction.getPendingRelations().size();
+        int npendentes = faction.getSemiAllys().size();
+        int nrelations = faction.getEnemies().size() + faction.getAllys().size() + npendentes;
         GuiHolder holder = new GuiHolder(Menu.GERENCIAR_RELACOES);
 
         // Criando o inventário
@@ -559,10 +577,10 @@ public class EngineMenuGui extends Engine
 		// Setando os itens
 		inv.setItem(11, new ItemBuilder(Heads.AZURE.clone()).setName("§aDefinir relação").setLore("§7Clique para definir uma relação com", "§7alguma facção ou se preferir use", "§7o comando '§f/f relação <facção>§7'").toItemStack());
 		
-		if (pendentes < 1) {
+		if (npendentes < 1) {
 		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aAlianças pendentes").setLore("§cSua facção não possui relações pendentes.").setLeatherArmorColor(Color.LIME).setAmount(0).toItemStack());
 		} else {
-		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aAlianças pendentes").setLore("§7Clique para ver todos os convites","§7de aliança pendentes recebidos ou", "§7enviados pela sua facção.").setLeatherArmorColor(Color.LIME).setAmount(pendentes).toItemStack()); }
+		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aAlianças pendentes").setLore("§7Clique para ver todos os convites","§7de aliança pendentes recebidos ou", "§7enviados pela sua facção.").setLeatherArmorColor(Color.LIME).setAmount(npendentes).toItemStack()); }
 		
 		if (nrelations < 1) {
 		inv.setItem(15, new ItemBuilder(Material.BOOK).setName("§eVer relações").setLore("§cSua facção não possui relações definidas.").setAmount(0).toItemStack());
@@ -570,7 +588,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(15, new ItemBuilder(Material.BOOK).setName("§eVer relações").setLore("§7Clique para ver a lista", "§7de relações da sua facção.").setAmount(nrelations > 64 ? 1 : nrelations).toItemStack()); }
 		
 		// Abrindo o inventário
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -578,12 +596,11 @@ public class EngineMenuGui extends Engine
 	 * Menu principal do sistema de relações
 	 * @Menu: VER_RELACOES
 	 */
-	public void abrirMenuVerRelacoes(Player p) {
+	public void abrirMenuVerRelacoes(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
-        int nrelations = faction.getRelationWishes().size() - OthersUtil.getAliadosPendentesEnviados(faction).size();
+        int nrelations = faction.getEnemies().size() + faction.getAllys().size() + faction.getSemiAllys().size();
         GuiHolder holder = new GuiHolder(Menu.VER_RELACOES);
 
         // Criando o inventário
@@ -599,7 +616,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(15, new ItemBuilder(Material.BOOK).setName("§eVer relações").setLore("§7Clique para ver a lista", "§7de relações da sua facção.").setAmount(nrelations > 64 ? 1 : nrelations).toItemStack()); }
 		
 		// Abrindo o inventário
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -629,12 +646,12 @@ public class EngineMenuGui extends Engine
 		if (faction.getRelationWish(otherFaction) == Rel.NEUTRAL) {
 		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§fSua a facção já é neutra da [" + factionNome + "§f]").setLeatherArmorColor(Color.WHITE).toItemStack()); }
 		else {
-		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§fDefinir neutralidade com [" + factionNome + "§f]").setLore("§fClique para definir relação de neutralidade.").setLeatherArmorColor(Color.WHITE).toItemStack()); }
+		inv.setItem(13, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§fDefinir neutralidade com a [" + factionNome + "§f]").setLore("§fClique para definir relação de neutralidade.").setLeatherArmorColor(Color.WHITE).toItemStack()); }
 		
 		if (faction.getRelationWish(otherFaction) == Rel.ENEMY) {
 		inv.setItem(15, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§cSua a facção já é rival da [" + factionNome + "§c]").setLeatherArmorColor(Color.RED).toItemStack()); }
 		else {
-		inv.setItem(15, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§cDefinir rivalidade com [" + factionNome + "§c]").setLore("§fClique para definir relação de aliança.").setLeatherArmorColor(Color.RED).toItemStack()); }
+		inv.setItem(15, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§cDefinir rivalidade com a [" + factionNome + "§c]").setLore("§fClique para definir relação de aliança.").setLeatherArmorColor(Color.RED).toItemStack()); }
 
 		// Abrindo o inventario
 		p.openInventory(inv);
@@ -645,12 +662,11 @@ public class EngineMenuGui extends Engine
 	 * Menu do sistema de relações pendentes
 	 * @Menu: RELACOES_PENDENTES
 	 */
-	public void abrirMenuRelacoesPendentes(Player p) {
+	public void abrirMenuRelacoesPendentes(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
-        int enviados = OthersUtil.getAliadosPendentesEnviados(faction).size();
+        int enviados = faction.getAliadosPendentesEnviados().size();
         int recebidos = faction.getPendingRelations().size();
         int npendentes = enviados + recebidos;
         GuiHolder holder = new GuiHolder(Menu.RELACOES_PENDENTES);
@@ -672,7 +688,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(15, new ItemBuilder(Material.LEATHER_CHESTPLATE).setName("§aConvites de aliança enviados pendentes").setLore("§cSua facção não possui nenhum", "§cconvite enviado pendente.").setLeatherArmorColor(Color.LIME).setAmount(0).toItemStack()); }
 				
 		// Abrindo o inventario
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -680,12 +696,11 @@ public class EngineMenuGui extends Engine
 	 * Menu das relações pendentes enviadas do sistema de relações pendentes
 	 * @Menu: RELACOES_PENDENTES_ENVIADAS
 	 */
-	public void abrirMenuRelacoesPendentesEnviados(Player p) {
+	public void abrirMenuRelacoesPendentesEnviados(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
-		Set<Faction> facs = OthersUtil.getAliadosPendentesEnviados(faction);
+		Set<Faction> facs = faction.getAliadosPendentesEnviados();
         int enviados = facs.size();
 		int tamanho = 54;
 		int flecha = 49;
@@ -713,7 +728,7 @@ public class EngineMenuGui extends Engine
 		inv.setItem(flecha, new ItemBuilder(Material.ARROW).setName("§cVoltar").toItemStack());
 
 		// Abrindo o inventário
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -721,12 +736,11 @@ public class EngineMenuGui extends Engine
 	 * Menu das relações pendentes recebidas do sistema de relações pendentes
 	 * @Menu: RELACOES_PENDENTES_RECEBIDAS
 	 */
-	public void abrirMenuRelacoesPendentesRecebidos(Player p) {
+	public void abrirMenuRelacoesPendentesRecebidos(MPlayer mplayer) {
 		
 		// Variaveis
-        MPlayer mplayer = MPlayer.get(p);
         Faction faction = mplayer.getFaction();
-		Set<String> facs = faction.getPendingRelations();
+		Set<Faction> facs = faction.getPendingRelations();
         int recebidos = facs.size();
 		int tamanho = 54;
 		int flecha = 49;
@@ -746,8 +760,7 @@ public class EngineMenuGui extends Engine
 		Inventory inv = Bukkit.createInventory(holder, tamanho, "Convites recebidos pendentes");
 		
 		 // Setando os itens
-		for (String s : facs) {
-			Faction f = Faction.get(s);
+		for (Faction f : facs) {
 			String factionNome = f.getName();
 			inv.setItem(slot, new ItemBuilder(Material.PAPER).setName("§eConvite da facção §f[" + factionNome + "§f]").setLore("§fBotão Esquerdo: §7Aceitar convite","§fBotão Direito: §7Deletar convite","§fShift + Botão direito: §7Informações da facção").toItemStack());	
 			slot += slot == 16 || slot == 25 || slot == 34 ? + 3 : + 1;
@@ -755,7 +768,82 @@ public class EngineMenuGui extends Engine
 		inv.setItem(flecha, new ItemBuilder(Material.ARROW).setName("§cVoltar").toItemStack());
 
 		// Inventário
-		p.openInventory(inv);
+		mplayer.getPlayer().openInventory(inv);
+	}	
+
+	/**
+	 * Menu das terras da facção
+	 * @Menu: LISTAR_RELACOES
+	 */
+	public void abrirMenuRelacoesListar(MPlayer mplayer, int pag) {
+		
+		// Variaveis
+        Faction faction = mplayer.getFaction();
+        GuiHolder holder = new GuiHolder(Menu.RELACOES_LISTAR);
+        Set<Faction> semiAllys = faction.getSemiAllys();
+        Set<Faction> allys = faction.getAllys();
+        Set<Faction> enemies = faction.getEnemies();
+        int jump = (pag - 1) * 28;
+        int slot = 10;
+        int i = 0;
+        
+        // Tamanho do menu gui
+		int tamanho = (int) (Math.ceil((semiAllys.size() + allys.size() + enemies.size() - jump) / 7D) + 2) * 9;
+        if (tamanho > 54)
+        	tamanho = 54;
+		
+		// Criando o inventário
+		Inventory inv = Bukkit.createInventory(holder, tamanho, "Relaçoes da facção");
+        
+		if (pag == 1) {
+			
+			i = 1;
+			for (Faction f : semiAllys) {
+				inv.setItem(slot, new ItemBuilder(Heads.CIANO_ESCURO.clone()).setName("§3Aliado PENDENTE #" + i++ + " [" + f.getName() + "§3]").setLore("§fTerras: §7" + f.getLandCount(),"§fPoder: §7" + f.getPowerRounded(), "§fPoder máximo: §7" + f.getPowerMaxRounded(), "§fAbates: §7" + f.getKills(), "§fMortes: §7" + f.getDeaths(), "§fKDR: §7" + f.getKdrRounded(), "§fPosição no Ranking: §7" + f.getTopPosition() + "º Lugar", "§fLíder: §7" + (f.getLeader() != null ? f.getLeader().getName() : "Indefinido"), "§fMembros: §7(" + f.getMembersCount() + "/" + f.getMembersLimit() + ") " + f.getOnlinePlayers().size() + " online", OthersUtil.fplayers(f), "§7" ,"§fDescrição:", "§7'" + f.getDescriptionDesc() + "§7'").toItemStack());
+    			slot += slot == 16 || slot == 25 || slot == 34 ? + 3 : + 1;
+			}
+
+			i = 1;
+			String allyColor = MConf.get().colorAlly.toString();
+			for (Faction f : allys) {
+				if (slot == 44) {
+					inv.setItem(26, new ItemBuilder(Material.ARROW).setName("§aPágina " + (pag + 1)).setLore("§7Clique para avançar", "§7de página.").toItemStack());
+					break;
+				}
+				inv.setItem(slot, new ItemBuilder(Heads.CIANO_CLARO.clone()).setName(allyColor + "Aliado #" + i++ + " [" + f.getName() + allyColor + "]").setLore("§fTerras: §7" + f.getLandCount(),"§fPoder: §7" + f.getPowerRounded(), "§fPoder máximo: §7" + f.getPowerMaxRounded(), "§fAbates: §7" + f.getKills(), "§fMortes: §7" + f.getDeaths(), "§fKDR: §7" + f.getKdrRounded(), "§fPosição no Ranking: §7" + f.getTopPosition() + "º Lugar", "§fLíder: §7" + (f.getLeader() != null ? f.getLeader().getName() : "Indefinido"), "§fMembros: §7(" + f.getMembersCount() + "/" + f.getMembersLimit() + ") " + f.getOnlinePlayers().size() + " online", OthersUtil.fplayers(f), "§7", "§fDescrição:", "§7'" + f.getDescriptionDesc() + "§7'").toItemStack());
+	    		slot += slot == 16 || slot == 25 || slot == 34 ? + 3 : + 1;
+			}
+			
+			i = 1;
+			String enemyColor = MConf.get().colorEnemy.toString();
+	        for (Faction f : enemies) {
+				if (slot == 44) {
+					inv.setItem(26, new ItemBuilder(Material.ARROW).setName("§aPágina " + (pag + 1)).setLore("§7Clique para avançar", "§7de página.").toItemStack());
+					break;
+				}
+				inv.setItem(slot, new ItemBuilder(Heads.VERMELHO.clone()).setName(enemyColor + "Inimigo #" + i++ + " [" + f.getName() + enemyColor + "]").setLore("§fTerras: §7" + f.getLandCount(),"§fPoder: §7" + f.getPowerRounded(), "§fPoder máximo: §7" + f.getPowerMaxRounded(), "§fAbates: §7" + f.getKills(), "§fMortes: §7" + f.getDeaths(), "§fKDR: §7" + f.getKdrRounded(), "§fPosição no Ranking: §7" + f.getTopPosition() + "º Lugar", "§fLíder: §7" + (f.getLeader() != null ? f.getLeader().getName() : "Indefinido"), "§fMembros: §7(" + f.getMembersCount() + "/" + f.getMembersLimit() + ") " + f.getOnlinePlayers().size() + " online", OthersUtil.fplayers(f), "§7", "§fDescrição:", "§7'" + f.getDescriptionDesc() + "§7'").toItemStack());
+				slot += slot == 16 || slot == 25 || slot == 34 ? + 3 : + 1;
+	        }
+		}
+		
+		else {
+			String enemyColor = MConf.get().colorEnemy.toString();
+			i+= semiAllys.size() + allys.size();
+			int normal = 1 + jump - i;
+	        for (Faction f : enemies) {
+	        	if (++i <= jump) continue;
+				if (slot == 44) {
+					inv.setItem(26, new ItemBuilder(Material.ARROW).setName("§aPágina " + (pag + 1)).setLore("§7Clique para avançar", "§7de página.").toItemStack());
+					break;
+				}
+				inv.setItem(slot, new ItemBuilder(Heads.VERMELHO.clone()).setName(enemyColor + "Inimigo #" + normal++ + " [" + f.getName() + enemyColor + "]").setLore("§fTerras: §7" + f.getLandCount(),"§fPoder: §7" + f.getPowerRounded(), "§fPoder máximo: §7" + f.getPowerMaxRounded(), "§fAbates: §7" + f.getKills(), "§fMortes: §7" + f.getDeaths(), "§fKDR: §7" + f.getKdrRounded(), "§fPosição no Ranking: §7" + f.getTopPosition() + "º Lugar", "§fLíder: §7" + (f.getLeader() != null ? f.getLeader().getName() : "Indefinido"), "§fMembros: §7(" + f.getMembersCount() + "/" + f.getMembersLimit() + ") " + f.getOnlinePlayers().size() + " online", OthersUtil.fplayers(f), "§7", "§fDescrição:", "§7'" + f.getDescriptionDesc() + "§7'").toItemStack());
+				slot += slot == 16 || slot == 25 || slot == 34 ? + 3 : + 1;
+	        }
+        	inv.setItem(tamanho == 27 ? 9 : 18, new ItemBuilder(Material.ARROW).setName("§aPágina " + (pag - 1)).setLore("§7Clique para voltar", "§7de página.").toItemStack());
+		}                	
+        
+		// Inventário
+		mplayer.getPlayer().openInventory(inv);
 	}
 	
 	
@@ -833,20 +921,20 @@ public class EngineMenuGui extends Engine
 					} else { 
 						mp.setMapAutoUpdating(true);
 					}
-					abrirMenuPlayerSemFaccao(p);
+					abrirMenuPlayerSemFaccao(mp);
 					return;
 				}
 			}
 			
 			else if (slot == 32) {
 				p.chat("/f tt");
-				abrirMenuPlayerSemFaccao(p);
+				abrirMenuPlayerSemFaccao(mp);
 				return;
 			}
 			
 			else if (slot == 33) {
 				p.chat("/f sc");
-				abrirMenuPlayerSemFaccao(p);
+				abrirMenuPlayerSemFaccao(mp);
 				return;
 			}
 		}
@@ -884,7 +972,7 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 28) {
 				p.chat("/f sc");
-				abrirMenuPlayerComFaccao(p);
+				abrirMenuPlayerComFaccao(mp);
 				return;
 			}
 			
@@ -893,7 +981,7 @@ public class EngineMenuGui extends Engine
 					if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
 						if (e.getClick().isRightClick()) {
 							p.chat("/f sethome");
-							abrirMenuPlayerComFaccao(p);
+							abrirMenuPlayerComFaccao(mp);
 							return;
 						}
 					}
@@ -901,7 +989,7 @@ public class EngineMenuGui extends Engine
 					if (e.getClick().isShiftClick()) {
 						if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
 							p.chat("/f delhome");
-							abrirMenuPlayerComFaccao(p);
+							abrirMenuPlayerComFaccao(mp);
 							return;
 						}
 					}
@@ -921,7 +1009,7 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 30) {
 				if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
-					abrirMenuConvites(p);
+					abrirMenuConvites(mp);
 				} else {
 					p.sendMessage("§cVocê precisar ser capitão ou superior para poder gerenciar os convites da facção.");
 				}
@@ -935,13 +1023,13 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 32) {
 				p.chat("/f voar");
-				abrirMenuPlayerComFaccao(p);
+				abrirMenuPlayerComFaccao(mp);
 				return;
 			}
 			
 			else if (slot == 37) {
 				p.chat("/f tt");
-				abrirMenuPlayerComFaccao(p);
+				abrirMenuPlayerComFaccao(mp);
 				return;
 			}
 			
@@ -956,7 +1044,7 @@ public class EngineMenuGui extends Engine
 					} else { 
 						mp.setMapAutoUpdating(true);
 					}
-					abrirMenuPlayerComFaccao(p);
+					abrirMenuPlayerComFaccao(mp);
 					return;
 				}
 			}
@@ -968,9 +1056,9 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 40) {
 				if (mp.getRole() == Rel.LEADER || mp.getRole() == Rel.OFFICER || mp.isOverriding()) {
-					abrirMenuGerenciarRelacoes(p);
+					abrirMenuGerenciarRelacoes(mp);
 				} else {
-					abrirMenuVerRelacoes(p);
+					abrirMenuVerRelacoes(mp);
 				}
 				return;
 			}
@@ -1053,6 +1141,26 @@ public class EngineMenuGui extends Engine
 		
 		
     	/**
+    	 * @Menu: KICKAR_PLAYER
+    	 */
+		else if (menu == Menu.KICKAR_PLAYER) {
+			
+			if (slot == 20) {
+				String name = inv.getItem(13).getItemMeta().getLore().get(1).replace("§7 da sua facção.", "").replace("§2", "").trim();
+				p.chat("/f kickar " + name + " confirmar");
+				p.closeInventory();
+				return;
+			}
+			
+			else if (slot == 24) {
+				p.sendMessage("§cAção cancelada com sucesso.");
+				p.closeInventory();
+				return;
+			}
+		}
+		
+		
+    	/**
     	 * @Menu: PROTEGER_TERRENO
     	 */
 		else if (menu == Menu.PROTEGER_TERRENO) {
@@ -1131,7 +1239,7 @@ public class EngineMenuGui extends Engine
 			ItemStack item = e.getCurrentItem();
 			
 			if (item.getType() == Material.ARROW) {
-				abrirMenuConvites(p);
+				abrirMenuConvites(mp);
 				return;
 			}
 			
@@ -1156,7 +1264,7 @@ public class EngineMenuGui extends Engine
 			ItemStack item = e.getCurrentItem();
 			
 			if (item.getType() == Material.ARROW) {
-				abrirMenuPlayerSemFaccao(p);
+				abrirMenuPlayerSemFaccao(mp);
 				return;
 			}
 			
@@ -1198,15 +1306,14 @@ public class EngineMenuGui extends Engine
 			
 			else if (slot == 13) {
 				if (e.getCurrentItem().getAmount() > 0) {
-					abrirMenuRelacoesPendentes(p);
+					abrirMenuRelacoesPendentes(mp);
 				}
 				return;
 			}
 			
 			else if (slot == 15) {
 				if (e.getCurrentItem().getAmount() > 0) {
-					p.chat("/f relacao listar");
-					p.closeInventory();
+					abrirMenuRelacoesListar(mp, 1);
 				}
 				return;
 			}
@@ -1221,8 +1328,7 @@ public class EngineMenuGui extends Engine
 			if (slot == 15) {
 				ItemStack item = e.getCurrentItem();
 				if (item.getAmount() > 0) {
-					p.chat("/f relacao listar");
-					p.closeInventory();
+					abrirMenuRelacoesListar(mp, 1);
 				}
 				return;
 			}
@@ -1244,7 +1350,7 @@ public class EngineMenuGui extends Engine
 					p.chat("/f relacao " + faction + " ally");
 					p.closeInventory();
 				} else {
-					abrirMenuRelacoesPendentes(p);
+					abrirMenuRelacoesPendentes(mp);
 				}
 				return;
 			}
@@ -1271,20 +1377,20 @@ public class EngineMenuGui extends Engine
 			
 			if (slot == 11) {
 				if (item.getAmount() > 0) {
-					abrirMenuRelacoesPendentesRecebidos(p);
+					abrirMenuRelacoesPendentesRecebidos(mp);
 				}
 				return;
 			}
 			
 			else if (slot == 15) {
 				if (item.getAmount() > 0) {
-					abrirMenuRelacoesPendentesEnviados(p);
+					abrirMenuRelacoesPendentesEnviados(mp);
 				}
 				return;
 			}
 			
 			else if (slot == 31) {
-				abrirMenuGerenciarRelacoes(p);
+				abrirMenuGerenciarRelacoes(mp);
 			}
 			return;
 		}
@@ -1298,7 +1404,7 @@ public class EngineMenuGui extends Engine
 			ItemStack item = e.getCurrentItem();
 			
 			if (item.getType() == Material.ARROW) {
-				abrirMenuRelacoesPendentes(p);
+				abrirMenuRelacoesPendentes(mp);
 				return;
 			}
 			
@@ -1311,7 +1417,7 @@ public class EngineMenuGui extends Engine
 					Faction target = FactionColl.get().getByName(nome);
 					f.setRelationWish(target, Rel.NEUTRAL);
 					p.sendMessage("§eConvite de aliança para a facção §f[" + nome + "§f]§e deletado com sucesso.");
-					abrirMenuRelacoesPendentesEnviados(p);
+					abrirMenuRelacoesPendentesEnviados(mp);
 				}
 				return;
 			}
@@ -1327,7 +1433,7 @@ public class EngineMenuGui extends Engine
 			ItemStack item = e.getCurrentItem();
 			
 			if (item.getType() == Material.ARROW) {
-				abrirMenuRelacoesPendentes(p);
+				abrirMenuRelacoesPendentes(mp);
 				return;
 			}
 			
@@ -1338,17 +1444,30 @@ public class EngineMenuGui extends Engine
 					p.closeInventory();
 				} else if (e.getClick().isLeftClick()) {
 					p.chat("/f relacao " + nome.replace(" ", "") + " ally" );
-					abrirMenuRelacoesPendentesRecebidos(p);
+					abrirMenuRelacoesPendentesRecebidos(mp);
 				} else if (e.getClick().isRightClick()) {
 					Faction target = FactionColl.get().getByName(nome);
 					target.setRelationWish(f, Rel.NEUTRAL);
 					target.msg("§eA facção §f[" + factionNome + "§f]§e recusou seu pedido de aliança.");
 					f.removePendingRelation(target);
 					f.msg("§ePedido de aliança da facção §f[" + target.getName() + "§f]§e recusado.");
-					abrirMenuRelacoesPendentesRecebidos(p);
+					abrirMenuRelacoesPendentesRecebidos(mp);
 				}
 				return;
 			}
+		}    	
+		
+		
+    	/**
+    	 * @Menu: RELACOES_LISTAR
+    	 */
+		else if (menu == Menu.RELACOES_LISTAR) {
+			ItemStack item = e.getCurrentItem();
+			if (item.getType() == Material.ARROW) {
+				int pag = Integer.valueOf(item.getItemMeta().getDisplayName().replace("§aPágina ", "").trim());
+				abrirMenuRelacoesListar(mp, pag);
+			}
+			return;
 		}
     	
 		
@@ -1390,6 +1509,6 @@ class GuiHolder implements InventoryHolder {
 		ABANDONAR_FACCAO, CONVITES, CONVITES_ENVIADOS, CONVITES_RECEBIDOS,
 		SOB_ATAQUE, GERENCIAR_RELACOES, VER_RELACOES, RELACOES_PENDENTES, 
 		RELACOES_PENDENTES_ENVIADAS, RELACOES_PENDENTES_RECEBIDAS, DEFINIR_RELACAO, 
-		ABANDONAR_TERRAS, PERMISSOES;
+		ABANDONAR_TERRAS, PERMISSOES, KICKAR_PLAYER, RELACOES_LISTAR;
 	}
 }

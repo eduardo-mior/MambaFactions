@@ -1,6 +1,7 @@
 package com.massivecraft.factions.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.integration.ftop.Top;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.massivecore.store.Coll;
 import com.massivecraft.massivecore.util.Txt;
@@ -195,5 +197,16 @@ public class FactionColl extends Coll<Faction>
 		// Return
 		return ret;
 	}
-
+	
+	// -------------------------------------------- //
+	// FACTIONS TOP
+	// -------------------------------------------- //
+	
+	public Collection<Faction> getTopFactions() {
+		try {
+			return Top.getTopFactions();
+		} catch (Throwable e) {
+			return Collections.emptyList();
+		}
+	}
 }
