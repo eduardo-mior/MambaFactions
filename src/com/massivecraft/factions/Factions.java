@@ -96,4 +96,9 @@ public class Factions extends MassivePlugin
 		;
 	}
 	
+	public static boolean isPremium()
+	{
+		return false;
+	}
+	
 }

@@ -6,6 +6,7 @@ import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 import com.massivecraft.massivecore.ps.PS;
 
 public class CmdFactionsVoar extends FactionsCommand
@@ -56,6 +57,12 @@ public class CmdFactionsVoar extends FactionsCommand
 			// Verificando se a facção não esta sob ataque
 			if (msenderFaction.isInAttack()) {
 				msg("§cVocê não pode habilitar o modo voar enquanto sua facção estiver sob ataque.");
+				return;
+			}
+			
+			// Verificando se ele esta com auto conquistar ligado
+			if (msender.getAutoClaimFaction() != null) {
+				message(Mson.parse("§cVocê não pode habilitar o modo voar enquanto estiver com o modo auto conquistar habilitado.").command("/f dominar automatico off"));
 				return;
 			}
 		}

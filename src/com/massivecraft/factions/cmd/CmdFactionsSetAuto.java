@@ -8,6 +8,7 @@ import com.massivecraft.factions.entity.MPerm;
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementIsPlayer;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
+import com.massivecraft.massivecore.mson.Mson;
 import com.massivecraft.massivecore.ps.PS;
 
 public class CmdFactionsSetAuto extends FactionsCommand
@@ -47,6 +48,12 @@ public class CmdFactionsSetAuto extends FactionsCommand
 		// Verificando se a facção esta em ataque
 		if (msenderFaction.isInAttack()) {
 			msg("§cVocê não pode controlar territórios enquanto sua facção estiver sobre ataque!");
+			return;
+		}
+		
+		// Verificando se ele esta com fly ligado
+		if (me.getAllowFlight()) {
+			message(Mson.parse("§cVocê não pode habilitar o modo auto conquistar enquanto estiver com o modo voar habilitado.").command("/f voar off"));
 			return;
 		}
 		
