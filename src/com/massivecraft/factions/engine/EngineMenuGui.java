@@ -1188,6 +1188,11 @@ public class EngineMenuGui extends Engine
 					return;
 				}
 				
+				if (!MConf.get().worldsClaimingEnabled.contains(ps.getWorld())) {
+					p.sendMessage("§cA compra de territórios esta desabilitada neste mundo.");
+					return;
+				}
+				
 				int limit = MConf.get().limiteDeProtecoesTemporaria;
 				if (limit > 0 && f.getTempClaims().size() >= limit) {
 					p.sendMessage("§cLimite máximo de terrenos temporários atingido (" + limit + ")! Abandone terrenos temporário antigos para poder proteger novos terrenos.");

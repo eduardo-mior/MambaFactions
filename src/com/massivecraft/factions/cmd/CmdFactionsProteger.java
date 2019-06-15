@@ -42,6 +42,12 @@ public class CmdFactionsProteger extends FactionsCommand
 			return;
 		}
 		
+		// Verificando se é possível proteger claims nesse mundo
+		if (!MConf.get().worldsClaimingEnabled.contains(PS.valueOf(me.getLocation()).getWorld())) {
+			msg("§cA compra de territórios esta desabilitada neste mundo.");
+			return;
+		}
+		
 		// Verificando se a facção atingiu o limite de claims temporários
 		int limit = MConf.get().limiteDeProtecoesTemporaria;
 		if (limit > 0 && msenderFaction.getTempClaims().size() >= limit) {
