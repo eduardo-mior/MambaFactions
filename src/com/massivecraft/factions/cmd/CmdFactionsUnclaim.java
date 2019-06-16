@@ -12,7 +12,7 @@ public class CmdFactionsUnclaim extends FactionsCommand
 	public CmdFactionsUnclaim() 
 	{
 		// Aliases
-	    this.addAliases("desproteger", "abandonar");
+	    this.addAliases("desproteger", "abandonar", "contestar");
 	
 		// Descrição
 		this.setDesc("§6 abandonar §8-§7 Abandona territórios da sua facção.");
