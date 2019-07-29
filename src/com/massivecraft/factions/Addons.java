@@ -29,7 +29,7 @@ public class Addons {
 					{
 						board.removeAt(ps);
 					}
-					faction.clearTempClains();
+					faction.clearTempClaims();
 					
 					// Updating the invites
 					for (String mplayerId : faction.getInvitations().keySet()) 

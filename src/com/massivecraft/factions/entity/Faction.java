@@ -1324,7 +1324,7 @@ public class Faction extends Entity<Faction> implements FactionsParticipator
 		this.changed();
 	}
 	
-	public void clearTempClains() 
+	public void clearTempClaims() 
 	{
 		// Apply
 		this.tempClaims.clear();
